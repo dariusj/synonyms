@@ -1,7 +1,6 @@
 package synonyms.thesaurus.interpreter
 
 import cats.effect.IO
-import cats.syntax.option.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
