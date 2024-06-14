@@ -8,8 +8,11 @@
 //> using dep net.ruippeixotog::scala-scraper:3.1.1
 //> using dep org.gnieh::fs2-data-json-circe::1.11.0
 //> using dep org.gnieh::fs2-data-json::1.11.0
+//> using dep org.http4s::http4s-blaze-client:0.23.16
+//> using dep org.http4s::http4s-blaze-server:0.23.16
+//> using dep org.http4s::http4s-circe:0.23.16
+//> using dep org.http4s::http4s-dsl:0.23.16
 //> using dep org.http4s::http4s-ember-client:0.23.27
-//> using dep org.http4s::http4s-circe:0.23.27
 //> using dep org.typelevel::cats-core::2.12.0
 //> using dep org.typelevel::cats-effect:3.5.4
 
@@ -30,7 +33,7 @@ import synonyms.thesaurus.algebra.Client.*
 
 import CliArgs.*
 
-object Synonyms
+object SynonymsCli
     extends CommandIOApp(
       "synonyms",
       "An application to check synonyms",
