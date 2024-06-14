@@ -29,7 +29,7 @@ object Collins extends JsoupScraper {
         val definition = (el >?> text(".def")).orElse(el >?> text(".linkDef"))
         val example    = el >?> text(".type-example")
         val synonyms   = el >> texts(".type-syn .orth")
-        Entry(name, word, pos, definition, example.orEmpty, synonyms.toList)
+        Entry(name, word, pos, definition, example, synonyms.toList)
       }
     }
 }

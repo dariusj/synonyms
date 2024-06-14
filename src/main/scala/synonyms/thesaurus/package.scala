@@ -13,7 +13,7 @@ final case class Entry(
     word: String,
     partOfSpeech: String,
     definition: Option[String],
-    example: String,
+    example: Option[String],
     synonyms: List[String]
 ):
   def hasSynonym(check: String): Result =
@@ -55,6 +55,6 @@ object Result:
       secondWord: String,
       partOfSpeech: String,
       definition: Option[String],
-      example: String,
+      example: Option[String],
       source: ThesaurusName
   ) extends Result

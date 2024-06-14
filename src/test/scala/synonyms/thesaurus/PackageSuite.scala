@@ -4,6 +4,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.*
 import org.scalacheck.Prop.*
 import synonyms.thesaurus.PropHelpers.given
+import synonyms.thesaurus.Result.*
 
 class PackageSuite extends munit.ScalaCheckSuite:
 
@@ -37,7 +38,7 @@ class PackageSuite extends munit.ScalaCheckSuite:
         "word",
         "pos",
         Some("definition"),
-        "example",
+        Some("example"),
         List("foo", "bar")
       ),
     _ => ()

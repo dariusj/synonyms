@@ -36,7 +36,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
         "far",
         "adj",
         None,
-        "",
+        None,
         12
       ),
       ExpectedEntry(
@@ -44,7 +44,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
         "far",
         "n",
         None,
-        "",
+        None,
         5
       ),
       ExpectedEntry(
@@ -52,7 +52,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
         "far",
         "v",
         None,
-        "",
+        None,
         1
       ),
       ExpectedEntry(
@@ -60,7 +60,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
         "far",
         "adv",
         None,
-        "",
+        None,
         87
       )
     )

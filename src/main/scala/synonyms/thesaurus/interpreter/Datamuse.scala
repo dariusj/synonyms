@@ -71,7 +71,14 @@ object Datamuse extends Client[IO]:
             rec(acc, wordsByPos)
         }
       wordLookups.map { (pos, words) =>
-        Entry(ThesaurusName("Datamuse"), word, pos, None, "", words.map(_.word))
+        Entry(
+          ThesaurusName("Datamuse"),
+          word,
+          pos,
+          None,
+          None,
+          words.map(_.word)
+        )
       }.toList
 
 //  enum PartOfSpeech:

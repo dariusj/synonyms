@@ -14,12 +14,13 @@ object MerriamWebster extends JsoupScraper:
     val entryEls = document >> elementList(".thesaurus-entry-container")
 
     def buildEntry(pos: String)(el: Element) =
-      val example    = el >> text(".dt span")
-      val definition = (el >> text(".dt")).dropRight(example.length + 1)
+      val example = el >?> text(".dt span")
+      val definition =
+        example.map(ex => (el >> text(".dt")).dropRight(ex.length + 1))
       val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      Entry(name, word, pos, Some(definition), example, synonyms.toList)
+      Entry(name, word, pos, definition, example, synonyms.toList)
 
     entryEls.flatMap { entry =>
       val pos = entry >> text(".parts-of-speech")

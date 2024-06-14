@@ -3,6 +3,7 @@ package synonyms.thesaurus
 import cats.Monad
 import cats.data.EitherT
 import synonyms.thesaurus.*
+import synonyms.thesaurus.Result.*
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.algebra.Client.ClientError
 
