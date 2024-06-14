@@ -1,18 +1,35 @@
 package synonyms
 
-import cats.data.Kleisli
+import cats.data.{Kleisli, OptionT}
 import cats.effect.*
 import org.http4s.*
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
+import org.http4s.server.middleware.{ErrorAction, ErrorHandling}
 import synonyms.routes.Routes.service
 
 object SynonymsApi extends IOApp.Simple:
   val httpApp: Kleisli[IO, Request[IO], Response[IO]] = Router(
-    "/" -> service
+    "/" -> withErrorLogging(service)
   ).orNotFound
 
   val serverBuilder: BlazeServerBuilder[IO] =
     BlazeServerBuilder[IO].withHttpApp(httpApp)
+
+  def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
+    OptionT.liftF(
+      IO.println(msg) >>
+        IO.println(t) >>
+        IO(t.printStackTrace())
+    )
+
+  def withErrorLogging(errorRoute: HttpRoutes[IO]) =
+    ErrorHandling.Recover.total(
+      ErrorAction.log(
+        errorRoute,
+        messageFailureLogAction = errorHandler,
+        serviceErrorLogAction = errorHandler
+      )
+    )
 
   override val run: IO[Unit] = serverBuilder.resource.useForever
