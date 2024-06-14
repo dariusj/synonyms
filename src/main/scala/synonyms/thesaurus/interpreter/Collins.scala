@@ -5,6 +5,7 @@ import cats.syntax.option.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
+import synonyms.thesaurus.algebra.Client.*
 
 object Collins extends Scraper[IO] {
   override val name: ThesaurusName = ThesaurusName("Collins")
@@ -12,9 +13,9 @@ object Collins extends Scraper[IO] {
   def url(word: String) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(word: String): IO[Doc] = IO(
+  override def fetchDocument(word: String): IO[Either[ClientError, Doc]] = IO(
     // TODO: Use HtmlUnitBrowser for this
-    browser.get(url(word))
+    Right(browser.get(url(word)))
   )
 
   override def buildEntries(word: String, document: Doc): List[Entry] =

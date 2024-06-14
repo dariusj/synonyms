@@ -17,6 +17,7 @@ import com.monovore.decline.Opts
 import com.monovore.decline.effect.CommandIOApp
 import synonyms.thesaurus.*
 import synonyms.thesaurus.Service
+import synonyms.thesaurus.algebra.Client.*
 
 import CliArgs.*
 
@@ -31,6 +32,7 @@ object Synonyms
     .map {
       case CheckSynonyms.Args(first, second, source) =>
         Service(source.client).checkSynonyms(first, second).map(_.show)
+
       case ListSynonyms.Args(word, source) =>
         Service(source.client)
           .getEntries(word)
@@ -41,4 +43,8 @@ object Synonyms
               .mkString("\n")
           )
     }
-    .map(_.flatMap(IO.println).as(ExitCode.Success))
+    .map {
+      _.recover { case NotFound(word, url) =>
+        s"Could not find $word at $url"
+      }.biSemiflatMap(IO.raiseError, IO.println).value.as(ExitCode.Success)
+    }

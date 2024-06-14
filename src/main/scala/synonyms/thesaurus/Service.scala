@@ -1,18 +1,25 @@
 package synonyms.thesaurus
 
-import cats.FlatMap
-import cats.syntax.flatMap.given
-import cats.syntax.functor.given
+import cats.Monad
+import cats.data.EitherT
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
+import synonyms.thesaurus.algebra.Client.ClientError
 
-class Service[F[_]: FlatMap](client: Client[F]):
-  def getEntries(word: String): F[List[Entry]] =
-    for document <- client.fetchDocument(word)
+class Service[F[_]: Monad](client: Client[F]):
+
+  def getEntries(word: String): EitherT[F, ClientError, List[Entry]] =
+    for document <- EitherT(client.fetchDocument(word))
     yield client.buildEntries(word, document)
 
-  def checkSynonyms(first: String, second: String): F[Result] =
-    def areSynonyms(word: String, candidate: String): F[Result] =
+  def checkSynonyms(
+      first: String,
+      second: String
+  ): EitherT[F, ClientError, Result] =
+    def areSynonyms(
+        word: String,
+        candidate: String
+    ): EitherT[F, ClientError, Result] =
       getEntries(word).map(entries =>
         entries.foldLeft[Result](NotSynonyms(word, candidate)) {
           case (_: NotSynonyms, entry) => entry.hasSynonym(candidate)

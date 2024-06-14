@@ -2,8 +2,10 @@ package synonyms.thesaurus
 
 import cats.effect.IO
 import synonyms.thesaurus.algebra.Client
+import synonyms.thesaurus.algebra.Client.ClientError
 
 import PropHelpers.*
+import synonyms.thesaurus.algebra.Client.NotFound
 
 class ServiceSuite extends munit.CatsEffectSuite:
   entryStore.test(
@@ -56,7 +58,9 @@ class ServiceSuite extends munit.CatsEffectSuite:
 
     override def name: ThesaurusName = ThesaurusName("Test Thesaurus")
 
-    override def fetchDocument(word: String): IO[Doc] = IO(entries(word))
+    override def fetchDocument(word: String): IO[Either[ClientError, Doc]] = IO(
+      entries.get(word).toRight(NotFound(word, "some_url"))
+    )
 
     override def buildEntries(word: String, document: Doc): List[Entry] =
       document
