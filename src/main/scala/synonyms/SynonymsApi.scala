@@ -1,6 +1,6 @@
 package synonyms
 
-import cats.data.{Kleisli, OptionT}
+import cats.data.OptionT
 import cats.effect.*
 import org.http4s.*
 import org.http4s.blaze.server.BlazeServerBuilder
@@ -9,7 +9,7 @@ import org.http4s.server.middleware.{ErrorAction, ErrorHandling}
 import synonyms.routes.Routes.service
 
 object SynonymsApi extends IOApp.Simple:
-  val httpApp: Kleisli[IO, Request[IO], Response[IO]] = Router(
+  val httpApp: Http[IO, IO] = Router(
     "/" -> withErrorLogging(service)
   ).orNotFound
 
