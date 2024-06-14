@@ -30,7 +30,7 @@ object Entry:
       .map { case (k, v) =>
         k -> v.toList.sorted
       }
-      .sortBy(_._1)
+      .sortBy { case (length, _) => length }
 
 sealed abstract class Result:
   def combine(r: Result): Result = (this, r) match
