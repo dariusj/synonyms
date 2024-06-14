@@ -27,15 +27,15 @@ object MerriamWebster extends Thesaurus[IO]:
     def buildEntryItem(item: Element) =
       val example = item >> text(".dt span")
       val definition = (item >> text(".dt")).dropRight(example.length + 1)
-      val syns = item >> texts(
+      val synonyms = item >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      EntryItem(definition, example, syns.toVector)
+      EntryItem(definition, example, synonyms.toList)
 
     entryEls.map { entry =>
       val partsOfSpeech = entry >> text(".parts-of-speech")
       val items =
         (entry >> elementList(".vg-sseq-entry-item")).map(buildEntryItem)
 
-      Entry(word, partsOfSpeech, items.toVector)
+      Entry(word, partsOfSpeech, items)
     }

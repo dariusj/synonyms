@@ -6,7 +6,7 @@ package synonyms
 
 import cats.effect.*
 import cats.syntax.show.*
-import synonyms.thesaurus.Result
+import synonyms.thesaurus.Found
 import synonyms.thesaurus.Service
 import synonyms.thesaurus.algebra.Thesaurus
 import synonyms.thesaurus.interpreter.MerriamWebster
@@ -29,10 +29,8 @@ object Synonyms extends IOApp:
     given Thesaurus[IO] = MerriamWebster
     parseArgs(args)
       .flatMap { case (first, second) =>
-        Service.checkSynonyms[IO](first, second).flatMap { maybeResult =>
-          maybeResult.fold(IO.println(s"$first and $second are not synonyms"))(
-            r => IO.println(r.show)
-          )
-        }
+        Service
+          .checkSynonyms[IO](first, second)
+          .flatMap(result => IO.println(result.show))
       }
       .as(ExitCode.Success)
