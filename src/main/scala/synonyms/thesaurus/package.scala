@@ -45,7 +45,7 @@ object Result:
       case f: AreSynonyms =>
         import f.*
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
-            .getOrElse("No definition given")}': $example"
+            .getOrElse("No definition given")}': ${example.getOrElse("No example given")}"
 
   final case class NotSynonyms(firstWord: String, secondWord: String)
       extends Result
