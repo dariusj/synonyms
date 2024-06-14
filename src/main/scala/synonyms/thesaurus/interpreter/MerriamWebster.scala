@@ -19,18 +19,15 @@ object MerriamWebster extends Thesaurus[IO]:
   override def buildEntries(word: String, document: Document): List[Entry] =
     val entryEls = document >> elementList(".thesaurus-entry-container")
 
-    def buildEntryItem(item: Element) =
-      val example = item >> text(".dt span")
-      val definition = (item >> text(".dt")).dropRight(example.length + 1)
-      val synonyms = item >> texts(
+    def buildEntry(pos: String)(el: Element) =
+      val example = el >> text(".dt span")
+      val definition = (el >> text(".dt")).dropRight(example.length + 1)
+      val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      EntryItem(Some(definition), example, synonyms.toList)
+      Entry(word, pos, Some(definition), example, synonyms.toList)
 
-    entryEls.map { entry =>
-      val partsOfSpeech = entry >> text(".parts-of-speech")
-      val items =
-        (entry >> elementList(".vg-sseq-entry-item")).map(buildEntryItem)
-
-      Entry(word, partsOfSpeech, items)
+    entryEls.flatMap { entry =>
+      val pos = entry >> text(".parts-of-speech")
+      (entry >> elementList(".vg-sseq-entry-item")).map(buildEntry(pos))
     }

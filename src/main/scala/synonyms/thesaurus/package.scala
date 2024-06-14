@@ -2,30 +2,23 @@ package synonyms.thesaurus
 
 import cats.Show
 
-final case class EntryItem(
-    definition: Option[String],
-    example: String,
-    synonyms: List[String]
-)
-
 final case class Entry(
     word: String,
     partOfSpeech: String,
-    entryItems: List[EntryItem]
+    definition: Option[String],
+    example: String,
+    synonyms: List[String]
 ):
   def hasSynonym(check: String): Result =
-    entryItems
-      .collectFirst {
-        case item if item.synonyms.contains(check) =>
-          Found(word, check, partOfSpeech, item.definition, item.example)
-      }
-      .getOrElse(NotFound(word, check))
+    if synonyms.contains(check) then
+      Found(word, check, partOfSpeech, definition, example)
+    else NotFound(word, check)
 
 object Entry:
-  def synonyms(entries: List[Entry]): List[(Int, List[String])] =
+  def synonymsByLength(entries: List[Entry]): List[(Int, List[String])] =
     entries
-      .flatMap(_.entryItems.flatMap(_.synonyms))
-      .toSet
+      .flatMap(_.synonyms)
+      .distinct
       .groupBy(_.filter(Character.isAlphabetic).length)
       .toList
       .map { case (k, v) =>

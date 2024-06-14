@@ -1,10 +1,8 @@
 //> using option -Wunused:all
 
 //> using dep com.monovore::decline-effect::2.4.1
-//> using dep dev.optics::monocle-core::3.2.0
-//> using dep dev.optics::monocle-macro::3.2.0
 //> using dep net.ruippeixotog::scala-scraper:3.1.1
-//> using dep org.typelevel::cats-core::2.10.0
+//> using dep org.typelevel::cats-core::2.12.0
 //> using dep org.typelevel::cats-effect:3.5.4
 
 package synonyms
@@ -27,27 +25,25 @@ object Synonyms
       true,
       "v0.1"
     ):
-  def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms).map {
-    case CheckSynonyms(first, second, source) =>
-      given Thesaurus[IO] = source.source
-      Service
-        .checkSynonyms[IO](first, second)
-        .flatMap(result => IO.println(result.show))
-        .as(ExitCode.Success)
-    case ListSynonyms(word, source) =>
-      given Thesaurus[IO] = source.source
-      Service
-        .getEntries[IO](word)
-        .flatMap(result =>
-          IO.println(
+  def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
+    .map {
+      case CheckSynonyms(first, second, source) =>
+        given Thesaurus[IO] = source.source
+        Service
+          .checkSynonyms[IO](first, second)
+          .map(_.show)
+      case ListSynonyms(word, source) =>
+        given Thesaurus[IO] = source.source
+        Service
+          .getEntries[IO](word)
+          .map(entries =>
             Entry
-              .synonyms(result)
+              .synonymsByLength(entries)
               .map { case (l, words) => s"($l) ${words.mkString(", ")}" }
               .mkString("\n")
           )
-        )
-        .as(ExitCode.Success)
-  }
+    }
+    .map(output => output.flatMap(IO.println).as(ExitCode.Success))
 
 final case class CheckSynonyms[F[_]](
     first: String,
