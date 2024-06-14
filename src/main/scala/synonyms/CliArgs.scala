@@ -1,11 +1,11 @@
 package synonyms
 
-import synonyms.thesaurus.algebra.Thesaurus
-import cats.effect.IO
-import com.monovore.decline.Opts
-import synonyms.thesaurus.interpreter.*
 import cats.data.NonEmptyList
-import cats.syntax.apply.*
+import cats.effect.IO
+import cats.syntax.apply.given
+import com.monovore.decline.Opts
+import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.interpreter.*
 
 object CliArgs:
   final case class Source[F[_]](source: Thesaurus[F])
@@ -47,4 +47,3 @@ object CliArgs:
     Opts.subcommand("list", "List synonyms for a word") {
       (Opts.argument[String]("word"), source).mapN(ListSynonyms.Args.apply)
     }
-
