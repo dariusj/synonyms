@@ -6,11 +6,16 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 
 object Cambridge extends Client[IO]:
-  def url(word: String) = s"https://dictionary.cambridge.org/thesaurus/$word"
+  type Doc = Document
 
   override val name: ThesaurusName = ThesaurusName("Cambridge")
+
+  val browser = JsoupBrowser()
+
+  def url(word: String) = s"https://dictionary.cambridge.org/thesaurus/$word"
 
   override def fetchDocument(word: String): IO[Document] = IO(
     browser.get(url(word))

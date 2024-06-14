@@ -23,7 +23,8 @@ class PackageSuite extends munit.ScalaCheckSuite:
     forAllNoShrink { (entries: List[Entry]) =>
       val result = Entry.synonymsByLength(entries)
       assertEquals(result.map(_._1), result.map(_._1).sorted)
-      result.foreach { case (_, synonyms) =>
+      result.foreach { case (length, synonyms) =>
+        synonyms.foreach(synonym => assertEquals(clue(synonym).length, length))
         assertEquals(synonyms, synonyms.sorted)
       }
     }

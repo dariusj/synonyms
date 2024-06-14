@@ -6,6 +6,7 @@
 //> using dep org.typelevel::cats-effect:3.5.4
 
 //> using test.dep org.scalameta::munit::1.0.0
+//> using test.dep org.typelevel::munit-cats-effect::2.0.0
 //> using test.dep org.scalameta::munit-scalacheck::1.0.0
 
 package synonyms

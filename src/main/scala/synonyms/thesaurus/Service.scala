@@ -7,10 +7,9 @@ import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
 
 class Service[F[_]: FlatMap](client: Client[F]):
-  def getEntries(word: String): F[List[Entry]] = for
-    document <- client.fetchDocument(word)
-    entries = client.buildEntries(word, document)
-  yield entries
+  def getEntries(word: String): F[List[Entry]] =
+    for document <- client.fetchDocument(word)
+    yield client.buildEntries(word, document)
 
   def checkSynonyms(first: String, second: String): F[Result] =
     def areSynonyms(word: String, candidate: String): F[Result] =

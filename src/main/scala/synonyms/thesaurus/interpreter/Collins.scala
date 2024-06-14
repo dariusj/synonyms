@@ -7,12 +7,16 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 
 object Collins extends Client[IO] {
-  def url(word: String) =
-    s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
+  type Doc = Document
 
   override val name: ThesaurusName = ThesaurusName("Collins")
+  val browser = JsoupBrowser()
+
+  def url(word: String) =
+    s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
   override def fetchDocument(word: String): IO[Document] = IO(
     // TODO: Use HtmlUnitBrowser for this

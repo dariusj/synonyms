@@ -1,13 +1,11 @@
 package synonyms.thesaurus.algebra
 
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
-import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
 
 trait Client[F[_]]:
-  val browser = JsoupBrowser()
+  type Doc
 
   def name: ThesaurusName
 
-  def fetchDocument(word: String): F[Document]
-  def buildEntries(word: String, document: Document): List[Entry]
+  def fetchDocument(word: String): F[Doc]
+  def buildEntries(word: String, document: Doc): List[Entry]
