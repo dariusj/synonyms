@@ -13,8 +13,7 @@ object Cambridge extends Thesaurus[IO]:
   override val name: ThesaurusName = ThesaurusName("Cambridge")
 
   override def fetchDocument(word: String): IO[Document] = IO(
-    // browser.get(url(word))
-    browser.parseFile("run-cambridge.html")
+    browser.get(url(word))
   )
 
   override def buildEntries(word: String, document: Document): List[Entry] =
