@@ -20,11 +20,11 @@ class PackageSuite extends munit.ScalaCheckSuite:
     assert(clue(clue(entry).hasSynonym("baz")).isInstanceOf[NotSynonyms])
   }
 
-  property("Entry.synonymsByLength sorts entries accordingly") {
+  property("SynonymsByLength.fromEntries creates objects correctly") {
     forAllNoShrink { (entries: List[Entry]) =>
-      val result = Entry.synonymsByLength(entries)
+      val result = SynonymsByLength.fromEntries(entries)
       assertEquals(result.map(_._1), result.map(_._1).sorted)
-      result.foreach { case (length, synonyms) =>
+      result.foreach { case SynonymsByLength(length, synonyms) =>
         synonyms.foreach(synonym => assertEquals(clue(synonym).length, length))
         assertEquals(synonyms, synonyms.sorted)
       }

@@ -49,10 +49,7 @@ object SynonymsCli
         Service(source.client)
           .getEntries(word)
           .map(entries =>
-            Entry
-              .synonymsByLength(entries)
-              .map { case (l, words) => s"($l) ${words.mkString(", ")}" }
-              .mkString("\n")
+            SynonymsByLength.fromEntries(entries).map(_.show).mkString("\n")
           )
     }
     .map {
