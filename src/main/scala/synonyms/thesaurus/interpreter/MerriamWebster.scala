@@ -13,11 +13,9 @@ object MerriamWebster extends Thesaurus[IO]:
 
   override val name: ThesaurusName = ThesaurusName("Merriam-Webster")
 
-  override def fetchDocument(word: String): IO[Document] =
-    IO(
-      browser.get(url(word))
-      // browser.parseFile("far-mw.html")
-    )
+  override def fetchDocument(word: String): IO[Document] = IO(
+    browser.get(url(word))
+  )
 
   override def buildEntries(word: String, document: Document): List[Entry] =
     val entryEls = document >> elementList(".thesaurus-entry-container")
