@@ -23,7 +23,7 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
   ): List[Entry] =
     DatamuseWord.toEntries(word, document)
 
-  final case class DatamuseWord(word: String, tags: List[String])
+  final case class DatamuseWord(word: String, tags: Option[List[String]])
 
   object DatamuseWord:
     given Decoder[DatamuseWord] = deriveDecoder[DatamuseWord]
@@ -45,7 +45,7 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
       val wordLookups =
         datamuseWords.foldLeft(Map.empty[String, List[DatamuseWord]]) {
           case (acc, word) =>
-            val wordsByPos = word.tags.collect {
+            val wordsByPos = word.tags.orEmpty.collect {
               case tag @ ("n" | "v" | "adj" | "adv" | "u") => tag -> word
             }
             rec(acc, wordsByPos)
