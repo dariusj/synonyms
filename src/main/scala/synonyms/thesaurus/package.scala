@@ -1,6 +1,7 @@
 package synonyms.thesaurus
 
 import cats.Show
+import synonyms.thesaurus.Result.*
 
 opaque type ThesaurusName = String
 
@@ -46,14 +47,14 @@ object Result:
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': $example"
 
-final case class NotSynonyms(firstWord: String, secondWord: String)
-    extends Result
+  final case class NotSynonyms(firstWord: String, secondWord: String)
+      extends Result
 
-final case class AreSynonyms(
-    firstWord: String,
-    secondWord: String,
-    partOfSpeech: String,
-    definition: Option[String],
-    example: String,
-    source: ThesaurusName
-) extends Result
+  final case class AreSynonyms(
+      firstWord: String,
+      secondWord: String,
+      partOfSpeech: String,
+      definition: Option[String],
+      example: String,
+      source: ThesaurusName
+  ) extends Result
