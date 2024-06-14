@@ -6,9 +6,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.algebra.Client
 
-object Collins extends Thesaurus[IO] {
+object Collins extends Client[IO] {
   def url(word: String) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 

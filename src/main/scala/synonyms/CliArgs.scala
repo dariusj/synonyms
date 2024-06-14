@@ -4,11 +4,11 @@ import cats.data.NonEmptyList
 import cats.effect.IO
 import cats.syntax.apply.given
 import com.monovore.decline.Opts
-import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.interpreter.*
 
 object CliArgs:
-  final case class Source[F[_]](source: Thesaurus[F])
+  final case class Source[F[_]](client: Client[F])
 
   val source: Opts[Source[IO]] =
     Opts

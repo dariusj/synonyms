@@ -6,9 +6,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 import net.ruippeixotog.scalascraper.model.Element
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.algebra.Client
 
-object MerriamWebster extends Thesaurus[IO]:
+object MerriamWebster extends Client[IO]:
   def url(word: String) = s"https://www.merriam-webster.com/thesaurus/$word"
 
   override val name: ThesaurusName = ThesaurusName("Merriam-Webster")

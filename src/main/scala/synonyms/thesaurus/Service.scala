@@ -4,22 +4,17 @@ import cats.FlatMap
 import cats.syntax.flatMap.given
 import cats.syntax.functor.given
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.algebra.Client
 
-object Service:
-  def getEntries[F[_]: FlatMap](
-      word: String
-  )(using thesaurus: Thesaurus[F]): F[List[Entry]] =
-    for
-      document <- thesaurus.fetchDocument(word)
-      entries = thesaurus.buildEntries(word, document)
-    yield entries
+class Service[F[_]: FlatMap](client: Client[F]):
+  def getEntries(word: String): F[List[Entry]] = for
+    document <- client.fetchDocument(word)
+    entries = client.buildEntries(word, document)
+  yield entries
 
-  def checkSynonyms[F[_]: FlatMap](first: String, second: String)(using
-      thesaurus: Thesaurus[F]
-  ): F[Result] =
+  def checkSynonyms(first: String, second: String): F[Result] =
     def areSynonyms(word: String, candidate: String): F[Result] =
-      getEntries[F](word).map(entries =>
+      getEntries(word).map(entries =>
         entries.foldLeft[Result](NotSynonyms(word, candidate)) {
           case (_: NotSynonyms, entry) => entry.hasSynonym(candidate)
           case (found: AreSynonyms, _) => found
@@ -30,5 +25,3 @@ object Service:
       firstResult  <- areSynonyms(first, second)
       secondResult <- areSynonyms(second, first)
     yield firstResult.combine(secondResult)
-
-  // def checkSynonyms[F[_]]: FlatMap](first: String, second: String)(thesauri: List[Thesaurus[F]]): F[Result]

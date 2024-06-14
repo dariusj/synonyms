@@ -16,7 +16,6 @@ import com.monovore.decline.Opts
 import com.monovore.decline.effect.CommandIOApp
 import synonyms.thesaurus.*
 import synonyms.thesaurus.Service
-import synonyms.thesaurus.algebra.Thesaurus
 
 import CliArgs.*
 
@@ -30,14 +29,10 @@ object Synonyms
   def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
     .map {
       case CheckSynonyms.Args(first, second, source) =>
-        given Thesaurus[IO] = source.source
-        Service
-          .checkSynonyms[IO](first, second)
-          .map(_.show)
+        Service(source.client).checkSynonyms(first, second).map(_.show)
       case ListSynonyms.Args(word, source) =>
-        given Thesaurus[IO] = source.source
-        Service
-          .getEntries[IO](word)
+        Service(source.client)
+          .getEntries(word)
           .map(entries =>
             Entry
               .synonymsByLength(entries)
@@ -45,4 +40,4 @@ object Synonyms
               .mkString("\n")
           )
     }
-    .map(output => output.flatMap(IO.println).as(ExitCode.Success))
+    .map(_.flatMap(IO.println).as(ExitCode.Success))

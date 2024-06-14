@@ -5,9 +5,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.algebra.Client
 
-object Cambridge extends Thesaurus[IO]:
+object Cambridge extends Client[IO]:
   def url(word: String) = s"https://dictionary.cambridge.org/thesaurus/$word"
 
   override val name: ThesaurusName = ThesaurusName("Cambridge")

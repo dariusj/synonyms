@@ -4,7 +4,7 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
 
-trait Thesaurus[F[_]]:
+trait Client[F[_]]:
   val browser = JsoupBrowser()
 
   def name: ThesaurusName
