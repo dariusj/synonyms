@@ -70,6 +70,7 @@ val source: Opts[Source[IO]] =
     .option[String]("source", "The thesaurus to use", "s")
     .map {
       case "cambridge" => Source(Cambridge)
+      case "collins"   => Source(Collins)
       case "mw"        => Source(MerriamWebster)
     }
     .withDefault(Source(MerriamWebster))
