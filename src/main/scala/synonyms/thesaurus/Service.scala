@@ -20,9 +20,9 @@ object Service:
   ): F[Result] =
     def areSynonyms(word: String, candidate: String): F[Result] =
       getEntries[F](word).map(entries =>
-        entries.foldLeft[Result](NotFound(word, candidate)) {
-          case (_: NotFound, entry) => entry.hasSynonym(candidate)
-          case (found: Found, _)    => found
+        entries.foldLeft[Result](NotSynonyms(word, candidate)) {
+          case (_: NotSynonyms, entry) => entry.hasSynonym(candidate)
+          case (found: AreSynonyms, _) => found
         }
       )
 

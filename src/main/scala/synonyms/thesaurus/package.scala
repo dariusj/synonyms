@@ -17,8 +17,8 @@ final case class Entry(
 ):
   def hasSynonym(check: String): Result =
     if synonyms.contains(check) then
-      Found(word, check, partOfSpeech, definition, example, thesaurusName)
-    else NotFound(word, check)
+      AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
+    else NotSynonyms(word, check)
 
 object Entry:
   def synonymsByLength(entries: List[Entry]): List[(Int, List[String])] =
@@ -34,23 +34,24 @@ object Entry:
 
 sealed abstract class Result:
   def combine(r: Result): Result = (this, r) match
-    case (f: Found, _) => f
-    case (_, f: Found) => f
-    case _             => this
+    case (f: AreSynonyms, _) => f
+    case (_, f: AreSynonyms) => f
+    case _                   => this
 
 object Result:
   given Show[Result] with
     def show(r: Result): String = r match
-      case nf: NotFound =>
+      case nf: NotSynonyms =>
         s"${nf.firstWord} and ${nf.secondWord} are not synonyms"
-      case f: Found =>
+      case f: AreSynonyms =>
         import f.*
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': $example"
 
-final case class NotFound(firstWord: String, secondWord: String) extends Result
+final case class NotSynonyms(firstWord: String, secondWord: String)
+    extends Result
 
-final case class Found(
+final case class AreSynonyms(
     firstWord: String,
     secondWord: String,
     partOfSpeech: String,
