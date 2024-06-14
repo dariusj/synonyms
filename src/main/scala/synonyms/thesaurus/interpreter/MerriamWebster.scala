@@ -10,6 +10,9 @@ import synonyms.thesaurus.algebra.Thesaurus
 
 object MerriamWebster extends Thesaurus[IO]:
   def url(word: String) = s"https://www.merriam-webster.com/thesaurus/$word"
+
+  override val name: ThesaurusName = ThesaurusName("Merriam-Webster")
+
   override def fetchDocument(word: String): IO[Document] =
     IO(
       browser.get(url(word))
@@ -25,7 +28,7 @@ object MerriamWebster extends Thesaurus[IO]:
       val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      Entry(word, pos, Some(definition), example, synonyms.toList)
+      Entry(name, word, pos, Some(definition), example, synonyms.toList)
 
     entryEls.flatMap { entry =>
       val pos = entry >> text(".parts-of-speech")

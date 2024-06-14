@@ -7,5 +7,7 @@ import synonyms.thesaurus.*
 trait Thesaurus[F[_]]:
   val browser = JsoupBrowser()
 
+  def name: ThesaurusName
+
   def fetchDocument(word: String): F[Document]
   def buildEntries(word: String, document: Document): List[Entry]

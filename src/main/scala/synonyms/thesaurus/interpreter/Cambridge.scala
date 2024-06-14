@@ -4,11 +4,13 @@ import cats.effect.IO
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.model.Document
-import synonyms.thesaurus.Entry
+import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Thesaurus
 
 object Cambridge extends Thesaurus[IO]:
   def url(word: String) = s"https://dictionary.cambridge.org/thesaurus/$word"
+
+  override val name: ThesaurusName = ThesaurusName("Cambridge")
 
   override def fetchDocument(word: String): IO[Document] = IO(
     // browser.get(url(word))
@@ -29,7 +31,7 @@ object Cambridge extends Thesaurus[IO]:
 
           Some(
             pos,
-            entries :+ Entry(word, pos, None, example, synonyms.toList)
+            entries :+ Entry(name, word, pos, None, example, synonyms.toList)
           )
         case (acc, _) => acc
       }

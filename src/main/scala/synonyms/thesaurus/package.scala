@@ -2,7 +2,13 @@ package synonyms.thesaurus
 
 import cats.Show
 
+opaque type ThesaurusName = String
+
+object ThesaurusName:
+  def apply(value: String): ThesaurusName = value
+
 final case class Entry(
+    thesaurusName: ThesaurusName,
     word: String,
     partOfSpeech: String,
     definition: Option[String],
@@ -11,7 +17,7 @@ final case class Entry(
 ):
   def hasSynonym(check: String): Result =
     if synonyms.contains(check) then
-      Found(word, check, partOfSpeech, definition, example)
+      Found(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotFound(word, check)
 
 object Entry:
@@ -39,7 +45,7 @@ object Result:
         s"${nf.firstWord} and ${nf.secondWord} are not synonyms"
       case f: Found =>
         import f.*
-        s"$firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
+        s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': $example"
 
 final case class NotFound(firstWord: String, secondWord: String) extends Result
@@ -49,5 +55,6 @@ final case class Found(
     secondWord: String,
     partOfSpeech: String,
     definition: Option[String],
-    example: String
+    example: String,
+    source: ThesaurusName
 ) extends Result

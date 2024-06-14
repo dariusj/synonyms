@@ -30,3 +30,5 @@ object Service:
       firstResult <- areSynonyms(first, second)
       secondResult <- areSynonyms(second, first)
     yield firstResult.combine(secondResult)
+
+  // def checkSynonyms[F[_]]: FlatMap](first: String, second: String)(thesauri: List[Thesaurus[F]]): F[Result]
