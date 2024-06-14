@@ -1,17 +1,21 @@
-//> using dep com.lihaoyi::upickle:3.3.1
 //> using dep net.ruippeixotog::scala-scraper:3.1.1
 //> using dep org.typelevel::cats-core::2.10.0
 //> using dep org.typelevel::cats-effect:3.5.4
 
 package synonyms
 
+import cats.effect.*
+import cats.syntax.show.*
+import synonyms.thesaurus.Result
+import synonyms.thesaurus.Service
+import synonyms.thesaurus.algebra.Thesaurus
+import synonyms.thesaurus.interpreter.MerriamWebster
+
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.given
 import scala.util.Failure
 import scala.util.Success
-import cats.syntax.all.*
-import cats.effect.*
 
 object Synonyms extends IOApp:
   def run(args: List[String]): IO[ExitCode] =
@@ -25,11 +29,10 @@ object Synonyms extends IOApp:
     given Thesaurus[IO] = MerriamWebster
     parseArgs(args)
       .flatMap { case (first, second) =>
-        Service.checkSynonyms[IO](first, second).flatMap { isSynonym =>
-          if (isSynonym)
-            IO.println(s"$first and $second are synonyms")
-          else
-            IO.println(s"$first and $second are not synonyms")
+        Service.checkSynonyms[IO](first, second).flatMap { maybeResult =>
+          maybeResult.fold(IO.println(s"$first and $second are not synonyms"))(
+            r => IO.println(r.show)
+          )
         }
       }
       .as(ExitCode.Success)

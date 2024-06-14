@@ -1,9 +1,11 @@
-package synonyms
+package synonyms.thesaurus
 
 import cats.FlatMap
-import cats.effect.Sync
 import cats.syntax.flatMap.given
+import cats.syntax.foldable.*
 import cats.syntax.functor.given
+import synonyms.thesaurus.*
+import synonyms.thesaurus.algebra.Thesaurus
 
 object Service:
   def getEntries[F[_]: FlatMap](
@@ -14,18 +16,15 @@ object Service:
       entries = thesaurus.buildEntries(word, document)
     yield entries
 
-  def checkSynonyms[F[_]: FlatMap: Sync](first: String, second: String)(using
+  def checkSynonyms[F[_]: FlatMap](first: String, second: String)(using
       thesaurus: Thesaurus[F]
-  ): F[Boolean] =
-    for {
-      firstEntries <- getEntries(first)
-      firstSynonyms = firstEntries.flatMap(_.entryItems.flatMap(_.synonyms))
-      _ <- Sync[F].delay(
-        println(s"Synonyms of $first: ${firstSynonyms.mkString(", ")}")
+  ): F[Option[Result]] =
+    def isSynonym(word: String, candidate: String): F[Option[Result]] =
+      getEntries[F](word).map(entries =>
+        entries.collectFirstSome(_.synonym(candidate))
       )
-      secondEntries <- getEntries(second)
-      secondSynonyms = firstEntries.flatMap(_.entryItems.flatMap(_.synonyms))
-      _ <- Sync[F].delay(
-        println(s"Synonyms of $second: ${secondSynonyms.mkString(", ")}")
-      )
-    } yield firstSynonyms.contains(second) || secondSynonyms.contains(first)
+
+    for
+      firstResult <- isSynonym(first, second)
+      secondResult <- isSynonym(second, first)
+    yield firstResult.orElse(secondResult)

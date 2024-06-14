@@ -1,4 +1,4 @@
-package synonyms
+package synonyms.thesaurus.interpreter
 
 import cats.effect.IO
 import cats.instances.future
@@ -7,16 +7,20 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Parse.*
 import net.ruippeixotog.scalascraper.model.Document
 import net.ruippeixotog.scalascraper.model.Element
+import synonyms.thesaurus.*
+import synonyms.thesaurus.algebra.Thesaurus
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object MerriamWebster extends Thesaurus[IO]:
-  def url(word: String) = "https://www.merriam-webster.com/thesaurus/$word"
-  override def fetchDocument(word: String): IO[Document] = IO(
-    // browser.get(url(word))
-    browser.parseFile("far.html")
-  )
+  def url(word: String) = s"https://www.merriam-webster.com/thesaurus/$word"
+  override def fetchDocument(word: String): IO[Document] =
+    IO(
+      browser.get(url(word))
+      // browser.parseFile("far-mw.html")
+    )
+
   override def buildEntries(word: String, document: Document): List[Entry] =
     val entryEls = document >> elementList(".thesaurus-entry-container")
 
@@ -30,8 +34,8 @@ object MerriamWebster extends Thesaurus[IO]:
 
     entryEls.map { entry =>
       val partsOfSpeech = entry >> text(".parts-of-speech")
-
       val items =
         (entry >> elementList(".vg-sseq-entry-item")).map(buildEntryItem)
+
       Entry(word, partsOfSpeech, items.toVector)
     }
