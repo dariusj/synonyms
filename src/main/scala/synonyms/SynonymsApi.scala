@@ -14,7 +14,7 @@ object SynonymsApi extends IOApp.Simple:
   ).orNotFound
 
   val serverBuilder: BlazeServerBuilder[IO] =
-    BlazeServerBuilder[IO].withHttpApp(httpApp)
+    BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0")
 
   def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
     OptionT.liftF(
