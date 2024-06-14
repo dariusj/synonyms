@@ -18,19 +18,19 @@ object Cambridge extends Thesaurus[IO]:
   override def buildEntries(word: String, document: Document): List[Entry] =
     val entryEls = (document >> elementList(".entry-block:has(.pos) > div"))
     entryEls
-      .foldLeft((Option.empty[String], List.empty[Entry])) {
+      .foldLeft(Option.empty[(String, List[Entry])]) {
         case (acc, el) if el.attr("class").split(" ").contains("lmb-10") =>
           val pos = el >> text(".pos")
-          (Some(pos), acc._2)
-        case ((maybePos @ Some(pos), (entries)), el)
+          Some(pos, acc.fold(Nil) { case (_, entries) => entries })
+        case (Some(pos, entries), el)
             if el.attr("class").split(" ").contains("sense") =>
           val example = el >> text(".eg")
           val synonyms = el >> texts(".synonym")
 
-          (
-            maybePos,
+          Some(
+            pos,
             entries :+ Entry(word, pos, None, example, synonyms.toList)
           )
         case (acc, _) => acc
       }
-      ._2
+      .fold(Nil) { case (_, entries) => entries }
