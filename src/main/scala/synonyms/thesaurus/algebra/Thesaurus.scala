@@ -2,7 +2,6 @@ package synonyms.thesaurus.algebra
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.model.Document
-import net.ruippeixotog.scalascraper.model.Element
 import synonyms.thesaurus.*
 
 trait Thesaurus[F[_]]:

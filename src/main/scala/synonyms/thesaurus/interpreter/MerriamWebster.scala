@@ -1,17 +1,12 @@
 package synonyms.thesaurus.interpreter
 
 import cats.effect.IO
-import cats.instances.future
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
-import net.ruippeixotog.scalascraper.dsl.DSL.Parse.*
 import net.ruippeixotog.scalascraper.model.Document
 import net.ruippeixotog.scalascraper.model.Element
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Thesaurus
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 object MerriamWebster extends Thesaurus[IO]:
   def url(word: String) = s"https://www.merriam-webster.com/thesaurus/$word"
@@ -30,7 +25,7 @@ object MerriamWebster extends Thesaurus[IO]:
       val synonyms = item >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      EntryItem(definition, example, synonyms.toList)
+      EntryItem(Some(definition), example, synonyms.toList)
 
     entryEls.map { entry =>
       val partsOfSpeech = entry >> text(".parts-of-speech")

@@ -1,21 +1,18 @@
+//> using option -Wunused:all
+
 //> using dep net.ruippeixotog::scala-scraper:3.1.1
 //> using dep org.typelevel::cats-core::2.10.0
 //> using dep org.typelevel::cats-effect:3.5.4
+//> using dep dev.optics::monocle-core::3.2.0
+//> using dep dev.optics::monocle-macro::3.2.0
 
 package synonyms
 
 import cats.effect.*
 import cats.syntax.show.*
-import synonyms.thesaurus.Found
 import synonyms.thesaurus.Service
 import synonyms.thesaurus.algebra.Thesaurus
-import synonyms.thesaurus.interpreter.MerriamWebster
-
-import scala.concurrent.*
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.given
-import scala.util.Failure
-import scala.util.Success
+import synonyms.thesaurus.interpreter.*
 
 object Synonyms extends IOApp:
   def run(args: List[String]): IO[ExitCode] =
@@ -26,7 +23,7 @@ object Synonyms extends IOApp:
           new IllegalArgumentException(s"Incorrect number of arguments: $args")
         )
 
-    given Thesaurus[IO] = MerriamWebster
+    given Thesaurus[IO] = Cambridge
     parseArgs(args)
       .flatMap { case (first, second) =>
         Service

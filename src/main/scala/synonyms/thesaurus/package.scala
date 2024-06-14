@@ -3,7 +3,7 @@ package synonyms.thesaurus
 import cats.Show
 
 final case class EntryItem(
-    definition: String,
+    definition: Option[String],
     example: String,
     synonyms: List[String]
 )
@@ -33,7 +33,8 @@ object Result:
         s"${nf.firstWord} and ${nf.secondWord} are not synonyms"
       case f: Found =>
         import f.*
-        s"$firstWord and $secondWord are synonyms - [$partOfSpeech] '$definition': $example"
+        s"$firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
+            .getOrElse("No definition given")}': $example"
 
 final case class NotFound(firstWord: String, secondWord: String) extends Result
 
@@ -41,6 +42,6 @@ final case class Found(
     firstWord: String,
     secondWord: String,
     partOfSpeech: String,
-    definition: String,
+    definition: Option[String],
     example: String
 ) extends Result
