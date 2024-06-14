@@ -28,7 +28,7 @@ object Entry:
       .groupBy(_.count(Character.isAlphabetic))
       .toList
       .map { case (k, v) => k -> v.sorted }
-      .sortBy { case (length, _) => length }
+      .sorted
 
 sealed abstract class Result:
   def combine(r: Result): Result = (this, r) match
