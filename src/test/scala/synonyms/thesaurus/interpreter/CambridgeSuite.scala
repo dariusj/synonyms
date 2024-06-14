@@ -7,7 +7,10 @@ class CambridgeSuite extends BaseThesaurusSuite:
   testBuildEntries(
     "Cambridge.buildEntries scrapes page successfully",
     Cambridge
-      .buildEntries("far", BaseThesaurusSuite.parseFile(s"/cam-far.html")),
+      .buildEntries(
+        "far",
+        BaseThesaurusSuite.parseFile(Cambridge.browser, s"/cam-far.html")
+      ),
     List(
       ExpectedEntry(
         ThesaurusName("Cambridge"),

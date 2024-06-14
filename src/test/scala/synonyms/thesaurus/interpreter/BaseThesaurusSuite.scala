@@ -1,7 +1,6 @@
 package synonyms.thesaurus.interpreter
 
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
-import net.ruippeixotog.scalascraper.model.Document
+import net.ruippeixotog.scalascraper.browser.Browser
 import synonyms.thesaurus.Entry
 import synonyms.thesaurus.ThesaurusName
 
@@ -39,6 +38,6 @@ object BaseThesaurusSuite:
       expectedSynonymCount: Int
   )
 
-  def parseFile(resource: String): Document =
+  def parseFile(browser: Browser,resource: String): browser.DocumentType =
     val url = getClass.getResource(resource)
-    JsoupBrowser().parseFile(url.getPath)
+    browser.parseFile(url.getPath)

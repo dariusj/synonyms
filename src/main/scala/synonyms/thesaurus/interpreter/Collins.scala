@@ -4,26 +4,20 @@ import cats.effect.IO
 import cats.syntax.option.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
-import net.ruippeixotog.scalascraper.model.Document
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Client
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 
-object Collins extends Client[IO] {
-  type Doc = Document
-
+object Collins extends Scraper[IO] {
   override val name: ThesaurusName = ThesaurusName("Collins")
-  val browser = JsoupBrowser()
 
   def url(word: String) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(word: String): IO[Document] = IO(
+  override def fetchDocument(word: String): IO[Doc] = IO(
     // TODO: Use HtmlUnitBrowser for this
     browser.get(url(word))
   )
 
-  override def buildEntries(word: String, document: Document): List[Entry] =
+  override def buildEntries(word: String, document: Doc): List[Entry] =
     val entryEls = document >> elementList(".entry")
 
     entryEls.flatMap { el =>

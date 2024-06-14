@@ -7,7 +7,8 @@ import BaseThesaurusSuite.*
 class MerriamWebsterSuite extends BaseThesaurusSuite:
   testBuildEntries(
     "MerriamWebster.buildEntries scrapes page successfully",
-    MerriamWebster.buildEntries("far", parseFile(s"/mw-far.html")),
+    MerriamWebster
+      .buildEntries("far", parseFile(MerriamWebster.browser, s"/mw-far.html")),
     List(
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),
