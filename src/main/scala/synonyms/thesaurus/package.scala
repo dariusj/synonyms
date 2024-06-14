@@ -7,6 +7,7 @@ final case class EntryItem(
     example: String,
     synonyms: List[String]
 )
+
 final case class Entry(
     word: String,
     partOfSpeech: String,
@@ -19,6 +20,18 @@ final case class Entry(
           Found(word, check, partOfSpeech, item.definition, item.example)
       }
       .getOrElse(NotFound(word, check))
+
+object Entry:
+  def synonyms(entries: List[Entry]): List[(Int, List[String])] =
+    entries
+      .flatMap(_.entryItems.flatMap(_.synonyms))
+      .toSet
+      .groupBy(_.filter(Character.isAlphabetic).length)
+      .toList
+      .map { case (k, v) =>
+        k -> v.toList.sorted
+      }
+      .sortBy(_._1)
 
 sealed abstract class Result:
   def combine(r: Result): Result = (this, r) match
