@@ -16,6 +16,7 @@ object CliArgs:
       .map {
         case "cambridge" => Source(Cambridge)
         case "collins"   => Source(Collins)
+        case "datamuse"  => Source(Datamuse)
         case "mw"        => Source(MerriamWebster)
       }
       .withDefault(Source(MerriamWebster))

@@ -4,38 +4,18 @@ import _root_.io.circe.*
 import _root_.io.circe.generic.semiauto.*
 import cats.effect.IO
 import cats.syntax.option.*
-import fs2.*
-import fs2.data.json.*
-import fs2.data.json.circe.*
-import fs2.data.json.codec.*
 import org.http4s.*
-import org.http4s.ember.client.*
-import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.ClientError
+import synonyms.thesaurus.interpreter.Datamuse.DatamuseWord
 import synonyms.thesaurus.{Entry, ThesaurusName}
 
 import scala.annotation.tailrec
 
-object Datamuse extends Client[IO]:
-  type Doc = List[DatamuseWord]
+object Datamuse extends JsonApi[List[DatamuseWord], IO]:
 
   def url(word: String): Uri =
     Uri.unsafeFromString(s"https://api.datamuse.com/words?ml=$word")
 
-  def request(word: String): Request[IO] = Request[IO](Method.GET, url(word))
-
   override def name: ThesaurusName = ThesaurusName("Datamuse")
-
-  override def fetchDocument(word: String): IO[Either[ClientError, Doc]] =
-    val words = for {
-      client <- Stream.resource(EmberClientBuilder.default[IO].build)
-      res    <- client.stream(request(word))
-      body <- res.body
-        .through(text.utf8.decode)
-        .through(tokens)
-        .through(deserialize[IO, List[DatamuseWord]])
-    } yield body
-    words.compile.toList.map(l => Right(l.flatten))
 
   override def buildEntries(
       word: String,
