@@ -60,7 +60,3 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
           words.map(_.word)
         )
       }.toList
-
-//  enum PartOfSpeech:
-//    case Noun, Verb, Adjective, Adverb, Other
-//
