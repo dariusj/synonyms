@@ -7,7 +7,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client.*
 
-object Collins extends Scraper[IO] {
+object Collins extends JsoupScraper {
   override val name: ThesaurusName = ThesaurusName("Collins")
 
   def url(word: String) =
