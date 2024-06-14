@@ -1,26 +1,37 @@
 package synonyms.thesaurus.interpreter
 
+import cats.effect.IO
+import munit.*
 import net.ruippeixotog.scalascraper.browser.Browser
-import synonyms.thesaurus.Entry
-import synonyms.thesaurus.ThesaurusName
+import synonyms.thesaurus.{Entry, ThesaurusName}
+import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
-import BaseThesaurusSuite.*
-
-abstract class BaseThesaurusSuite extends munit.FunSuite:
+abstract class BaseThesaurusSuite extends CatsEffectSuite:
   def testBuildEntries(
       name: String,
       gotEntries: List[Entry],
       expectedEntries: List[ExpectedEntry]
-  )(implicit loc: munit.Location): Unit =
+  )(using Location): Unit =
     test(name) {
-      if gotEntries.size != expectedEntries.size then
-        fail("Unexpected number of entries", clues(gotEntries))
-      else gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
+      assertEquals(gotEntries.size, expectedEntries.size)
+      gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
     }
 
-  def assertEntry(got: Entry, expected: ExpectedEntry): Unit =
-    import got.*
+  def testBuildEntriesIO(
+      name: String,
+      gotEntriesIO: IO[List[Entry]],
+      expectedEntries: List[ExpectedEntry]
+  )(using Location): Unit =
+    test(name) {
+      gotEntriesIO.map { gotEntries =>
+        assertEquals(gotEntries.size, expectedEntries.size)
+        gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
+      }
+    }
+
+  def assertEntry(got: Entry, expected: ExpectedEntry)(using Location): Unit =
     import expected.*
+    import got.*
     assertEquals(thesaurusName, expectedThesaurusName)
     assertEquals(word, expectedWord)
     assertEquals(partOfSpeech, expectedPos)
@@ -38,6 +49,6 @@ object BaseThesaurusSuite:
       expectedSynonymCount: Int
   )
 
-  def parseFile(browser: Browser,resource: String): browser.DocumentType =
+  def parseFile(browser: Browser, resource: String): browser.DocumentType =
     val url = getClass.getResource(resource)
     browser.parseFile(url.getPath)

@@ -13,5 +13,5 @@ trait Client[F[_]]:
   def buildEntries(word: String, document: Doc): List[Entry]
 
 object Client:
-  sealed trait ClientError extends NoStackTrace
+  sealed trait ClientError                             extends NoStackTrace
   final case class NotFound(word: String, url: String) extends ClientError

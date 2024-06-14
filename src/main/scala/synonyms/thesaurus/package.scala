@@ -25,11 +25,9 @@ object Entry:
     entries
       .flatMap(_.synonyms)
       .distinct
-      .groupBy(_.filter(Character.isAlphabetic).length)
+      .groupBy(_.count(Character.isAlphabetic))
       .toList
-      .map { case (k, v) =>
-        k -> v.toList.sorted
-      }
+      .map { case (k, v) => k -> v.sorted }
       .sortBy { case (length, _) => length }
 
 sealed abstract class Result:

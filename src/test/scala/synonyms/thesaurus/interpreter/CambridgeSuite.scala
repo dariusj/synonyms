@@ -9,7 +9,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
     Cambridge
       .buildEntries(
         "far",
-        BaseThesaurusSuite.parseFile(Cambridge.browser, s"/cam-far.html")
+        BaseThesaurusSuite.parseFile(Cambridge.browser, "/cam-far.html")
       ),
     List(
       ExpectedEntry(

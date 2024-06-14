@@ -1,0 +1,725 @@
+[
+  {
+    "word": "far-off",
+    "score": 30050298,
+    "tags": [
+      "syn",
+      "adj",
+      "results_type:primary_rel"
+    ]
+  },
+  {
+    "word": "distant",
+    "score": 30050254,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "faraway",
+    "score": 30050193,
+    "tags": [
+      "syn",
+      "adj",
+      "n"
+    ]
+  },
+  {
+    "word": "utmost",
+    "score": 30050103,
+    "tags": [
+      "syn",
+      "adj",
+      "n"
+    ]
+  },
+  {
+    "word": "remote",
+    "score": 30049764,
+    "tags": [
+      "syn",
+      "adj",
+      "n",
+      "v"
+    ]
+  },
+  {
+    "word": "uttermost",
+    "score": 30049726,
+    "tags": [
+      "syn",
+      "adj",
+      "n"
+    ]
+  },
+  {
+    "word": "long",
+    "score": 30048540,
+    "tags": [
+      "syn",
+      "adv"
+    ]
+  },
+  {
+    "word": "right",
+    "score": 30041369,
+    "tags": [
+      "syn",
+      "adv"
+    ]
+  },
+  {
+    "word": "removed",
+    "score": 30040604,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "outlying",
+    "score": 30036617,
+    "tags": [
+      "syn",
+      "adj",
+      "n"
+    ]
+  },
+  {
+    "word": "immoderate",
+    "score": 30025893,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "cold",
+    "score": 30023791,
+    "tags": [
+      "syn",
+      "adv"
+    ]
+  },
+  {
+    "word": "farthermost",
+    "score": 20050348,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "furthermost",
+    "score": 20050348,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "off the beaten track",
+    "score": 20050348,
+    "tags": [
+      "syn",
+      "N"
+    ]
+  },
+  {
+    "word": "out-of-the-way",
+    "score": 20050348,
+    "tags": [
+      "syn",
+      "adj"
+    ]
+  },
+  {
+    "word": "much",
+    "score": 20050347,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "even",
+    "score": 20050346,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "beyond",
+    "score": 20050345,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "though",
+    "score": 20050344,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "considerably",
+    "score": 20050343,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "well",
+    "score": 20050342,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "yet",
+    "score": 20050341,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "just",
+    "score": 20050340,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "ferforth",
+    "score": 20050339,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "already",
+    "score": 20050338,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "probably",
+    "score": 20050337,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "now",
+    "score": 20050336,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "farfet",
+    "score": 20050335,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "perhaps",
+    "score": 20050334,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "still",
+    "score": 20050333,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "and then",
+    "score": 20050332,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "natheless",
+    "score": 20050331,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "scarcely",
+    "score": 20050330,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "pretervection",
+    "score": 20050329,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "too",
+    "score": 20050328,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "even so",
+    "score": 20050327,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "insofar",
+    "score": 20050326,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "uttermore",
+    "score": 20050325,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "actually",
+    "score": 20050324,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in proportion to",
+    "score": 20050323,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "more and more",
+    "score": 20050322,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "or so",
+    "score": 20050321,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "farstretched",
+    "score": 20050320,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "clearly",
+    "score": 20050319,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "anyway",
+    "score": 20050318,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "hardly",
+    "score": 20050317,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "only",
+    "score": 20050316,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "somewhither",
+    "score": 20050315,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "ever",
+    "score": 20050314,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "forereach",
+    "score": 20050313,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "somedeal",
+    "score": 20050312,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "haveless",
+    "score": 20050311,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "inasmuch as",
+    "score": 20050310,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "mightless",
+    "score": 20050309,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in some way",
+    "score": 20050308,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "obviously",
+    "score": 20050307,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "elsewhither",
+    "score": 20050306,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "however",
+    "score": 20050305,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "bring forward",
+    "score": 20050304,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "just now",
+    "score": 20050303,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "muchwhat",
+    "score": 20050302,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "rightly",
+    "score": 20050301,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "far and wide",
+    "score": 20050300,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "at length",
+    "score": 20050299,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "slightly",
+    "score": 20050298,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "never",
+    "score": 20050297,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "deictically",
+    "score": 20050296,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "unfortunately",
+    "score": 20050295,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "rarely",
+    "score": 20050294,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "come forth",
+    "score": 20050293,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in all likelihood",
+    "score": 20050292,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in any event",
+    "score": 20050291,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "terribly",
+    "score": 20050290,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "for some reason",
+    "score": 20050289,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "original cost",
+    "score": 20050288,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "ayont",
+    "score": 20050287,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "lately",
+    "score": 20050286,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "before long",
+    "score": 20050285,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "run to",
+    "score": 20050284,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in conclusion",
+    "score": 20050283,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "not",
+    "score": 20050281,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "get at",
+    "score": 20050280,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "you bet",
+    "score": 20050279,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "thus",
+    "score": 20050278,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "arguably",
+    "score": 20050277,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "look upon",
+    "score": 20050276,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "ayond",
+    "score": 20050275,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "certainly",
+    "score": 20050274,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "on one hand",
+    "score": 20050273,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "distance vision",
+    "score": 20050272,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "insignificative",
+    "score": 20050271,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "fortunately",
+    "score": 20050270,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in return",
+    "score": 20050269,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in good time",
+    "score": 20050268,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "nowhere",
+    "score": 20050267,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "postnate",
+    "score": 20050266,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "go across",
+    "score": 20050265,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "in due time",
+    "score": 20050264,
+    "tags": [
+      "adv"
+    ]
+  },
+  {
+    "word": "crop up",
+    "score": 20050263,
+    "tags": [
+      "adv"
+    ]
+  }
+]
