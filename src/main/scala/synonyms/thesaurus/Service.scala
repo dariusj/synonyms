@@ -27,7 +27,7 @@ object Service:
       )
 
     for
-      firstResult <- areSynonyms(first, second)
+      firstResult  <- areSynonyms(first, second)
       secondResult <- areSynonyms(second, first)
     yield firstResult.combine(secondResult)
 

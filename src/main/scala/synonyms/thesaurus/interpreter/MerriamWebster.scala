@@ -23,7 +23,7 @@ object MerriamWebster extends Thesaurus[IO]:
     val entryEls = document >> elementList(".thesaurus-entry-container")
 
     def buildEntry(pos: String)(el: Element) =
-      val example = el >> text(".dt span")
+      val example    = el >> text(".dt span")
       val definition = (el >> text(".dt")).dropRight(example.length + 1)
       val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"

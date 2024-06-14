@@ -18,11 +18,11 @@ object PropHelpers:
 
   val entryGen = for {
     thesaurusName <- thesaurusNameGen
-    word <- nonEmptyStringGen()
-    partOfSpeech <- nonEmptyStringGen()
-    definition <- Gen.option(phraseGen)
-    example <- nonEmptyStringGen()
-    synonyms <- Gen.listOf(nonEmptyStringGen())
+    word          <- nonEmptyStringGen()
+    partOfSpeech  <- nonEmptyStringGen()
+    definition    <- Gen.option(phraseGen)
+    example       <- nonEmptyStringGen()
+    synonyms      <- Gen.listOf(nonEmptyStringGen())
   } yield Entry(
     thesaurusName,
     word,

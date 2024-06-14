@@ -26,7 +26,7 @@ object Cambridge extends Thesaurus[IO]:
           Some(pos, acc.fold(Nil) { case (_, entries) => entries })
         case (Some(pos, entries), el)
             if el.attr("class").split(" ").contains("sense") =>
-          val example = el >> text(".eg")
+          val example  = el >> text(".eg")
           val synonyms = el >> texts(".synonym")
 
           Some(

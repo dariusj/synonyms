@@ -26,10 +26,10 @@ object Collins extends Thesaurus[IO] {
       val senses = el >> elementList(".sense")
 
       senses.map { sense =>
-        val pos = el >> text(".headerSensePos")
+        val pos        = el >> text(".headerSensePos")
         val definition = (el >?> text(".def")).orElse(el >?> text(".linkDef"))
-        val example = el >?> text(".type-example")
-        val synonyms = el >> texts(".type-syn .orth")
+        val example    = el >?> text(".type-example")
+        val synonyms   = el >> texts(".type-syn .orth")
         Entry(name, word, pos, definition, example.orEmpty, synonyms.toList)
       }
     }
