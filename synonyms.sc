@@ -8,7 +8,7 @@
 val (first, second) = args.toList match
   case f :: s :: Nil => f -> s
   case args =>
-    println(s"incorrect number of arguments: $args")
+    System.err.println(s"incorrect number of arguments: $args")
     sys.exit(1)
 
 // val t = Thesaurus(Vector(Entry("brave", Vector("courageous"))))
