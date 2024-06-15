@@ -9,9 +9,9 @@ trait Client[F[_]]:
 
   def name: ThesaurusName
 
-  def fetchDocument(word: String): F[Either[ClientError, Doc]]
+  def fetchDocument(word: String): F[Either[FetchError, Option[Doc]]]
   def buildEntries(word: String, document: Doc): List[Entry]
 
 object Client:
-  sealed trait ClientError                             extends NoStackTrace
-  final case class NotFound(word: String, url: String) extends ClientError
+  sealed trait FetchError                                 extends NoStackTrace
+  final case class ClientError(word: String, url: String) extends FetchError

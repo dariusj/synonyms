@@ -8,7 +8,7 @@ import fs2.data.json.codec.*
 import org.http4s.*
 import org.http4s.ember.client.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.ClientError
+import synonyms.thesaurus.algebra.Client.FetchError
 import cats.syntax.functor.*
 import _root_.io.circe.*
 
@@ -18,7 +18,7 @@ trait JsonApi[Decodable: Decoder, F[_]: Async] extends Client[F]:
 
   def request(word: String): Request[F] = Request[F](Method.GET, url(word))
 
-  override def fetchDocument(word: String): F[Either[ClientError, Doc]] =
+  override def fetchDocument(word: String): F[Either[FetchError, Option[Doc]]] =
     val words: Stream[F, Doc] = for
       client <- Stream.resource(EmberClientBuilder.default[F].build)
       res    <- client.stream(request(word))
@@ -27,4 +27,5 @@ trait JsonApi[Decodable: Decoder, F[_]: Async] extends Client[F]:
         .through(tokens)
         .through(deserialize[F, Doc])
     yield body
-    words.compile.toList.map(l => Right(l.head))
+    // TODO: Error handling
+    words.compile.toList.map(l => Right(Option(l.head)))

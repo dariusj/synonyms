@@ -1,4 +1,5 @@
 //> using option -Wunused:all
+//> using option -Ykind-projector:underscores
 
 //> using dep co.fs2::fs2-core:3.10.2
 //> using dep com.monovore::decline-effect::2.4.1
@@ -43,17 +44,17 @@ object SynonymsCli
   def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
     .map {
       case CheckSynonyms.Args(first, second, source) =>
-        Service(source.client).checkSynonyms(first, second).map(_.show)
+        Service().checkSynonyms(first, second, source.client).map(_.show)
 
       case ListSynonyms.Args(word, source) =>
-        Service(source.client)
-          .getEntries(word)
+        Service()
+          .getEntries(word, source.client)
           .map(entries =>
             SynonymsByLength.fromEntries(entries).map(_.show).mkString("\n")
           )
     }
     .map {
-      _.recover { case NotFound(word, url) =>
-        s"Could not find $word at $url"
+      _.recover { case ClientError(word, url) =>
+        s"There was a client side error attempting to fetch $word from $url"
       }.biSemiflatMap(IO.raiseError, IO.println).value.as(ExitCode.Success)
     }

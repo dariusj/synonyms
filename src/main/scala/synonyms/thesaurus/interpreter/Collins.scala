@@ -12,9 +12,11 @@ object Collins extends JsoupScraper {
   def url(word: String) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(word: String): IO[Either[ClientError, Doc]] = IO(
+  override def fetchDocument(
+      word: String
+  ): IO[Either[FetchError, Option[Doc]]] = IO(
     // TODO: Use HtmlUnitBrowser for this
-    Right(browser.get(url(word)))
+    Right(Option(browser.get(url(word))))
   )
 
   override def buildEntries(word: String, document: Doc): List[Entry] =

@@ -33,13 +33,13 @@ object SynonymsByLength:
       .flatMap(_.synonyms)
       .distinct
       .groupBy(_.count(Character.isAlphabetic))
-      .toList
       .map { case (k, v) => k -> v.sorted }
+      .toList
       .sorted
       .map(SynonymsByLength.apply.tupled)
 
 sealed abstract class Result:
-  def combine(r: Result): Result = (this, r) match
+  infix def combine(r: Result): Result = (this, r) match
     case (f: AreSynonyms, _) => f
     case (_, f: AreSynonyms) => f
     case _                   => this
