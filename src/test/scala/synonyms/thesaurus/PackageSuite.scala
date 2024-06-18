@@ -26,7 +26,7 @@ class PackageSuite extends munit.ScalaCheckSuite:
       assertEquals(result.map(_._1), result.map(_._1).sorted)
       result.foreach { case SynonymsByLength(length, synonyms) =>
         synonyms.foreach(synonym => assertEquals(clue(synonym).length, length))
-        assertEquals(synonyms, synonyms.sorted)
+        assertEquals(synonyms, synonyms.distinct.sorted)
       }
     }
   }

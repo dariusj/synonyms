@@ -17,7 +17,13 @@ class Service[F[_]: Monad: Parallel]:
   ): EitherT[F, FetchError, Result] =
     clients
       .parTraverse(c => checkSynonyms(first, second, c))
-      .map(_.reduce(_ combine _))
+      .map(f => f.reduce(_ combine _))
+
+  def getEntries2(
+      word: String,
+      clients: List[Client[F]]
+  ): EitherT[F, FetchError, List[Entry]] =
+    clients.parFlatTraverse(client => getEntries(word, client))
 
   def getEntries(
       word: String,

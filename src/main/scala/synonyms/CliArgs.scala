@@ -10,22 +10,22 @@ import synonyms.thesaurus.interpreter.*
 object CliArgs:
   final case class Source[F[_]](client: Client[F])
 
-  val source: Opts[Source[IO]] =
+  val source: Opts[NonEmptyList[Source[IO]]] =
     Opts
-      .option[String]("source", "The thesaurus to use", "s")
-      .map {
+      .options[String]("source", "The thesaurus to use", "s")
+      .map(_.map {
         case "cambridge" => Source(Cambridge)
         case "collins"   => Source(Collins)
         case "datamuse"  => Source(Datamuse)
         case "mw"        => Source(MerriamWebster)
-      }
-      .withDefault(Source(MerriamWebster))
+      })
+      .withDefault(NonEmptyList.one(Source(MerriamWebster)))
 
   object CheckSynonyms:
     final case class Args[F[_]](
         first: String,
         second: String,
-        source: Source[F]
+        source: NonEmptyList[Source[F]]
     )
     final case class Words(first: String, second: String)
     val words: Opts[(String, String)] = Opts.arguments[String]("words").map {
@@ -35,7 +35,7 @@ object CliArgs:
     }
 
   object ListSynonyms:
-    final case class Args[F[_]](word: String, source: Source[F])
+    final case class Args[F[_]](word: String, source: NonEmptyList[Source[F]])
 
   val checkSynonyms =
     Opts.subcommand("check", "Check if the given words are synonyms") {
