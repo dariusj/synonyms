@@ -1,11 +1,12 @@
 package synonyms
 
-import cats.data.NonEmptyList
+import cats.data.{NonEmptyList, Validated}
 import cats.effect.IO
 import cats.syntax.apply.given
 import com.monovore.decline.Opts
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.interpreter.*
+import cats.syntax.validated.given
 
 object CliArgs:
   final case class Source[F[_]](client: Client[F])
@@ -13,11 +14,10 @@ object CliArgs:
   val source: Opts[NonEmptyList[Source[IO]]] =
     Opts
       .options[String]("source", "The thesaurus to use", "s")
-      .map(_.map {
-        case "cambridge" => Source(Cambridge)
-        case "collins"   => Source(Collins)
-        case "datamuse"  => Source(Datamuse)
-        case "mw"        => Source(MerriamWebster)
+      .mapValidated(_.traverse { input =>
+        Client.fromString(input) match
+          case None         => s"Invalid source $input".invalidNel
+          case Some(client) => Source(client).validNel
       })
       .withDefault(NonEmptyList.one(Source(MerriamWebster)))
 
