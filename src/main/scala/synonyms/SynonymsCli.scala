@@ -43,14 +43,14 @@ object SynonymsCli
     ):
   def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
     .map {
-      case CheckSynonyms.Args(first, second, source) =>
+      case CheckSynonyms.Args(first, second, clients) =>
         Service()
-          .checkSynonyms2(first, second, source.map(_.client).toList)
+          .checkSynonyms2(first, second, clients.toList)
           .map(_.show)
 
-      case ListSynonyms.Args(word, source) =>
+      case ListSynonyms.Args(word, clients) =>
         Service()
-          .getEntries2(word, source.map(_.client).toList)
+          .getEntries2(word, clients.toList)
           .map(entries =>
             SynonymsByLength.fromEntries(entries).map(_.show).mkString("\n")
           )

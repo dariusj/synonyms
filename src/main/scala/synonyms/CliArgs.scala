@@ -6,26 +6,23 @@ import cats.syntax.apply.given
 import com.monovore.decline.Opts
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.interpreter.*
-import cats.syntax.validated.given
 
 object CliArgs:
-  final case class Source[F[_]](client: Client[F])
-
-  val source: Opts[NonEmptyList[Source[IO]]] =
+  val clientOpts: Opts[NonEmptyList[Client[IO]]] =
     Opts
       .options[String]("source", "The thesaurus to use", "s")
       .mapValidated(_.traverse { input =>
-        Client.fromString(input) match
-          case None         => s"Invalid source $input".invalidNel
-          case Some(client) => Source(client).validNel
+        Validated
+          .fromOption(Client.fromString(input), s"Invalid source $input")
+          .toValidatedNel
       })
-      .withDefault(NonEmptyList.one(Source(MerriamWebster)))
+      .withDefault(NonEmptyList.one(MerriamWebster))
 
   object CheckSynonyms:
     final case class Args[F[_]](
         first: String,
         second: String,
-        source: NonEmptyList[Source[F]]
+        source: NonEmptyList[Client[F]]
     )
     final case class Words(first: String, second: String)
     val words: Opts[(String, String)] = Opts.arguments[String]("words").map {
@@ -35,16 +32,16 @@ object CliArgs:
     }
 
   object ListSynonyms:
-    final case class Args[F[_]](word: String, source: NonEmptyList[Source[F]])
+    final case class Args[F[_]](word: String, source: NonEmptyList[Client[F]])
 
   val checkSynonyms =
     Opts.subcommand("check", "Check if the given words are synonyms") {
-      (CheckSynonyms.words, source).mapN((t, s) =>
-        CheckSynonyms.Args(t._1, t._2, s)
-      )
+      (CheckSynonyms.words, clientOpts).mapN { case ((word1, word2), clients) =>
+        CheckSynonyms.Args(word1, word2, clients)
+      }
     }
 
   val listSynonyms =
     Opts.subcommand("list", "List synonyms for a word") {
-      (Opts.argument[String]("word"), source).mapN(ListSynonyms.Args.apply)
+      (Opts.argument[String]("word"), clientOpts).mapN(ListSynonyms.Args.apply)
     }
