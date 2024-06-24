@@ -1,5 +1,6 @@
 package synonyms.thesaurus.algebra
 
+import cats.data.NonEmptyList
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client.*
 
@@ -16,6 +17,13 @@ trait Client[F[_]]:
 object Client:
   sealed trait FetchError                                 extends NoStackTrace
   final case class ClientError(word: String, url: String) extends FetchError
+
+  def allClients[F[_]](using
+      provider: ClientProvider[F]
+  ): NonEmptyList[Client[F]] =
+    NonEmptyList.fromListUnsafe(
+      List("cambridge", "datamuse", "mw").flatMap(fromString)
+    )
 
   def fromString[F[_]](string: String)(using
       provider: ClientProvider[F]

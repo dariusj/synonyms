@@ -5,7 +5,6 @@ import cats.effect.IO
 import cats.syntax.apply.given
 import com.monovore.decline.Opts
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.interpreter.*
 
 object CliArgs:
   val clientOpts: Opts[NonEmptyList[Client[IO]]] =
@@ -16,7 +15,7 @@ object CliArgs:
           .fromOption(Client.fromString(input), s"Invalid source $input")
           .toValidatedNel
       })
-      .withDefault(NonEmptyList.one(MerriamWebster))
+      .withDefault(Client.allClients)
 
   object CheckSynonyms:
     final case class Args[F[_]](

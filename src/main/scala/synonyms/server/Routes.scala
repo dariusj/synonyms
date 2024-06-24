@@ -13,7 +13,6 @@ import org.http4s.dsl.io.*
 import synonyms.server.QueryParamDecoders.given
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.interpreter.*
 
 object Routes:
   object ThesaurusParamMatcher
@@ -29,7 +28,7 @@ object Routes:
 
   extension (v: PfValidated[List[Client[IO]]])
     def withDefault: ValidatedNel[ParseFailure, List[Client[IO]]] = v.map {
-      case Nil  => List(Datamuse)
+      case Nil  => Client.allClients.toList
       case list => list
     }
 
