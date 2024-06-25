@@ -21,9 +21,9 @@ scala-cli run . --restart -M synonyms.SynonymsApi
 The following endpoints are supported:
 
 * Check if two words are synonyms\
-  `/synonyms?words=foo&words=bar[&thesaurus=datamuse]`
+  `GET /synonyms?words=foo&words=bar[&thesaurus=datamuse]`
 * List synonyms for a given word\
-  `/synonyms/foo[?thesaurus=datamuse]`
+  `GET /synonyms/foo[?thesaurus=datamuse]`
 
 ### Command line
 
@@ -41,6 +41,8 @@ The app currently supports the following thesauruses:
 * [Cambridge](https://dictionary.cambridge.org/thesaurus/) (`cambridge`)
 * [Datamuse](https://www.datamuse.com/api/) (`datamuse`)
 * [Merriam-Webster](https://www.merriam-webster.com/thesaurus) (`mw`)
+
+Default is all thesauruses
 
 ## Run tests
 
