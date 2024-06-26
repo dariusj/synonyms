@@ -12,5 +12,5 @@ object QueryParamDecoders:
         .fromString(s)
         .toRight(ParseFailure(s"Unsupported thesaurus $s", ""))
     )
-    
+
   given QueryParamDecoder[Word] = QueryParamDecoder[String].map(Word.apply)

@@ -20,7 +20,14 @@ object MerriamWebster extends JsoupScraper:
       val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      Entry(name, word, pos, definition, example, synonyms.toList)
+      Entry(
+        name,
+        word,
+        pos,
+        definition,
+        example,
+        synonyms.map(Word.apply).toList
+      )
 
     entryEls.flatMap { entry =>
       val pos = entry >> text(".parts-of-speech")

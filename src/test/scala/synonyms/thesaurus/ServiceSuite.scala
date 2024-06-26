@@ -65,7 +65,7 @@ class ServiceSuite extends munit.CatsEffectSuite:
   def entryStore = FunFixture[Map[Word, List[Entry]]](
     _ =>
       (for
-        foo <- entryGen.map(_.copy(synonyms = List("bar")))
+        foo <- entryGen.map(_.copy(synonyms = List(Word("bar"))))
         bar <- entryGen.map(_.copy(synonyms = Nil))
         baz <- entryGen.map(_.copy(synonyms = Nil))
       yield Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>

@@ -54,6 +54,6 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
           pos,
           None,
           None,
-          words.map(_.word)
+          words.map(dw => Word(dw.word))
         )
       }.toList

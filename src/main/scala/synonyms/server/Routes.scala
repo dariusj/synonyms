@@ -23,7 +23,7 @@ object Routes:
       extends OptionalMultiQueryParamDecoderMatcher[Word]("words")
 
   given Encoder[ThesaurusName] = Encoder.encodeString.contramap(_.toString)
-  given Encoder[Word] = Encoder.encodeString.contramap(_.toString)
+  given Encoder[Word]          = Encoder.encodeString.contramap(_.toString)
 
   type PfValidated[A] = ValidatedNel[ParseFailure, A]
 

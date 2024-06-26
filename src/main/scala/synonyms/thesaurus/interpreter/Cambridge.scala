@@ -23,7 +23,14 @@ object Cambridge extends JsoupScraper:
 
           Some(
             pos,
-            entries :+ Entry(name, word, pos, None, example, synonyms.toList)
+            entries :+ Entry(
+              name,
+              word,
+              pos,
+              None,
+              example,
+              synonyms.map(Word.apply).toList
+            )
           )
         case (acc, _) => acc
       }

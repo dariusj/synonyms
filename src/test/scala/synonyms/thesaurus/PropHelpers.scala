@@ -16,7 +16,7 @@ object PropHelpers:
     nonEmptyStringGen().map(ThesaurusName.apply)
 
   val wordGen: Gen[Word] = nonEmptyStringGen().map(Word.apply)
-  
+
   val phraseGen: Gen[String] =
     nonEmptyListGen(nonEmptyStringGen()).map(_.mkString(" "))
 
@@ -26,7 +26,7 @@ object PropHelpers:
     partOfSpeech  <- nonEmptyStringGen()
     definition    <- Gen.option(phraseGen)
     example       <- Gen.option(nonEmptyStringGen())
-    synonyms      <- Gen.listOf(nonEmptyStringGen())
+    synonyms      <- Gen.listOf(wordGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
 
   given Arbitrary[Entry] = Arbitrary(entryGen)

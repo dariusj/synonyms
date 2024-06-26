@@ -15,7 +15,7 @@ trait Client[F[_]]:
   def buildEntries(word: Word, document: Doc): List[Entry]
 
 object Client:
-  sealed trait FetchError                                 extends NoStackTrace
+  sealed trait FetchError                           extends NoStackTrace
   case class ClientError(word: String, url: String) extends FetchError
 
   def allClients[F[_]](using

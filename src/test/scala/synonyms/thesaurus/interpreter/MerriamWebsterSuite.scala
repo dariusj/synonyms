@@ -7,7 +7,10 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
   testBuildEntries(
     "MerriamWebster.buildEntries scrapes page successfully",
     MerriamWebster
-      .buildEntries(Word("far"), parseFile(MerriamWebster.browser, "/mw-far.html")),
+      .buildEntries(
+        Word("far"),
+        parseFile(MerriamWebster.browser, "/mw-far.html")
+      ),
     List(
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),

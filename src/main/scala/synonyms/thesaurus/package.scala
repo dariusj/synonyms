@@ -13,20 +13,28 @@ opaque type Word = String
 object Word:
   def apply(value: String): Word = value
 
+  private val orderingString = summon[Ordering[String]]
+  given Ordering[Word]       = orderingString
+
+  extension (w: Word)
+    // Calling this something other than the underlying method works
+    // around https://github.com/scala/scala3/issues/10947
+    def countChars(p: Char => Boolean): Int = w.toString.count(p)
+
 case class Entry(
     thesaurusName: ThesaurusName,
     word: Word,
     partOfSpeech: String,
     definition: Option[String],
     example: Option[String],
-    synonyms: List[String]
+    synonyms: List[Word]
 ):
   def hasSynonym(check: Word): Result =
     if synonyms.contains(check) then
       AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
 
-case class SynonymsByLength private (length: Int, synonyms: List[String])
+case class SynonymsByLength private (length: Int, synonyms: List[Word])
 
 object SynonymsByLength:
   given Show[SynonymsByLength] with
@@ -37,7 +45,7 @@ object SynonymsByLength:
     entries
       .flatMap(_.synonyms)
       .distinct
-      .groupBy(_.count(Character.isAlphabetic))
+      .groupBy(_.countChars(Character.isAlphabetic))
       .map { case (length, synonyms) => length -> synonyms.sorted }
       .toList
       .sortBy { case (length, _) => length }
