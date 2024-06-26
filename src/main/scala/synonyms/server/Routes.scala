@@ -22,6 +22,7 @@ object Routes:
   object WordsMatcher
       extends OptionalMultiQueryParamDecoderMatcher[Word]("words")
 
+  given Encoder[Definition]    = Encoder.encodeString.contramap(_.toString)
   given Encoder[ThesaurusName] = Encoder.encodeString.contramap(_.toString)
   given Encoder[Word]          = Encoder.encodeString.contramap(_.toString)
 

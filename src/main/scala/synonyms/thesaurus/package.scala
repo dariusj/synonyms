@@ -24,11 +24,16 @@ object Word:
 enum PartOfSpeech:
   case Adjective, Adverb, Noun, Preposition, Verb
 
+opaque type Definition = String
+
+object Definition:
+  def apply(value: String): Definition = value
+
 case class Entry(
     thesaurusName: ThesaurusName,
     word: Word,
     partOfSpeech: PartOfSpeech,
-    definition: Option[String],
+    definition: Option[Definition],
     example: Option[String],
     synonyms: List[Word]
 ):
@@ -76,7 +81,7 @@ object Result:
       firstWord: Word,
       secondWord: Word,
       partOfSpeech: PartOfSpeech,
-      definition: Option[String],
+      definition: Option[Definition],
       example: Option[String],
       source: ThesaurusName
   ) extends Result

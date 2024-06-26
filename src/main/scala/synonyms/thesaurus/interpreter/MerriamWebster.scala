@@ -24,7 +24,7 @@ object MerriamWebster extends JsoupScraper:
         name,
         word,
         pos.toPos,
-        definition,
+        definition.map(Definition.apply),
         example,
         synonyms.map(Word.apply).toList
       )

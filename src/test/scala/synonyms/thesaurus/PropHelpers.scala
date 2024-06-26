@@ -17,16 +17,17 @@ object PropHelpers:
 
   val wordGen: Gen[Word] = nonEmptyStringGen().map(Word.apply)
 
-  val phraseGen: Gen[String] =
-    nonEmptyListGen(nonEmptyStringGen()).map(_.mkString(" "))
-
   val partOfSpeechGen: Gen[PartOfSpeech] = Gen.oneOf(PartOfSpeech.values.toList)
+
+  val definitionGen: Gen[Definition] = nonEmptyListGen(nonEmptyStringGen())
+    .map(_.mkString(" "))
+    .map(Definition.apply)
 
   val entryGen: Gen[Entry] = for
     thesaurusName <- thesaurusNameGen
     word          <- wordGen
     partOfSpeech  <- partOfSpeechGen
-    definition    <- Gen.option(phraseGen)
+    definition    <- Gen.option(definitionGen)
     example       <- Gen.option(nonEmptyStringGen())
     synonyms      <- Gen.listOf(wordGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
