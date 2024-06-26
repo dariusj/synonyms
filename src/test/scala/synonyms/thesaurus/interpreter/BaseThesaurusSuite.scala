@@ -45,7 +45,7 @@ object BaseThesaurusSuite:
       expectedWord: Word,
       expectedPos: PartOfSpeech,
       expectedDefinition: Option[Definition],
-      expectedExample: Option[String],
+      expectedExample: Option[Example],
       expectedSynonymCount: Int
   )
 

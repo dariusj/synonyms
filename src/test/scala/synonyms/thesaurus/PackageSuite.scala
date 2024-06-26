@@ -40,7 +40,7 @@ class PackageSuite extends munit.ScalaCheckSuite:
         Word("word"),
         PartOfSpeech.Noun,
         Some(Definition("definition")),
-        Some("example"),
+        Some(Example("example")),
         List("foo", "bar").map(Word.apply)
       ),
     _ => ()

@@ -29,12 +29,17 @@ opaque type Definition = String
 object Definition:
   def apply(value: String): Definition = value
 
+opaque type Example = String
+
+object Example:
+  def apply(value: String): Example = value
+
 case class Entry(
     thesaurusName: ThesaurusName,
     word: Word,
     partOfSpeech: PartOfSpeech,
     definition: Option[Definition],
-    example: Option[String],
+    example: Option[Example],
     synonyms: List[Word]
 ):
   def hasSynonym(check: Word): Result =
@@ -82,6 +87,6 @@ object Result:
       secondWord: Word,
       partOfSpeech: PartOfSpeech,
       definition: Option[Definition],
-      example: Option[String],
+      example: Option[Example],
       source: ThesaurusName
   ) extends Result

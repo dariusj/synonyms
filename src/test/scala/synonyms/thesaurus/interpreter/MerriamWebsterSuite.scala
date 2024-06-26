@@ -18,7 +18,9 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
         PartOfSpeech.Adverb,
         Some(Definition("to a great degree")),
         Some(
-          "the solid advice that if you can't say something good about a person, it is far better to say nothing at all"
+          Example(
+            "the solid advice that if you can't say something good about a person, it is far better to say nothing at all"
+          )
         ),
         125
       ),
@@ -28,7 +30,9 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
         PartOfSpeech.Adjective,
         Some(Definition("lasting for a considerable time")),
         Some(
-          "the primitive rafts that ancient peoples built for their far journeys across the wide expanses of Oceania"
+          Example(
+            "the primitive rafts that ancient peoples built for their far journeys across the wide expanses of Oceania"
+          )
         ),
         24
       ),
@@ -38,7 +42,9 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
         PartOfSpeech.Adjective,
         Some(Definition("not close in time or space")),
         Some(
-          "the dream of someday sending manned spacecraft to explore the far reaches of our solar system"
+          Example(
+            "the dream of someday sending manned spacecraft to explore the far reaches of our solar system"
+          )
         ),
         21
       )

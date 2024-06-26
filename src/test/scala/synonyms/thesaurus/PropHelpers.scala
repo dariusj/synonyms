@@ -23,12 +23,14 @@ object PropHelpers:
     .map(_.mkString(" "))
     .map(Definition.apply)
 
+  val exampleGen: Gen[Example] = nonEmptyStringGen().map(Example.apply)
+
   val entryGen: Gen[Entry] = for
     thesaurusName <- thesaurusNameGen
     word          <- wordGen
     partOfSpeech  <- partOfSpeechGen
     definition    <- Gen.option(definitionGen)
-    example       <- Gen.option(nonEmptyStringGen())
+    example       <- Gen.option(exampleGen)
     synonyms      <- Gen.listOf(wordGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
 

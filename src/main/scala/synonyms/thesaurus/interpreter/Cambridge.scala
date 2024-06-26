@@ -28,7 +28,7 @@ object Cambridge extends JsoupScraper:
               word,
               pos.toPos,
               None,
-              example,
+              example.map(Example.apply),
               synonyms.map(Word.apply).toList
             )
           )

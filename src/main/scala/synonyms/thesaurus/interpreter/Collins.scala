@@ -34,7 +34,7 @@ object Collins extends JsoupScraper {
           word,
           pos.toPos,
           definition.map(Definition.apply),
-          example,
+          example.map(Example.apply),
           synonyms.map(Word.apply).toList
         )
       }
