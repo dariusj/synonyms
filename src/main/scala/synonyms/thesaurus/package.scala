@@ -21,10 +21,13 @@ object Word:
     // around https://github.com/scala/scala3/issues/10947
     def countChars(p: Char => Boolean): Int = w.toString.count(p)
 
+enum PartOfSpeech:
+  case Adjective, Adverb, Noun, Preposition, Verb
+
 case class Entry(
     thesaurusName: ThesaurusName,
     word: Word,
-    partOfSpeech: String,
+    partOfSpeech: PartOfSpeech,
     definition: Option[String],
     example: Option[String],
     synonyms: List[Word]
@@ -72,7 +75,7 @@ object Result:
   case class AreSynonyms(
       firstWord: Word,
       secondWord: Word,
-      partOfSpeech: String,
+      partOfSpeech: PartOfSpeech,
       definition: Option[String],
       example: Option[String],
       source: ThesaurusName

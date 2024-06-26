@@ -43,7 +43,7 @@ object BaseThesaurusSuite:
   case class ExpectedEntry(
       expectedThesaurusName: ThesaurusName,
       expectedWord: Word,
-      expectedPos: String,
+      expectedPos: PartOfSpeech,
       expectedDefinition: Option[String],
       expectedExample: Option[String],
       expectedSynonymCount: Int

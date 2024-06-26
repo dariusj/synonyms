@@ -15,7 +15,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Cambridge"),
         Word("far"),
-        "adverb",
+        PartOfSpeech.Adverb,
         None,
         Some("Our land extends far beyond the fence."),
         9
@@ -23,7 +23,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Cambridge"),
         Word("far"),
-        "adverb",
+        PartOfSpeech.Adverb,
         None,
         Some("The weather was far worse than we expected."),
         9
@@ -31,7 +31,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Cambridge"),
         Word("far"),
-        "adjective",
+        PartOfSpeech.Adjective,
         None,
         Some("I long to travel to far places."),
         8

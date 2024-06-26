@@ -20,10 +20,12 @@ object PropHelpers:
   val phraseGen: Gen[String] =
     nonEmptyListGen(nonEmptyStringGen()).map(_.mkString(" "))
 
+  val partOfSpeechGen: Gen[PartOfSpeech] = Gen.oneOf(PartOfSpeech.values.toList)
+
   val entryGen: Gen[Entry] = for
     thesaurusName <- thesaurusNameGen
     word          <- wordGen
-    partOfSpeech  <- nonEmptyStringGen()
+    partOfSpeech  <- partOfSpeechGen
     definition    <- Gen.option(phraseGen)
     example       <- Gen.option(nonEmptyStringGen())
     synonyms      <- Gen.listOf(wordGen)

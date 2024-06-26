@@ -26,7 +26,7 @@ object Cambridge extends JsoupScraper:
             entries :+ Entry(
               name,
               word,
-              pos,
+              pos.toPos,
               None,
               example,
               synonyms.map(Word.apply).toList
@@ -35,3 +35,11 @@ object Cambridge extends JsoupScraper:
         case (acc, _) => acc
       }
       .fold(Nil) { case (_, entries) => entries }
+
+  extension (s: String)
+    def toPos: PartOfSpeech = s match
+      case "adjective"   => PartOfSpeech.Adjective
+      case "adverb"      => PartOfSpeech.Adverb
+      case "noun"        => PartOfSpeech.Noun
+      case "preposition" => PartOfSpeech.Preposition
+      case "verb"        => PartOfSpeech.Verb

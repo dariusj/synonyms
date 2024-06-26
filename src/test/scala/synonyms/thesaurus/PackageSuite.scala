@@ -38,7 +38,7 @@ class PackageSuite extends munit.ScalaCheckSuite:
       Entry(
         ThesaurusName("thesaurusName"),
         Word("word"),
-        "pos",
+        PartOfSpeech.Noun,
         Some("definition"),
         Some("example"),
         List("foo", "bar").map(Word.apply)

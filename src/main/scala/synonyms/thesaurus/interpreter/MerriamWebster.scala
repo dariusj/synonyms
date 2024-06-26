@@ -23,7 +23,7 @@ object MerriamWebster extends JsoupScraper:
       Entry(
         name,
         word,
-        pos,
+        pos.toPos,
         definition,
         example,
         synonyms.map(Word.apply).toList
@@ -33,3 +33,11 @@ object MerriamWebster extends JsoupScraper:
       val pos = entry >> text(".parts-of-speech")
       (entry >> elementList(".vg-sseq-entry-item")).map(buildEntry(pos))
     }
+
+  extension (s: String)
+    def toPos: PartOfSpeech = s match
+      case "adjective"   => PartOfSpeech.Adjective
+      case "adverb"      => PartOfSpeech.Adverb
+      case "noun"        => PartOfSpeech.Noun
+      case "preposition" => PartOfSpeech.Preposition
+      case "verb"        => PartOfSpeech.Verb

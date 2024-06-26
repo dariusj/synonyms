@@ -51,9 +51,16 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
         Entry(
           ThesaurusName("Datamuse"),
           word,
-          pos,
+          pos.toPos,
           None,
           None,
           words.map(dw => Word(dw.word))
         )
       }.toList
+
+  extension (s: String)
+    def toPos: PartOfSpeech = s match
+      case "adj" => PartOfSpeech.Adjective
+      case "adv" => PartOfSpeech.Adverb
+      case "n"   => PartOfSpeech.Noun
+      case "v"   => PartOfSpeech.Verb

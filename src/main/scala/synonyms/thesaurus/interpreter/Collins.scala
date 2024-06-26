@@ -32,11 +32,13 @@ object Collins extends JsoupScraper {
         Entry(
           name,
           word,
-          pos,
+          pos.toPos,
           definition,
           example,
           synonyms.map(Word.apply).toList
         )
       }
     }
+
+  extension (s: String) def toPos: PartOfSpeech = ???
 }

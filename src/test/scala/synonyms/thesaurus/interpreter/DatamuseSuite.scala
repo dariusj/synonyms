@@ -34,7 +34,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Datamuse"),
         Word("far"),
-        "adj",
+        PartOfSpeech.Adjective,
         None,
         None,
         12
@@ -42,7 +42,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Datamuse"),
         Word("far"),
-        "n",
+        PartOfSpeech.Noun,
         None,
         None,
         5
@@ -50,7 +50,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Datamuse"),
         Word("far"),
-        "v",
+        PartOfSpeech.Verb,
         None,
         None,
         1
@@ -58,7 +58,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ExpectedEntry(
         ThesaurusName("Datamuse"),
         Word("far"),
-        "adv",
+        PartOfSpeech.Adverb,
         None,
         None,
         87
