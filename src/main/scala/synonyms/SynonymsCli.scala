@@ -32,6 +32,7 @@ import com.monovore.decline.effect.CommandIOApp
 import synonyms.CliArgs.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client.*
+import synonyms.thesaurus.response.SynonymsByLength
 
 object SynonymsCli
     extends CommandIOApp(

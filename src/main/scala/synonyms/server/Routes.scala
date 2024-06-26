@@ -13,6 +13,7 @@ import org.http4s.dsl.io.*
 import synonyms.server.QueryParamDecoders.given
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
+import synonyms.thesaurus.response.SynonymsByLength
 
 object Routes:
   object ThesaurusParamMatcher

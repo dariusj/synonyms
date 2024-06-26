@@ -4,9 +4,10 @@ import cats.*
 import cats.data.EitherT
 import cats.syntax.parallel.*
 import synonyms.thesaurus.*
-import synonyms.thesaurus.Result.*
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.algebra.Client.FetchError
+import synonyms.thesaurus.response.Result
+import synonyms.thesaurus.response.Result.*
 
 class Service[F[_]: Monad: Parallel]:
 

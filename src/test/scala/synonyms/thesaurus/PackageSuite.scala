@@ -4,7 +4,8 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.*
 import org.scalacheck.Prop.*
 import synonyms.thesaurus.PropHelpers.given
-import synonyms.thesaurus.Result.*
+import synonyms.thesaurus.response.Result.*
+import synonyms.thesaurus.response.SynonymsByLength
 
 class PackageSuite extends munit.ScalaCheckSuite:
 
