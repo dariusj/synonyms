@@ -1,7 +1,7 @@
 package synonyms.routes
 
 import cats.data.Validated.*
-import cats.data.{EitherT, NonEmptyList, Validated, ValidatedNel}
+import cats.data.ValidatedNel
 import cats.effect.*
 import cats.syntax.apply.*
 import cats.syntax.validated.*
