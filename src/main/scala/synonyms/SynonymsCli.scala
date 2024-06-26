@@ -28,11 +28,9 @@ import cats.effect.*
 import cats.syntax.show.*
 import com.monovore.decline.Opts
 import com.monovore.decline.effect.CommandIOApp
+import synonyms.CliArgs.*
 import synonyms.thesaurus.*
-import synonyms.thesaurus.Service
 import synonyms.thesaurus.algebra.Client.*
-
-import CliArgs.*
 
 object SynonymsCli
     extends CommandIOApp(
@@ -41,7 +39,10 @@ object SynonymsCli
       true,
       "v0.1"
     ):
-  def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
+
+  val args: CliArgs[IO] = CliArgs[IO]
+
+  def main: Opts[IO[ExitCode]] = (args.checkSynonyms orElse args.listSynonyms)
     .map {
       case CheckSynonyms.Args(first, second, clients) =>
         Service()
