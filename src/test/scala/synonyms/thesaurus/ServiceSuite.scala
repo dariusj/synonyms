@@ -12,7 +12,7 @@ class ServiceSuite extends munit.CatsEffectSuite:
   ) { entries =>
     val client = testClient(entries)
     Service()
-      .checkSynonyms("foo", "bar", client)
+      .checkSynonyms(Word("foo"), Word("bar"), client)
       .map {
         case _: AreSynonyms => true
         case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
@@ -25,7 +25,7 @@ class ServiceSuite extends munit.CatsEffectSuite:
   ) { entries =>
     val client = testClient(entries)
     Service()
-      .checkSynonyms("bar", "foo", client)
+      .checkSynonyms(Word("bar"), Word("foo"), client)
       .map {
         case _: AreSynonyms => true
         case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
@@ -38,7 +38,7 @@ class ServiceSuite extends munit.CatsEffectSuite:
   ) { entries =>
     val client = testClient(entries)
     Service()
-      .checkSynonyms("foo", "baz", client)
+      .checkSynonyms(Word("foo"), Word("baz"), client)
       .map {
         case synonym: AreSynonyms =>
           fail("Found synonym", clues(entries, synonym))
@@ -50,11 +50,11 @@ class ServiceSuite extends munit.CatsEffectSuite:
   entryStore.test(
     "Client.checkSynonyms2 matches if one of the clients finds the synonym"
   ) { entries =>
-    val client1 = testClient(Map("foo" -> entries("foo")))
+    val client1 = testClient(Map(Word("foo") -> entries(Word("foo"))))
     val client2 = testClient(entries)
     val clients = List(client1, client2)
     Service()
-      .checkSynonyms2("foo", "bar", clients)
+      .checkSynonyms2(Word("foo"), Word("bar"), clients)
       .map {
         case result: AreSynonyms => assertEquals(result.source, client1.name)
         case _: NotSynonyms      => fail("Failed to find synonym")
@@ -62,29 +62,27 @@ class ServiceSuite extends munit.CatsEffectSuite:
       .value
   }
 
-  def entryStore = FunFixture[Map[String, List[Entry]]](
+  def entryStore = FunFixture[Map[Word, List[Entry]]](
     _ =>
       (for
         foo <- entryGen.map(_.copy(synonyms = List("bar")))
         bar <- entryGen.map(_.copy(synonyms = Nil))
         baz <- entryGen.map(_.copy(synonyms = Nil))
-      yield Map(
-        "foo" -> List(foo),
-        "bar" -> List(bar),
-        "baz" -> List(baz)
-      )).sample.get,
+      yield Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>
+        Word(k) -> List(v)
+      }).sample.get,
     _ => ()
   )
 
-  def testClient(entries: Map[String, List[Entry]]) = new Client[IO] {
+  def testClient(entries: Map[Word, List[Entry]]) = new Client[IO] {
     type Doc = List[Entry]
 
     override val name: ThesaurusName = thesaurusNameGen.sample.get
 
     override def fetchDocument(
-        word: String
+        word: Word
     ): IO[Either[FetchError, Option[Doc]]] = IO.pure(Right(entries.get(word)))
 
-    override def buildEntries(word: String, document: Doc): List[Entry] =
+    override def buildEntries(word: Word, document: Doc): List[Entry] =
       document.map(_.copy(thesaurusName = name))
   }

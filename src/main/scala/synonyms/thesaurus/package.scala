@@ -8,15 +8,20 @@ opaque type ThesaurusName = String
 object ThesaurusName:
   def apply(value: String): ThesaurusName = value
 
+opaque type Word = String
+
+object Word:
+  def apply(value: String): Word = value
+
 final case class Entry(
     thesaurusName: ThesaurusName,
-    word: String,
+    word: Word,
     partOfSpeech: String,
     definition: Option[String],
     example: Option[String],
     synonyms: List[String]
 ):
-  def hasSynonym(check: String): Result =
+  def hasSynonym(check: Word): Result =
     if synonyms.contains(check) then
       AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
@@ -54,12 +59,12 @@ object Result:
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': ${example.getOrElse("No example given")}"
 
-  final case class NotSynonyms(firstWord: String, secondWord: String)
+  final case class NotSynonyms(firstWord: Word, secondWord: Word)
       extends Result
 
   final case class AreSynonyms(
-      firstWord: String,
-      secondWord: String,
+      firstWord: Word,
+      secondWord: Word,
       partOfSpeech: String,
       definition: Option[String],
       example: Option[String],

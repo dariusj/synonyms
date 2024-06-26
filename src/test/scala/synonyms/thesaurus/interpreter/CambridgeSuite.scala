@@ -1,20 +1,20 @@
 package synonyms.thesaurus.interpreter
 
-import synonyms.thesaurus.ThesaurusName
-import BaseThesaurusSuite.*
+import synonyms.thesaurus.*
+import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class CambridgeSuite extends BaseThesaurusSuite:
   testBuildEntries(
     "Cambridge.buildEntries scrapes page successfully",
     Cambridge
       .buildEntries(
-        "far",
+        Word("far"),
         BaseThesaurusSuite.parseFile(Cambridge.browser, "/cam-far.html")
       ),
     List(
       ExpectedEntry(
         ThesaurusName("Cambridge"),
-        "far",
+        Word("far"),
         "adverb",
         None,
         Some("Our land extends far beyond the fence."),
@@ -22,7 +22,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Cambridge"),
-        "far",
+        Word("far"),
         "adverb",
         None,
         Some("The weather was far worse than we expected."),
@@ -30,7 +30,7 @@ class CambridgeSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Cambridge"),
-        "far",
+        Word("far"),
         "adjective",
         None,
         Some("I long to travel to far places."),

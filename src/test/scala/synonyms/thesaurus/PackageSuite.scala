@@ -11,13 +11,13 @@ class PackageSuite extends munit.ScalaCheckSuite:
   entryFixture.test(
     "Entry.hasSynonym returns AreSynonyms when synonym is found"
   ) { entry =>
-    assert(clue(clue(entry).hasSynonym("foo")).isInstanceOf[AreSynonyms])
+    assert(clue(clue(entry).hasSynonym(Word("foo"))).isInstanceOf[AreSynonyms])
   }
 
   entryFixture.test(
     "Entry.hasSynonym returns NotSynonyms when synonym is not found"
   ) { entry =>
-    assert(clue(clue(entry).hasSynonym("baz")).isInstanceOf[NotSynonyms])
+    assert(clue(clue(entry).hasSynonym(Word("baz"))).isInstanceOf[NotSynonyms])
   }
 
   property("SynonymsByLength.fromEntries creates objects correctly") {
@@ -35,7 +35,7 @@ class PackageSuite extends munit.ScalaCheckSuite:
     _ =>
       Entry(
         ThesaurusName("thesaurusName"),
-        "word",
+        Word("word"),
         "pos",
         Some("definition"),
         Some("example"),

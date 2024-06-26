@@ -8,9 +8,9 @@ import synonyms.thesaurus.*
 object MerriamWebster extends JsoupScraper:
   override val name: ThesaurusName = ThesaurusName("Merriam-Webster")
 
-  def url(word: String) = s"https://www.merriam-webster.com/thesaurus/$word"
+  def url(word: Word) = s"https://www.merriam-webster.com/thesaurus/$word"
 
-  override def buildEntries(word: String, document: Doc): List[Entry] =
+  override def buildEntries(word: Word, document: Doc): List[Entry] =
     val entryEls = document >> elementList(".thesaurus-entry-container")
 
     def buildEntry(pos: String)(el: Element) =

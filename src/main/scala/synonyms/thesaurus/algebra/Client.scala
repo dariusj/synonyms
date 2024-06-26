@@ -11,8 +11,8 @@ trait Client[F[_]]:
 
   def name: ThesaurusName
 
-  def fetchDocument(word: String): F[Either[FetchError, Option[Doc]]]
-  def buildEntries(word: String, document: Doc): List[Entry]
+  def fetchDocument(word: Word): F[Either[FetchError, Option[Doc]]]
+  def buildEntries(word: Word, document: Doc): List[Entry]
 
 object Client:
   sealed trait FetchError                                 extends NoStackTrace

@@ -5,20 +5,20 @@ import _root_.io.circe.generic.semiauto.*
 import cats.effect.IO
 import cats.syntax.option.*
 import org.http4s.*
+import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.Datamuse.DatamuseWord
-import synonyms.thesaurus.{Entry, ThesaurusName}
 
 import scala.annotation.tailrec
 
 object Datamuse extends JsonApi[List[DatamuseWord], IO]:
 
-  def url(word: String): Uri =
+  def url(word: Word): Uri =
     Uri.unsafeFromString(s"https://api.datamuse.com/words?ml=$word")
 
   override def name: ThesaurusName = ThesaurusName("Datamuse")
 
   override def buildEntries(
-      word: String,
+      word: Word,
       document: List[DatamuseWord]
   ): List[Entry] =
     DatamuseWord.toEntries(word, document)
@@ -27,10 +27,7 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
 
   object DatamuseWord:
     given Decoder[DatamuseWord] = deriveDecoder[DatamuseWord]
-    def toEntries(
-        word: String,
-        datamuseWords: List[DatamuseWord]
-    ): List[Entry] =
+    def toEntries(word: Word, datamuseWords: List[DatamuseWord]): List[Entry] =
 
       @tailrec
       def rec(

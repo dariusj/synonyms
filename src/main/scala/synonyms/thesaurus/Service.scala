@@ -11,8 +11,8 @@ import synonyms.thesaurus.algebra.Client.FetchError
 class Service[F[_]: Monad: Parallel]:
 
   def checkSynonyms2(
-      first: String,
-      second: String,
+      first: Word,
+      second: Word,
       clients: List[Client[F]]
   ): EitherT[F, FetchError, Result] =
     clients
@@ -20,13 +20,13 @@ class Service[F[_]: Monad: Parallel]:
       .map(f => f.reduce(_ combine _))
 
   def getEntries2(
-      word: String,
+      word: Word,
       clients: List[Client[F]]
   ): EitherT[F, FetchError, List[Entry]] =
     clients.parFlatTraverse(client => getEntries(word, client))
 
   def getEntries(
-      word: String,
+      word: Word,
       client: Client[F]
   ): EitherT[F, FetchError, List[Entry]] =
     for maybeDocument <- EitherT(client.fetchDocument(word))
@@ -35,13 +35,13 @@ class Service[F[_]: Monad: Parallel]:
       .getOrElse(Nil)
 
   def checkSynonyms(
-      first: String,
-      second: String,
+      first: Word,
+      second: Word,
       client: Client[F]
   ): EitherT[F, FetchError, Result] =
     def areSynonyms(
-        word: String,
-        candidate: String,
+        word: Word,
+        candidate: Word,
         entries: List[Entry]
     ): Result =
       entries.foldLeft[Result](NotSynonyms(word, candidate)) {

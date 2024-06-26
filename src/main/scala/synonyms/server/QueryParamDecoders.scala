@@ -2,6 +2,7 @@ package synonyms.server
 
 import cats.effect.*
 import org.http4s.*
+import synonyms.thesaurus.Word
 import synonyms.thesaurus.algebra.Client
 
 object QueryParamDecoders:
@@ -11,3 +12,5 @@ object QueryParamDecoders:
         .fromString(s)
         .toRight(ParseFailure(s"Unsupported thesaurus $s", ""))
     )
+    
+  given QueryParamDecoder[Word] = QueryParamDecoder[String].map(Word.apply)

@@ -1,17 +1,17 @@
 package synonyms.thesaurus.interpreter
 
-import synonyms.thesaurus.ThesaurusName
+import synonyms.thesaurus.{ThesaurusName, Word}
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class MerriamWebsterSuite extends BaseThesaurusSuite:
   testBuildEntries(
     "MerriamWebster.buildEntries scrapes page successfully",
     MerriamWebster
-      .buildEntries("far", parseFile(MerriamWebster.browser, "/mw-far.html")),
+      .buildEntries(Word("far"), parseFile(MerriamWebster.browser, "/mw-far.html")),
     List(
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),
-        "far",
+        Word("far"),
         "adverb",
         Some("to a great degree"),
         Some(
@@ -21,7 +21,7 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),
-        "far",
+        Word("far"),
         "adjective",
         Some("lasting for a considerable time"),
         Some(
@@ -31,7 +31,7 @@ class MerriamWebsterSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),
-        "far",
+        Word("far"),
         "adjective",
         Some("not close in time or space"),
         Some(

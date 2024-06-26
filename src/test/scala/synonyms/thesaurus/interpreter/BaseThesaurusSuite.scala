@@ -3,7 +3,7 @@ package synonyms.thesaurus.interpreter
 import cats.effect.IO
 import munit.*
 import net.ruippeixotog.scalascraper.browser.Browser
-import synonyms.thesaurus.{Entry, ThesaurusName}
+import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 abstract class BaseThesaurusSuite extends CatsEffectSuite:
@@ -42,7 +42,7 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
 object BaseThesaurusSuite:
   final case class ExpectedEntry(
       expectedThesaurusName: ThesaurusName,
-      expectedWord: String,
+      expectedWord: Word,
       expectedPos: String,
       expectedDefinition: Option[String],
       expectedExample: Option[String],

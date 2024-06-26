@@ -5,7 +5,7 @@ import cats.data.{EitherT, NonEmptyList, Validated, ValidatedNel}
 import cats.effect.*
 import cats.syntax.apply.*
 import cats.syntax.validated.*
-import io.circe.Encoder
+import io.circe.*
 import io.circe.generic.auto.*
 import org.http4s.*
 import org.http4s.circe.CirceEntityEncoder.*
@@ -20,9 +20,10 @@ object Routes:
         "thesaurus"
       )
   object WordsMatcher
-      extends OptionalMultiQueryParamDecoderMatcher[String]("words")
+      extends OptionalMultiQueryParamDecoderMatcher[Word]("words")
 
   given Encoder[ThesaurusName] = Encoder.encodeString.contramap(_.toString)
+  given Encoder[Word] = Encoder.encodeString.contramap(_.toString)
 
   type PfValidated[A] = ValidatedNel[ParseFailure, A]
 
@@ -32,8 +33,8 @@ object Routes:
       case list => list
     }
 
-  extension (v: PfValidated[List[String]])
-    def toTuple2: ValidatedNel[ParseFailure, (String, String)] =
+  extension (v: PfValidated[List[Word]])
+    def toTuple2: ValidatedNel[ParseFailure, (Word, Word)] =
       v.andThen {
         case first :: second :: Nil => (first, second).validNel
         case list =>
@@ -44,7 +45,7 @@ object Routes:
       }
 
   val service: HttpRoutes[IO] = HttpRoutes.of[IO] {
-    case GET -> Root / "synonyms" / word :? ThesaurusParamMatcher(
+    case GET -> Root / "synonyms" / WordVar(word) :? ThesaurusParamMatcher(
           thesaurusesValidated
         ) =>
       thesaurusesValidated.withDefault match
@@ -66,3 +67,6 @@ object Routes:
         case Valid(result) => result.foldF(_ => InternalServerError(), Ok(_))
         case Invalid(e)    => BadRequest(e.map(_.sanitized))
   }
+
+object WordVar:
+  def unapply(str: String): Option[Word] = Option.when(str.nonEmpty)(Word(str))

@@ -9,17 +9,16 @@ import synonyms.thesaurus.algebra.Client.*
 object Collins extends JsoupScraper {
   override val name: ThesaurusName = ThesaurusName("Collins")
 
-  def url(word: String) =
+  def url(word: Word) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(
-      word: String
-  ): IO[Either[FetchError, Option[Doc]]] = IO(
-    // TODO: Use HtmlUnitBrowser for this
-    Right(Option(browser.get(url(word))))
-  )
+  override def fetchDocument(word: Word): IO[Either[FetchError, Option[Doc]]] =
+    IO(
+      // TODO: Use HtmlUnitBrowser for this
+      Right(Option(browser.get(url(word))))
+    )
 
-  override def buildEntries(word: String, document: Doc): List[Entry] =
+  override def buildEntries(word: Word, document: Doc): List[Entry] =
     val entryEls = document >> elementList(".entry")
 
     entryEls.flatMap { el =>

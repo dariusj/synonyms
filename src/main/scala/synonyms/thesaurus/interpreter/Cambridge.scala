@@ -7,10 +7,10 @@ import synonyms.thesaurus.*
 object Cambridge extends JsoupScraper:
   override val name: ThesaurusName = ThesaurusName("Cambridge")
 
-  def url(word: String) = s"https://dictionary.cambridge.org/thesaurus/$word"
+  def url(word: Word) = s"https://dictionary.cambridge.org/thesaurus/$word"
 
-  override def buildEntries(word: String, document: Doc): List[Entry] =
-    val entryEls = (document >> elementList(".entry-block:has(.pos) > div"))
+  override def buildEntries(word: Word, document: Doc): List[Entry] =
+    val entryEls = document >> elementList(".entry-block:has(.pos) > div")
     entryEls
       .foldLeft(Option.empty[(String, List[Entry])]) {
         case (acc, el) if el.attr("class").split(" ").contains("lmb-10") =>

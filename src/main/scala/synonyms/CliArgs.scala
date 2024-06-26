@@ -1,9 +1,11 @@
 package synonyms
 
-import cats.data.{NonEmptyList, Validated}
+import cats.syntax.validated.given
+import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import cats.effect.IO
 import cats.syntax.apply.given
-import com.monovore.decline.Opts
+import com.monovore.decline.{Argument, Opts}
+import synonyms.thesaurus.Word
 import synonyms.thesaurus.algebra.Client
 
 object CliArgs:
@@ -17,21 +19,27 @@ object CliArgs:
       })
       .withDefault(Client.allClients)
 
+  given Argument[Word] with
+    override def read(string: String): ValidatedNel[String, Word] = Word(
+      string
+    ).validNel
+    override def defaultMetavar: String = "word"
+
   object CheckSynonyms:
     final case class Args[F[_]](
-        first: String,
-        second: String,
+        first: Word,
+        second: Word,
         source: NonEmptyList[Client[F]]
     )
-    final case class Words(first: String, second: String)
-    val words: Opts[(String, String)] = Opts.arguments[String]("words").map {
+    
+    val words: Opts[(Word, Word)] = Opts.arguments[Word]("words").map {
       case NonEmptyList(f, s :: Nil) => f -> s
       case args =>
         throw IllegalArgumentException(s"Incorrect number of arguments: $args")
     }
 
   object ListSynonyms:
-    final case class Args[F[_]](word: String, source: NonEmptyList[Client[F]])
+    final case class Args[F[_]](word: Word, source: NonEmptyList[Client[F]])
 
   val checkSynonyms =
     Opts.subcommand("check", "Check if the given words are synonyms") {
@@ -42,5 +50,5 @@ object CliArgs:
 
   val listSynonyms =
     Opts.subcommand("list", "List synonyms for a word") {
-      (Opts.argument[String]("word"), clientOpts).mapN(ListSynonyms.Args.apply)
+      (Opts.argument[Word]("word"), clientOpts).mapN(ListSynonyms.Args.apply)
     }

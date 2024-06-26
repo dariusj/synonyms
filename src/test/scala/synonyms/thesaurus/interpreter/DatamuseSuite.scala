@@ -8,7 +8,7 @@ import fs2.data.json.*
 import fs2.data.json.circe.*
 import fs2.data.json.codec.*
 import fs2.io.file.{Files, Path}
-import synonyms.thesaurus.ThesaurusName
+import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 import synonyms.thesaurus.interpreter.Datamuse.DatamuseWord
 
@@ -28,12 +28,12 @@ class DatamuseSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
     "Datamuse.buildEntries scrapes page successfully",
     parseResource("/dm-far.json").map(words =>
-      Datamuse.buildEntries("far", words)
+      Datamuse.buildEntries(Word("far"), words)
     ),
     List(
       ExpectedEntry(
         ThesaurusName("Datamuse"),
-        "far",
+        Word("far"),
         "adj",
         None,
         None,
@@ -41,7 +41,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Datamuse"),
-        "far",
+        Word("far"),
         "n",
         None,
         None,
@@ -49,7 +49,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Datamuse"),
-        "far",
+        Word("far"),
         "v",
         None,
         None,
@@ -57,7 +57,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
       ),
       ExpectedEntry(
         ThesaurusName("Datamuse"),
-        "far",
+        Word("far"),
         "adv",
         None,
         None,
