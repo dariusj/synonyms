@@ -40,7 +40,7 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
     assertEquals(synonyms.size, expectedSynonymCount)
 
 object BaseThesaurusSuite:
-  final case class ExpectedEntry(
+  case class ExpectedEntry(
       expectedThesaurusName: ThesaurusName,
       expectedWord: Word,
       expectedPos: String,

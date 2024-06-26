@@ -23,7 +23,7 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
   ): List[Entry] =
     DatamuseWord.toEntries(word, document)
 
-  final case class DatamuseWord(word: String, tags: Option[List[String]])
+  case class DatamuseWord(word: String, tags: Option[List[String]])
 
   object DatamuseWord:
     given Decoder[DatamuseWord] = deriveDecoder[DatamuseWord]

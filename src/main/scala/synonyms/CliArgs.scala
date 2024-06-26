@@ -26,12 +26,12 @@ object CliArgs:
     override def defaultMetavar: String = "word"
 
   object CheckSynonyms:
-    final case class Args[F[_]](
+    case class Args[F[_]](
         first: Word,
         second: Word,
         source: NonEmptyList[Client[F]]
     )
-    
+
     val words: Opts[(Word, Word)] = Opts.arguments[Word]("words").map {
       case NonEmptyList(f, s :: Nil) => f -> s
       case args =>
@@ -39,7 +39,7 @@ object CliArgs:
     }
 
   object ListSynonyms:
-    final case class Args[F[_]](word: Word, source: NonEmptyList[Client[F]])
+    case class Args[F[_]](word: Word, source: NonEmptyList[Client[F]])
 
   val checkSynonyms =
     Opts.subcommand("check", "Check if the given words are synonyms") {

@@ -13,7 +13,7 @@ opaque type Word = String
 object Word:
   def apply(value: String): Word = value
 
-final case class Entry(
+case class Entry(
     thesaurusName: ThesaurusName,
     word: Word,
     partOfSpeech: String,
@@ -26,7 +26,7 @@ final case class Entry(
       AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
 
-final case class SynonymsByLength private (length: Int, synonyms: List[String])
+case class SynonymsByLength private (length: Int, synonyms: List[String])
 
 object SynonymsByLength:
   given Show[SynonymsByLength] with
@@ -59,10 +59,10 @@ object Result:
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': ${example.getOrElse("No example given")}"
 
-  final case class NotSynonyms(firstWord: Word, secondWord: Word)
+  case class NotSynonyms(firstWord: Word, secondWord: Word)
       extends Result
 
-  final case class AreSynonyms(
+  case class AreSynonyms(
       firstWord: Word,
       secondWord: Word,
       partOfSpeech: String,

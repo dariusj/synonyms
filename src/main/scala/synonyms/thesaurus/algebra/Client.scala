@@ -16,7 +16,7 @@ trait Client[F[_]]:
 
 object Client:
   sealed trait FetchError                                 extends NoStackTrace
-  final case class ClientError(word: String, url: String) extends FetchError
+  case class ClientError(word: String, url: String) extends FetchError
 
   def allClients[F[_]](using
       provider: ClientProvider[F]
