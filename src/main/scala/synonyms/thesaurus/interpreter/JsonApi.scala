@@ -7,13 +7,14 @@ import fs2.*
 import fs2.data.json.*
 import fs2.data.json.circe.*
 import fs2.data.json.codec.*
+import fs2.io.net.Network
 import org.http4s.*
 import org.http4s.ember.client.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.algebra.Client.FetchError
 
-trait JsonApi[Decodable: Decoder, F[_]: Async] extends Client[F]:
+trait JsonApi[Decodable: Decoder, F[_]: Async: Network] extends Client[F]:
   override type Doc = Decodable
   def url(word: Word): Uri
 

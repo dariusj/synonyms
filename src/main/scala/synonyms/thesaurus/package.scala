@@ -38,9 +38,9 @@ object SynonymsByLength:
       .flatMap(_.synonyms)
       .distinct
       .groupBy(_.count(Character.isAlphabetic))
-      .map { case (k, v) => k -> v.sorted }
+      .map { case (length, synonyms) => length -> synonyms.sorted }
       .toList
-      .sorted
+      .sortBy { case (length, _) => length }
       .map(SynonymsByLength.apply.tupled)
 
 sealed abstract class Result:
@@ -59,8 +59,7 @@ object Result:
         s"[Source: $source] $firstWord and $secondWord are synonyms - [$partOfSpeech] '${definition
             .getOrElse("No definition given")}': ${example.getOrElse("No example given")}"
 
-  case class NotSynonyms(firstWord: Word, secondWord: Word)
-      extends Result
+  case class NotSynonyms(firstWord: Word, secondWord: Word) extends Result
 
   case class AreSynonyms(
       firstWord: Word,

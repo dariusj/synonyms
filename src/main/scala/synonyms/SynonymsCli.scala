@@ -1,5 +1,6 @@
 //> using option -Wunused:all
 //> using option -Ykind-projector:underscores
+//> using option -deprecation
 
 //> using dep co.fs2::fs2-core:3.10.2
 //> using dep com.monovore::decline-effect::2.4.1
