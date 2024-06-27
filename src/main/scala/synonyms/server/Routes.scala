@@ -5,7 +5,6 @@ import cats.data.ValidatedNel
 import cats.effect.*
 import cats.syntax.apply.*
 import cats.syntax.show.*
-import cats.syntax.validated.*
 import io.circe.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -13,49 +12,12 @@ import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.dsl.io.*
 import org.http4s.headers.Accept
-import synonyms.server.QueryParamDecoders.given
+import synonyms.server.{*, given}
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
 import synonyms.thesaurus.response.{Result, SynonymsByLength}
 
 object Routes:
-  object ThesaurusParamMatcher
-      extends OptionalMultiQueryParamDecoderMatcher[Client[IO]](
-        "thesaurus"
-      )
-  object WordsMatcher
-      extends OptionalMultiQueryParamDecoderMatcher[Word]("word")
-
-  given Encoder[Definition]    = Encoder.encodeString.contramap(_.toString)
-  given Encoder[Example]       = Encoder.encodeString.contramap(_.toString)
-  given Encoder[ThesaurusName] = Encoder.encodeString.contramap(_.toString)
-  given Encoder[Word]          = Encoder.encodeString.contramap(_.toString)
-
-  type PfValidated[A] = ValidatedNel[ParseFailure, A]
-
-  extension (v: PfValidated[List[Client[IO]]])
-    def withDefault: ValidatedNel[ParseFailure, List[Client[IO]]] = v.map {
-      case Nil  => Client.allClients.toList
-      case list => list
-    }
-
-  extension (v: PfValidated[List[Word]])
-    def toTuple2: ValidatedNel[ParseFailure, (Word, Word)] =
-      v.andThen {
-        case first :: second :: Nil => (first, second).validNel
-        case list =>
-          ParseFailure(
-            "Must pass two 'word' arguments only",
-            list.mkString("\n")
-          ).invalidNel
-      }
-
-  extension (acceptHeader: Accept)
-    def satisfiedBy(range: MediaRange): Boolean =
-      acceptHeader.values.exists(_.mediaRange.satisfiedBy(range))
-    def isJson: Boolean = acceptHeader.satisfiedBy(MediaType.application.json)
-    def isText: Boolean = acceptHeader.satisfiedBy(MediaType.text.plain)
-
   val service: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case req @ GET -> Root / "synonyms" / WordVar(
           word
@@ -99,7 +61,3 @@ object Routes:
         case Some(value) => BadRequest(s"Unsupported Accept header: $value")
         case None        => checkSynonyms(_.asJson)
   }
-
-  object WordVar:
-    def unapply(str: String): Option[Word] =
-      Option.when(str.nonEmpty)(Word(str))
