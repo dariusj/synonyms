@@ -63,4 +63,5 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
       case "adj" => PartOfSpeech.Adjective
       case "adv" => PartOfSpeech.Adverb
       case "n"   => PartOfSpeech.Noun
+      case "u"   => PartOfSpeech.Undetermined
       case "v"   => PartOfSpeech.Verb

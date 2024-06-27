@@ -22,7 +22,7 @@ object Word:
     def countChars(p: Char => Boolean): Int = w.toString.count(p)
 
 enum PartOfSpeech:
-  case Adjective, Adverb, Noun, Preposition, Verb
+  case Adjective, Adverb, Noun, Preposition, Undetermined, Verb
 
 opaque type Definition = String
 
