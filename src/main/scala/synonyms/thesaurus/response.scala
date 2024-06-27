@@ -24,7 +24,7 @@ sealed abstract class Result:
   infix def combine(r: Result): Result = (this, r) match
     case (f: Result.AreSynonyms, _) => f
     case (_, f: Result.AreSynonyms) => f
-    case _                   => this
+    case _                          => this
 
 object Result:
   given Show[Result] with
