@@ -24,7 +24,7 @@ object Routes:
         "thesaurus"
       )
   object WordsMatcher
-      extends OptionalMultiQueryParamDecoderMatcher[Word]("words")
+      extends OptionalMultiQueryParamDecoderMatcher[Word]("word")
 
   given Encoder[Definition]    = Encoder.encodeString.contramap(_.toString)
   given Encoder[Example]       = Encoder.encodeString.contramap(_.toString)
@@ -45,7 +45,7 @@ object Routes:
         case first :: second :: Nil => (first, second).validNel
         case list =>
           ParseFailure(
-            "Must pass two 'words' arguments only",
+            "Must pass two 'word' arguments only",
             list.mkString("\n")
           ).invalidNel
       }
