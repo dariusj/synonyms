@@ -20,14 +20,20 @@ object MerriamWebster extends JsoupScraper:
       val synonyms = el >> texts(
         ".sim-list-scored .synonyms_list li.thes-word-list-item"
       )
-      Entry(
-        name,
-        word,
-        pos.toPos,
-        definition.map(Definition.apply),
-        example.map(Example.apply),
-        synonyms.map(Word.apply).toList
-      )
+      pos.toPos
+        .map { p =>
+          Entry(
+            name,
+            word,
+            p,
+            definition.map(Definition.apply),
+            example.map(Example.apply),
+            synonyms.map(Word.apply).toList
+          )
+        }
+        .getOrElse(
+          throw new RuntimeException(s"Invalid part of speech $pos for $word")
+        )
 
     entryEls.flatMap { entry =>
       val pos = entry >> text(".parts-of-speech")
@@ -35,9 +41,11 @@ object MerriamWebster extends JsoupScraper:
     }
 
   extension (s: String)
-    def toPos: PartOfSpeech = s match
-      case "adjective"   => PartOfSpeech.Adjective
-      case "adverb"      => PartOfSpeech.Adverb
-      case "noun"        => PartOfSpeech.Noun
-      case "preposition" => PartOfSpeech.Preposition
-      case "verb"        => PartOfSpeech.Verb
+    def toPos: Option[PartOfSpeech] =
+      val pos: PartialFunction[String, PartOfSpeech] =
+        case p if p.startsWith("adjective")   => PartOfSpeech.Adjective
+        case p if p.startsWith("adverb")      => PartOfSpeech.Adverb
+        case p if p.startsWith("noun")        => PartOfSpeech.Noun
+        case p if p.startsWith("preposition") => PartOfSpeech.Preposition
+        case p if p.startsWith("verb")        => PartOfSpeech.Verb
+      pos.lift(s)
