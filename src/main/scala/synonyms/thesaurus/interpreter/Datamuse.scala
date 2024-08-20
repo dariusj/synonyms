@@ -20,8 +20,8 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
   override def buildEntries(
       word: Word,
       document: List[DatamuseWord]
-  ): List[Entry] =
-    DatamuseWord.toEntries(word, document)
+  ): IO[List[Entry]] =
+    IO(DatamuseWord.toEntries(word, document))
 
   case class DatamuseWord(word: String, tags: Option[List[String]])
 

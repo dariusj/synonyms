@@ -7,16 +7,6 @@ import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 abstract class BaseThesaurusSuite extends CatsEffectSuite:
-  def testBuildEntries(
-      name: String,
-      gotEntries: List[Entry],
-      expectedEntries: List[ExpectedEntry]
-  )(using Location): Unit =
-    test(name) {
-      assertEquals(gotEntries.size, expectedEntries.size)
-      gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
-    }
-
   def testBuildEntriesIO(
       name: String,
       gotEntriesIO: IO[List[Entry]],

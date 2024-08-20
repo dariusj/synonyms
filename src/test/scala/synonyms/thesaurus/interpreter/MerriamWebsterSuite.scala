@@ -4,7 +4,7 @@ import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class MerriamWebsterSuite extends BaseThesaurusSuite:
-  testBuildEntries(
+  testBuildEntriesIO(
     "MerriamWebster.buildEntries scrapes page successfully",
     MerriamWebster
       .buildEntries(

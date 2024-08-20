@@ -30,10 +30,9 @@ class Service[F[_]: Monad: Parallel]:
       word: Word,
       client: Client[F]
   ): EitherT[F, FetchError, List[Entry]] =
-    for maybeDocument <- EitherT(client.fetchDocument(word))
-    yield maybeDocument
-      .map(doc => client.buildEntries(word, doc))
-      .getOrElse(Nil)
+    EitherT(client.fetchDocument(word)).semiflatMap(doc =>
+      doc.fold(Applicative[F].pure(Nil))(d => client.buildEntries(word, d))
+    )
 
   def checkSynonyms(
       first: Word,

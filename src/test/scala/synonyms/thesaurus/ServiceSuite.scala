@@ -74,7 +74,7 @@ class ServiceSuite extends munit.CatsEffectSuite:
     _ => ()
   )
 
-  def testClient(entries: Map[Word, List[Entry]]) = new Client[IO] {
+  def testClient(entries: Map[Word, List[Entry]]): Client[IO] = new Client[IO] {
     type Doc = List[Entry]
 
     override val name: ThesaurusName = thesaurusNameGen.sample.get
@@ -83,6 +83,6 @@ class ServiceSuite extends munit.CatsEffectSuite:
         word: Word
     ): IO[Either[FetchError, Option[Doc]]] = IO.pure(Right(entries.get(word)))
 
-    override def buildEntries(word: Word, document: Doc): List[Entry] =
-      document.map(_.copy(thesaurusName = name))
+    override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
+      IO(document.map(_.copy(thesaurusName = name)))
   }

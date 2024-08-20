@@ -18,25 +18,25 @@ object Collins extends JsoupScraper {
       Right(Option(browser.get(url(word))))
     )
 
-  override def buildEntries(word: Word, document: Doc): List[Entry] =
-    val entryEls = document >> elementList(".entry")
+  override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
+    IO(document >> elementList(".entry")).map { entryEls =>
+      entryEls.flatMap { el =>
+        val senses = el >> elementList(".sense")
 
-    entryEls.flatMap { el =>
-      val senses = el >> elementList(".sense")
-
-      senses.map { sense =>
-        val pos        = el >> text(".headerSensePos")
-        val definition = (el >?> text(".def")).orElse(el >?> text(".linkDef"))
-        val example    = el >?> text(".type-example")
-        val synonyms   = el >> texts(".type-syn .orth")
-        Entry(
-          name,
-          word,
-          pos.toPos,
-          definition.map(Definition.apply),
-          example.map(Example.apply),
-          synonyms.map(Word.apply).toList
-        )
+        senses.map { sense =>
+          val pos        = el >> text(".headerSensePos")
+          val definition = (el >?> text(".def")).orElse(el >?> text(".linkDef"))
+          val example    = el >?> text(".type-example")
+          val synonyms   = el >> texts(".type-syn .orth")
+          Entry(
+            name,
+            word,
+            pos.toPos,
+            definition.map(Definition.apply),
+            example.map(Example.apply),
+            synonyms.map(Word.apply).toList
+          )
+        }
       }
     }
 

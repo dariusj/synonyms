@@ -27,7 +27,7 @@ class DatamuseSuite extends BaseThesaurusSuite:
 
   testBuildEntriesIO(
     "Datamuse.buildEntries scrapes page successfully",
-    parseResource("/dm-far.json").map(words =>
+    parseResource("/dm-far.json").flatMap(words =>
       Datamuse.buildEntries(Word("far"), words)
     ),
     List(

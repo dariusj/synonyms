@@ -4,7 +4,7 @@ import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class CambridgeSuite extends BaseThesaurusSuite:
-  testBuildEntries(
+  testBuildEntriesIO(
     "Cambridge.buildEntries scrapes page successfully",
     Cambridge
       .buildEntries(
