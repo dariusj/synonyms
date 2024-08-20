@@ -8,7 +8,7 @@ opaque type ThesaurusName = String
 
 object ThesaurusName:
   def apply(value: String): ThesaurusName = value
-  // Using contramap/Encode[String].apply results in future/stack overflows respectively respectively
+  // Using contramap/Encode[String].apply results in future/stack overflows respectively
   given Encoder[ThesaurusName] with
     override def apply(a: ThesaurusName): Json = Json.fromString(a)
 
