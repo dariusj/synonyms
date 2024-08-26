@@ -24,17 +24,15 @@ class Cambridge[F[_]: Sync] extends JsoupScraper[F]:
               val example  = el >?> text(".eg")
               val synonyms = el >> texts(".synonym")
 
-              Some(
-                pos,
-                entries :+ Entry(
-                  name,
-                  word,
-                  pos.toPos,
-                  None,
-                  example.map(Example.apply),
-                  synonyms.map(Word.apply).toList
-                )
+              val entry = Entry(
+                name,
+                word,
+                pos.toPos,
+                None,
+                example.map(Example.apply),
+                synonyms.map(Word.apply).toList
               )
+              Some(pos, entries :+ entry)
             case (acc, _) => acc
           }
           .fold(Nil) { case (_, entries) => entries }
