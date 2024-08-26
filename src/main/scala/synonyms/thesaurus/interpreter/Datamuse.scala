@@ -2,15 +2,16 @@ package synonyms.thesaurus.interpreter
 
 import _root_.io.circe.*
 import _root_.io.circe.generic.semiauto.*
-import cats.effect.IO
+import cats.effect.{Async, Sync}
 import cats.syntax.option.*
+import fs2.io.net.Network
 import org.http4s.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.Datamuse.DatamuseWord
 
 import scala.annotation.tailrec
 
-object Datamuse extends JsonApi[List[DatamuseWord], IO]:
+class Datamuse[F[_]: Async: Network] extends JsonApi[List[DatamuseWord], F]:
 
   def url(word: Word): Uri =
     Uri.unsafeFromString(s"https://api.datamuse.com/words?ml=$word")
@@ -20,8 +21,10 @@ object Datamuse extends JsonApi[List[DatamuseWord], IO]:
   override def buildEntries(
       word: Word,
       document: List[DatamuseWord]
-  ): IO[List[Entry]] =
-    IO(DatamuseWord.toEntries(word, document))
+  ): F[List[Entry]] =
+    Sync[F].delay(DatamuseWord.toEntries(word, document))
+
+object Datamuse:
 
   case class DatamuseWord(word: String, tags: Option[List[String]])
 

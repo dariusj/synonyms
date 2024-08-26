@@ -12,7 +12,7 @@ trait ClientProvider[F[_]]:
 
 object ClientProvider:
   given ioProvider: ClientProvider[IO] with
-    val cambridge: Client[IO] = Cambridge
-    val collins: Client[IO]   = Collins
-    val datamuse: Client[IO]  = Datamuse
-    val mw: Client[IO]        = MerriamWebster
+    val cambridge: Client[IO] = Cambridge[IO]
+    val collins: Client[IO]   = Collins[IO]
+    val datamuse: Client[IO]  = Datamuse[IO]
+    val mw: Client[IO]        = MerriamWebster[IO]

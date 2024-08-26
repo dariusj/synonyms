@@ -1,17 +1,18 @@
 package synonyms.thesaurus.interpreter
 
-import cats.effect.IO
+import cats.effect.Sync
+import cats.syntax.functor.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
 
-object Cambridge extends JsoupScraper:
+class Cambridge[F[_]: Sync] extends JsoupScraper[F]:
   override val name: ThesaurusName = ThesaurusName("Cambridge")
 
   def url(word: Word) = s"https://dictionary.cambridge.org/thesaurus/$word"
 
-  override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
-    IO(document >> elementList(".entry-block:has(.pos) > div")).map {
+  override def buildEntries(word: Word, document: Doc): F[List[Entry]] =
+    Sync[F].delay(document >> elementList(".entry-block:has(.pos) > div")).map {
       entryEls =>
         entryEls
           .foldLeft(Option.empty[(String, List[Entry])]) {

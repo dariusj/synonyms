@@ -25,10 +25,11 @@ class DatamuseSuite extends BaseThesaurusSuite:
       .toList
       .map(_.flatten)
 
+  val datamuse = Datamuse[IO]
   testBuildEntriesIO(
     "Datamuse.buildEntries scrapes page successfully",
     parseResource("/dm-far.json").flatMap(words =>
-      Datamuse.buildEntries(Word("far"), words)
+      datamuse.buildEntries(Word("far"), words)
     ),
     List(
       ExpectedEntry(

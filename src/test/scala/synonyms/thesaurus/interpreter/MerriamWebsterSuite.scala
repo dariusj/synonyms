@@ -1,16 +1,17 @@
 package synonyms.thesaurus.interpreter
 
+import cats.effect.IO
 import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class MerriamWebsterSuite extends BaseThesaurusSuite:
+  val mw = MerriamWebster[IO]
   testBuildEntriesIO(
     "MerriamWebster.buildEntries scrapes page successfully",
-    MerriamWebster
-      .buildEntries(
-        Word("far"),
-        parseFile(MerriamWebster.browser, "/mw-far.html")
-      ),
+    mw.buildEntries(
+      Word("far"),
+      parseFile(mw.browser, "/mw-far.html")
+    ),
     List(
       ExpectedEntry(
         ThesaurusName("Merriam-Webster"),

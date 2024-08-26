@@ -1,15 +1,17 @@
 package synonyms.thesaurus.interpreter
 
+import cats.effect.IO
 import synonyms.thesaurus.*
 import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
 
 class CambridgeSuite extends BaseThesaurusSuite:
+  val cambridge = new Cambridge[IO]
   testBuildEntriesIO(
     "Cambridge.buildEntries scrapes page successfully",
-    Cambridge
+    cambridge
       .buildEntries(
         Word("far"),
-        BaseThesaurusSuite.parseFile(Cambridge.browser, "/cam-far.html")
+        BaseThesaurusSuite.parseFile(cambridge.browser, "/cam-far.html")
       ),
     List(
       ExpectedEntry(

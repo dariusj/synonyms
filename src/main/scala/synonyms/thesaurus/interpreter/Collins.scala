@@ -1,25 +1,26 @@
 package synonyms.thesaurus.interpreter
 
-import cats.effect.IO
+import cats.effect.Sync
+import cats.syntax.functor.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client.*
 
-object Collins extends JsoupScraper {
+class Collins[F[_]: Sync] extends JsoupScraper[F]:
   override val name: ThesaurusName = ThesaurusName("Collins")
 
   def url(word: Word) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(word: Word): IO[Either[FetchError, Option[Doc]]] =
-    IO(
+  override def fetchDocument(word: Word): F[Either[FetchError, Option[Doc]]] =
+    Sync[F].delay(
       // TODO: Use HtmlUnitBrowser for this
       Right(Option(browser.get(url(word))))
     )
 
-  override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
-    IO(document >> elementList(".entry")).map { entryEls =>
+  override def buildEntries(word: Word, document: Doc): F[List[Entry]] =
+    Sync[F].delay(document >> elementList(".entry")).map { entryEls =>
       entryEls.flatMap { el =>
         val senses = el >> elementList(".sense")
 
@@ -41,4 +42,3 @@ object Collins extends JsoupScraper {
     }
 
   extension (s: String) def toPos: PartOfSpeech = ???
-}

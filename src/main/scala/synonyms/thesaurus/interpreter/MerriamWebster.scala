@@ -1,6 +1,8 @@
 package synonyms.thesaurus.interpreter
 
-import cats.effect.IO
+import cats.MonadThrow
+import cats.effect.Sync
+import cats.syntax.flatMap.*
 import cats.syntax.traverse.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
@@ -8,12 +10,12 @@ import net.ruippeixotog.scalascraper.model.Element
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client.ParseException.PartOfSpeechNotFound
 
-object MerriamWebster extends JsoupScraper:
+class MerriamWebster[F[_]: Sync] extends JsoupScraper[F]:
   override val name: ThesaurusName = ThesaurusName("Merriam-Webster")
 
   def url(word: Word) = s"https://www.merriam-webster.com/thesaurus/$word"
 
-  override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
+  override def buildEntries(word: Word, document: Doc): F[List[Entry]] =
     def buildEntry(pos: PartOfSpeech)(el: Element) =
       val example = el >?> text(".dt span")
       val definition =
@@ -30,24 +32,25 @@ object MerriamWebster extends JsoupScraper:
         synonyms.map(Word.apply).toList
       )
 
-    IO(document >> elementList(".thesaurus-entry-container")).flatMap {
-      entryEls =>
+    Sync[F]
+      .delay(document >> elementList(".thesaurus-entry-container"))
+      .flatMap { entryEls =>
         entryEls.flatTraverse { entry =>
           val posString = entry >> text(".parts-of-speech")
           posString.toPos match
             // TODO: Add Test
             case None =>
-              IO.raiseError(
+              MonadThrow[F].raiseError(
                 PartOfSpeechNotFound(posString, word, name)
               )
             case Some(pos) =>
-              IO(
+              Sync[F].delay(
                 (entry >> elementList(".vg-sseq-entry-item")).map(
                   buildEntry(pos)
                 )
               )
         }
-    }
+      }
 
   extension (s: String)
     def toPos: Option[PartOfSpeech] =
