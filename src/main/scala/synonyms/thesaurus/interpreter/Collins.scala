@@ -5,7 +5,6 @@ import cats.syntax.functor.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Client.*
 
 class Collins[F[_]: Sync] extends JsoupScraper[F]:
   override val name: ThesaurusName = ThesaurusName("Collins")
@@ -13,10 +12,10 @@ class Collins[F[_]: Sync] extends JsoupScraper[F]:
   def url(word: Word) =
     s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
 
-  override def fetchDocument(word: Word): F[Either[FetchError, Option[Doc]]] =
+  override def fetchDocument(word: Word): F[Option[Doc]] =
     Sync[F].delay(
       // TODO: Use HtmlUnitBrowser for this
-      Right(Option(browser.get(url(word))))
+      Option(browser.get(url(word)))
     )
 
   override def buildEntries(word: Word, document: Doc): F[List[Entry]] =

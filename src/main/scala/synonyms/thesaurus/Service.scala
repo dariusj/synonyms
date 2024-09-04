@@ -1,11 +1,13 @@
 package synonyms.thesaurus
 
 import cats.*
-import cats.data.EitherT
+import cats.syntax.flatMap.*
+import cats.syntax.functor.*
+import cats.syntax.option.*
 import cats.syntax.parallel.*
+import cats.syntax.traverse.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.FetchError
 import synonyms.thesaurus.response.Result
 import synonyms.thesaurus.response.Result.*
 
@@ -15,7 +17,7 @@ class Service[F[_]: Monad: Parallel]:
       first: Word,
       second: Word,
       clients: List[Client[F]]
-  ): EitherT[F, FetchError, Result] =
+  ): F[Result] =
     clients
       .parTraverse(c => checkSynonyms(first, second, c))
       .map(f => f.reduce(_ combine _))
@@ -23,22 +25,17 @@ class Service[F[_]: Monad: Parallel]:
   def getEntries2(
       word: Word,
       clients: List[Client[F]]
-  ): EitherT[F, FetchError, List[Entry]] =
+  ): F[List[Entry]] =
     clients.parFlatTraverse(client => getEntries(word, client))
 
   def getEntries(
       word: Word,
       client: Client[F]
-  ): EitherT[F, FetchError, List[Entry]] =
-    EitherT(client.fetchDocument(word)).semiflatMap(doc =>
-      doc.fold(Applicative[F].pure(Nil))(d => client.buildEntries(word, d))
-    )
+  ): F[List[Entry]] = client
+    .fetchDocument(word)
+    .flatMap(_.traverse(doc => client.buildEntries(word, doc)).map(_.orEmpty))
 
-  def checkSynonyms(
-      first: Word,
-      second: Word,
-      client: Client[F]
-  ): EitherT[F, FetchError, Result] =
+  def checkSynonyms(first: Word, second: Word, client: Client[F]): F[Result] =
     def areSynonyms(
         word: Word,
         candidate: Word,

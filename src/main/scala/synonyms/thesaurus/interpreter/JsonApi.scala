@@ -12,7 +12,6 @@ import org.http4s.*
 import org.http4s.ember.client.*
 import synonyms.thesaurus.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.FetchError
 
 trait JsonApi[Decodable: Decoder, F[_]: Async: Network] extends Client[F]:
   override type Doc = Decodable
@@ -20,7 +19,7 @@ trait JsonApi[Decodable: Decoder, F[_]: Async: Network] extends Client[F]:
 
   def request(word: Word): Request[F] = Request[F](Method.GET, url(word))
 
-  override def fetchDocument(word: Word): F[Either[FetchError, Option[Doc]]] =
+  override def fetchDocument(word: Word): F[Option[Doc]] =
     val words: Stream[F, Doc] = for
       client <- Stream.resource(EmberClientBuilder.default[F].build)
       res    <- client.stream(request(word))
@@ -30,4 +29,4 @@ trait JsonApi[Decodable: Decoder, F[_]: Async: Network] extends Client[F]:
         .through(deserialize[F, Doc])
     yield body
     // TODO: Error handling
-    words.compile.toList.map(l => Right(Option(l.head)))
+    words.compile.toList.map(l => Option(l.head))

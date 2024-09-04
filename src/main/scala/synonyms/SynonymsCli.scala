@@ -33,7 +33,6 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 import synonyms.CliArgs.*
 import synonyms.thesaurus.*
-import synonyms.thesaurus.algebra.Client.*
 import synonyms.thesaurus.response.{Result, SynonymsByLength}
 
 object SynonymsCli
@@ -53,7 +52,7 @@ object SynonymsCli
           .checkSynonyms2(first, second, clients.toList)
           .map { result =>
             format match
-              case Format.Json => result.asJson
+              case Format.Json => result.asJson.toString
               case Format.Text => result.show
           }
 
@@ -63,12 +62,8 @@ object SynonymsCli
           .map(entries =>
             val synonyms = SynonymsByLength.fromEntries(entries)
             format match
-              case Format.Json => synonyms.asJson
+              case Format.Json => synonyms.asJson.toString
               case Format.Text => synonyms.map(_.show).mkString("\n")
           )
     }
-    .map {
-      _.recover { case ClientError(word, url) =>
-        s"There was a client side error attempting to fetch $word from $url"
-      }.biSemiflatMap(IO.raiseError, IO.println).value.as(ExitCode.Success)
-    }
+    .map(_.flatMap(IO.println) *> IO(ExitCode.Success))

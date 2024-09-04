@@ -32,7 +32,8 @@ object Routes:
             Service()
               .getEntries2(word, thesauruses)
               .map(SynonymsByLength.fromEntries)
-              .foldF(_ => InternalServerError(), syns => Ok(f(syns)))
+              .flatMap(s => Ok(f(s)))
+              .handleErrorWith(_ => InternalServerError())
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
@@ -52,7 +53,9 @@ object Routes:
           }
         validated match
           case Valid(result) =>
-            result.foldF(_ => InternalServerError(), f => Ok(f.asJson))
+            result
+              .flatMap(f => Ok(f.asJson))
+              .handleErrorWith(_ => InternalServerError())
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match

@@ -3,7 +3,7 @@ package synonyms.thesaurus
 import cats.effect.IO
 import synonyms.thesaurus.PropHelpers.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.FetchError
+import synonyms.thesaurus.algebra.Client.FetchException
 import synonyms.thesaurus.response.Result.*
 
 class ServiceSuite extends munit.CatsEffectSuite:
@@ -17,7 +17,6 @@ class ServiceSuite extends munit.CatsEffectSuite:
         case _: AreSynonyms => true
         case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
       }
-      .value
   }
 
   entryStore.test(
@@ -30,7 +29,6 @@ class ServiceSuite extends munit.CatsEffectSuite:
         case _: AreSynonyms => true
         case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
       }
-      .value
   }
 
   entryStore.test(
@@ -44,7 +42,6 @@ class ServiceSuite extends munit.CatsEffectSuite:
           fail("Found synonym", clues(entries, synonym))
         case _: NotSynonyms => true
       }
-      .value
   }
 
   entryStore.test(
@@ -59,7 +56,6 @@ class ServiceSuite extends munit.CatsEffectSuite:
         case result: AreSynonyms => assertEquals(result.source, client1.name)
         case _: NotSynonyms      => fail("Failed to find synonym")
       }
-      .value
   }
 
   def entryStore = FunFixture[Map[Word, List[Entry]]](
@@ -79,9 +75,8 @@ class ServiceSuite extends munit.CatsEffectSuite:
 
     override val name: ThesaurusName = thesaurusNameGen.sample.get
 
-    override def fetchDocument(
-        word: Word
-    ): IO[Either[FetchError, Option[Doc]]] = IO.pure(Right(entries.get(word)))
+    override def fetchDocument(word: Word): IO[Option[Doc]] =
+      IO.pure(entries.get(word))
 
     override def buildEntries(word: Word, document: Doc): IO[List[Entry]] =
       IO(document.map(_.copy(thesaurusName = name)))

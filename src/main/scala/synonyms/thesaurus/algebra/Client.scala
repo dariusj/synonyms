@@ -11,12 +11,14 @@ trait Client[F[_]]:
 
   def name: ThesaurusName
 
-  def fetchDocument(word: Word): F[Either[FetchError, Option[Doc]]]
+  def fetchDocument(word: Word): F[Option[Doc]]
   def buildEntries(word: Word, document: Doc): F[List[Entry]]
 
 object Client:
-  sealed trait FetchError                           extends NoStackTrace
-  case class ClientError(word: String, url: String) extends FetchError
+  // Unused for now
+  sealed trait FetchException extends NoStackTrace
+  object FetchException:
+    case class ClientError(word: String, url: String) extends FetchException
 
   sealed class ParseException(message: String)
       extends Exception(message)
