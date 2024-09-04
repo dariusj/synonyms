@@ -6,3 +6,6 @@ hs_err_pid*
 
 /.bsp/
 /.scala-build/
+/project/target/
+/project/project/target/
+/target/

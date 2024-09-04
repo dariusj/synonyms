@@ -3,7 +3,6 @@ package synonyms.thesaurus
 import cats.effect.IO
 import synonyms.thesaurus.PropHelpers.*
 import synonyms.thesaurus.algebra.Client
-import synonyms.thesaurus.algebra.Client.FetchException
 import synonyms.thesaurus.response.Result.*
 
 class ServiceSuite extends munit.CatsEffectSuite:
