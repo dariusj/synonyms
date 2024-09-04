@@ -1,7 +1,10 @@
-package synonyms.thesaurus.response
+package synonyms.domain
 
 import cats.Show
-import synonyms.thesaurus.*
+import synonyms.domain.Definition
+import synonyms.domain.Example
+import synonyms.domain.ThesaurusName
+import synonyms.domain.Word
 
 case class SynonymsByLength private (length: Int, synonyms: List[Word])
 

@@ -31,9 +31,10 @@ Command line invocation supports the following commands:
 
 * Check if two words are synonyms\
   `scala-cli run . -M synonyms.SynonymsCli -- check [--source|-s datamuse] house pad`
+  `bloop run synonyms -m synonyms.SynonymsCli --args check --args '--format=json' --args house --args pad`
 * List synonyms for a given word\
   `scala-cli run . -M synonyms.SynonymsCli -- list [--source|-s datamuse] bar`
-
+  `bloop run synonyms -m synonyms.SynonymsCli --args list --args '--format=json' --args bar`
 ## Thesauruses
 
 The app currently supports the following thesauruses:

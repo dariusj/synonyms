@@ -1,35 +1,34 @@
-package synonyms.thesaurus.interpreter
+package synonyms.clients
 
-import _root_.io.circe.*
-import _root_.io.circe.generic.semiauto.*
 import cats.effect.IO
 import fs2.*
 import fs2.data.json.*
 import fs2.data.json.circe.*
 import fs2.data.json.codec.*
-import fs2.io.file.{Files, Path}
-import synonyms.thesaurus.*
-import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
-import synonyms.thesaurus.interpreter.Datamuse.DatamuseWord
+import fs2.io.file.Files
+import fs2.io.file.Path
+import synonyms.clients.BaseThesaurusSuite.*
+import synonyms.domain.PartOfSpeech
+import synonyms.domain.Thesaurus.Datamuse
+import synonyms.domain.ThesaurusName
+import synonyms.domain.Word
 
-class DatamuseSuite extends BaseThesaurusSuite:
-
-  def parseResource(name: String): IO[List[DatamuseWord]] =
+class JsonParsableSuite extends BaseThesaurusSuite:
+  def parseResource(name: String): IO[List[Datamuse.Word]] =
     val url = getClass.getResource(name)
     Files[IO]
       .readAll(Path(url.getPath))
       .through(text.utf8.decode)
       .through(tokens)
-      .through(deserialize[IO, List[DatamuseWord]])
+      .through(deserialize[IO, List[Datamuse.Word]])
       .compile
       .toList
       .map(_.flatten)
 
-  val datamuse = Datamuse[IO]
   testBuildEntriesIO(
-    "Datamuse.buildEntries scrapes page successfully",
+    "parseDocument for Datamuse scrapes page successfully",
     parseResource("/dm-far.json").flatMap(words =>
-      datamuse.buildEntries(Word("far"), words)
+      implicitly[JsonParsable[IO, Datamuse]].parseDocument(Word("far"), words)
     ),
     List(
       ExpectedEntry(

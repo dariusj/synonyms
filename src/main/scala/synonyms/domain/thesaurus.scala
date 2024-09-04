@@ -1,8 +1,10 @@
-package synonyms.thesaurus
+package synonyms.domain
 
-import io.circe.{Encoder, Json}
-import synonyms.thesaurus.response.Result
-import synonyms.thesaurus.response.Result.*
+import cats.data.NonEmptyList
+import io.circe.*
+import io.circe.generic.semiauto.*
+
+import Result.*
 
 opaque type ThesaurusName = String
 
@@ -57,3 +59,45 @@ case class Entry(
     if synonyms.contains(check) then
       AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
+
+sealed trait Thesaurus:
+  def name: ThesaurusName
+  def url(word: Word): String
+
+object Thesaurus:
+  type MerriamWebster = MerriamWebster.type
+  case object MerriamWebster extends Thesaurus:
+    val name: ThesaurusName = ThesaurusName("Merriam-Webster")
+    def url(word: Word)     = s"https://www.merriam-webster.com/thesaurus/$word"
+
+  type Cambridge = Cambridge.type
+  case object Cambridge extends Thesaurus:
+    val name: ThesaurusName = ThesaurusName("Cambridge")
+    def url(word: Word) = s"https://dictionary.cambridge.org/thesaurus/$word"
+
+  type Collins = Collins.type
+  case object Collins extends Thesaurus:
+    val name: ThesaurusName = ThesaurusName("Collins")
+    def url(word: Word) =
+      s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
+
+  type Datamuse = Datamuse.type
+  case object Datamuse extends Thesaurus:
+    override def name: ThesaurusName = ThesaurusName("Datamuse")
+    def url(word: _root_.synonyms.domain.Word) =
+      s"https://api.datamuse.com/words?ml=$word"
+
+    case class Word(word: String, tags: Option[List[String]])
+
+    object Word:
+      given Decoder[Word] = deriveDecoder[Word]
+
+  def fromString(thesaurusName: String): Option[Thesaurus] =
+    val pf: PartialFunction[String, Thesaurus] = {
+      case "mw"        => MerriamWebster
+      case "cambridge" => Cambridge
+    }
+    pf.lift(thesaurusName)
+
+  val all: NonEmptyList[Thesaurus] =
+    NonEmptyList.of(MerriamWebster, Cambridge, Datamuse)

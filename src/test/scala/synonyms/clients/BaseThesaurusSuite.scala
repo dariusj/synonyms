@@ -1,10 +1,16 @@
-package synonyms.thesaurus.interpreter
+package synonyms.clients
 
 import cats.effect.IO
 import munit.*
 import net.ruippeixotog.scalascraper.browser.Browser
-import synonyms.thesaurus.*
-import synonyms.thesaurus.interpreter.BaseThesaurusSuite.*
+import synonyms.domain.Definition
+import synonyms.domain.Entry
+import synonyms.domain.Example
+import synonyms.domain.PartOfSpeech
+import synonyms.domain.ThesaurusName
+import synonyms.domain.Word
+
+import BaseThesaurusSuite.*
 
 abstract class BaseThesaurusSuite extends CatsEffectSuite:
   def testBuildEntriesIO(

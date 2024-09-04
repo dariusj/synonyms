@@ -1,6 +1,7 @@
-package synonyms.thesaurus
+package synonyms
 
 import org.scalacheck.{Arbitrary, Gen}
+import synonyms.domain.*
 
 object PropHelpers:
   def nonEmptyStringGen(
@@ -33,5 +34,7 @@ object PropHelpers:
     example       <- Gen.option(exampleGen)
     synonyms      <- Gen.listOf(wordGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
+
+  val thesaurusGen: Gen[Thesaurus] = Gen.oneOf(Thesaurus.all.toList)
 
   given Arbitrary[Entry] = Arbitrary(entryGen)

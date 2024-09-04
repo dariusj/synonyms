@@ -5,12 +5,19 @@ import cats.effect.*
 import org.http4s.*
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.middleware.{ErrorAction, ErrorHandling}
-import synonyms.routes.Routes.service
+import org.http4s.server.middleware.ErrorAction
+import org.http4s.server.middleware.ErrorHandling
+import synonyms.http.routes.SynonymsRoutes
+import synonyms.modules.ThesaurusClients
+import synonyms.services.Synonyms
 
 object SynonymsApi extends IOApp.Simple:
+  val thesaurusClients: Resource[IO, ThesaurusClients[IO]] =
+    ThesaurusClients.make[IO]
+  val service: Synonyms[IO] = Synonyms.make(thesaurusClients)
+
   val httpApp: Http[IO, IO] = Router(
-    "/" -> withErrorLogging(service)
+    "/" -> withErrorLogging(SynonymsRoutes[IO](service).routes)
   ).orNotFound
 
   val serverBuilder: BlazeServerBuilder[IO] =
