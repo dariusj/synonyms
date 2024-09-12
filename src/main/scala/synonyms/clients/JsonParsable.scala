@@ -12,13 +12,13 @@ trait JsonParsable[F[_], T]:
 
 object JsonParsable:
   given [F[_]: Applicative]: JsonParsable[F, Datamuse] with
-    extension (s: String)
-      def toPos: PartOfSpeech = s match
-        case "adj" => PartOfSpeech.Adjective
-        case "adv" => PartOfSpeech.Adverb
-        case "n"   => PartOfSpeech.Noun
-        case "u"   => PartOfSpeech.Undetermined
-        case "v"   => PartOfSpeech.Verb
+    val toPos: PartialFunction[String, PartOfSpeech] = {
+      case "adj" => PartOfSpeech.Adjective
+      case "adv" => PartOfSpeech.Adverb
+      case "n"   => PartOfSpeech.Noun
+      case "u"   => PartOfSpeech.Undetermined
+      case "v"   => PartOfSpeech.Verb
+    }
 
     private def toEntries(
         word: Word,
@@ -26,27 +26,26 @@ object JsonParsable:
     ): List[Entry] =
       @tailrec
       def rec(
-          a: Map[String, List[Datamuse.Word]],
-          words: List[(String, Datamuse.Word)]
-      ): Map[String, List[Datamuse.Word]] =
+          a: Map[PartOfSpeech, List[Datamuse.Word]],
+          words: List[(PartOfSpeech, Datamuse.Word)]
+      ): Map[PartOfSpeech, List[Datamuse.Word]] =
         words match
           case (pos, w) :: tail =>
             rec(a.updated(pos, a.get(pos).orEmpty :+ w), tail)
           case Nil => a
 
       val wordLookups =
-        datamuseWords.foldLeft(Map.empty[String, List[Datamuse.Word]]) {
+        datamuseWords.foldLeft(Map.empty[PartOfSpeech, List[Datamuse.Word]]) {
           case (acc, word) =>
-            val wordsByPos = word.tags.orEmpty.collect {
-              case tag @ ("n" | "v" | "adj" | "adv" | "u") => tag -> word
-            }
+            val wordsByPos =
+              word.tags.orEmpty.collect(toPos andThen (_ -> word))
             rec(acc, wordsByPos)
         }
       wordLookups.map { (pos, words) =>
         Entry(
           Datamuse.name,
           word,
-          pos.toPos,
+          pos,
           None,
           None,
           words.map(dw => Word(dw.word))
