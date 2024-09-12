@@ -41,6 +41,7 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % "0.23.27" % Test,
   "org.http4s" %% "http4s-ember-client" % "0.23.27" % Test,
   "org.typelevel" %% "cats-core" % "2.12.0" % Test,
-  "org.typelevel" %% "cats-effect" % "3.5.4" % Test
+  "org.typelevel" %% "cats-effect" % "3.5.4" % Test,
+  "org.typelevel" %% "scalacheck-effect-munit" % "1.0.4" % Test
 )
 

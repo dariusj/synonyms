@@ -24,6 +24,9 @@ object SynonymsByLength:
       .map(SynonymsByLength.apply.tupled)
 
 sealed abstract class Result:
+  def firstWord: Word
+  def secondWord: Word
+
   infix def combine(r: Result): Result = (this, r) match
     case (f: Result.AreSynonyms, _) => f
     case (_, f: Result.AreSynonyms) => f

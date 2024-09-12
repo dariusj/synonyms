@@ -5,7 +5,7 @@ import org.scalacheck.Arbitrary.*
 import synonyms.domain.*
 import synonyms.domain.Result.*
 
-class ThesaurusSuite extends munit.ScalaCheckSuite:
+class ThesaurusSuite extends munit.FunSuite:
 
   entryFixture.test(
     "Entry.hasSynonym returns AreSynonyms when synonym is found"

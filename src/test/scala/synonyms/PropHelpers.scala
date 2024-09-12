@@ -2,6 +2,8 @@ package synonyms
 
 import org.scalacheck.{Arbitrary, Gen}
 import synonyms.domain.*
+import synonyms.domain.Result.AreSynonyms
+import synonyms.domain.Result.NotSynonyms
 
 object PropHelpers:
   def nonEmptyStringGen(
@@ -36,5 +38,28 @@ object PropHelpers:
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
 
   val thesaurusGen: Gen[Thesaurus] = Gen.oneOf(Thesaurus.all.toList)
+
+  val notSynonymsGen: Gen[NotSynonyms] = for
+    firstWord  <- wordGen
+    secondWord <- wordGen
+  yield NotSynonyms(firstWord, secondWord)
+
+  val areSynonymsGen: Gen[AreSynonyms] = for
+    firstWord    <- wordGen
+    secondWord   <- wordGen
+    partOfSpeech <- partOfSpeechGen
+    definition   <- Gen.option(definitionGen)
+    example      <- Gen.option(exampleGen)
+    source       <- thesaurusNameGen
+  yield AreSynonyms(
+    firstWord,
+    secondWord,
+    partOfSpeech,
+    definition,
+    example,
+    source
+  )
+
+  val resultGen: Gen[Result] = Gen.oneOf(areSynonymsGen, notSynonymsGen)
 
   given Arbitrary[Entry] = Arbitrary(entryGen)

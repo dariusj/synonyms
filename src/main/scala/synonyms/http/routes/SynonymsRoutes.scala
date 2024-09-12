@@ -57,7 +57,7 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
               service.checkSynonyms2(first, second, thesauruses)
           }
         validated match
-          case Valid(result) => result.flatMap(f => Ok(f.asJson))
+          case Valid(result) => result.flatMap(result => Ok(f(result)))
           case Invalid(e)    => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
