@@ -6,16 +6,16 @@ This project is a personal playground in Scala to try out different libraries an
 
 ## Requirements
 
-* [Scala-cli](https://scala-cli.virtuslab.org)
+* [Bloop](https://scalacenter.github.io/bloop/) (or [sbt](https://www.scala-sbt.org/))
 
 ## Entrypoints
 
 ### HTTP Server
 
-The server can be started by executing the following scala-cli command:
+The server can be started by executing the following command:
 
 ```bash
-scala-cli run . --restart -M synonyms.SynonymsApi
+bloop run synonyms -m synonyms.SynonymsApi
 ```
 
 The following endpoints are supported:
@@ -30,11 +30,9 @@ The following endpoints are supported:
 Command line invocation supports the following commands:
 
 * Check if two words are synonyms\
-  `scala-cli run . -M synonyms.SynonymsCli -- check [--source|-s datamuse] house pad`
-  `bloop run synonyms -m synonyms.SynonymsCli --args check --args '--format=json' --args house --args pad`
+  `bloop run synonyms -m synonyms.SynonymsCli --args check [--args '--format=json'] --args house --args pad`
 * List synonyms for a given word\
-  `scala-cli run . -M synonyms.SynonymsCli -- list [--source|-s datamuse] bar`
-  `bloop run synonyms -m synonyms.SynonymsCli --args list --args '--format=json' --args bar`
+  `bloop run synonyms -m synonyms.SynonymsCli --args list [--args '--format=json'] [--args '--source|-s datamuse'] --args bar`
 ## Thesauruses
 
 The app currently supports the following thesauruses:
@@ -47,8 +45,9 @@ Default is all thesauruses
 
 ## Run tests
 
-`scala-cli test --resource-dirs src/test/resources/`
+`bloop test synonyms-test`
 
 ## Create a Docker image
 
+// TODO
 `scala-cli --power package . -M synonyms.SynonymsApi --docker --docker-image-repository dariusj/synonyms`
