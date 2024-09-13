@@ -6,7 +6,6 @@ import cats.data.ValidatedNel
 import cats.syntax.apply.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
-import cats.syntax.show.*
 import io.circe.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -30,41 +29,46 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
         ) :? ThesaurusParamMatcher(
           thesaurusesValidated: ValidatedNel[ParseFailure, List[Thesaurus]]
         ) =>
-      def getEntries[A](f: List[SynonymsByLength] => A)(using
-          EntityEncoder[F, A]
+      def getEntries[A](using
+          ee: EntityEncoder[F, A],
+          transformable: Transformable[List[SynonymsByLength], A]
       ): F[Response[F]] =
         thesaurusesValidated.withDefault match
           case Valid(thesauruses) =>
             service
               .getEntries2(word, thesauruses)
               .map(SynonymsByLength.fromEntries)
-              .flatMap(s => Ok(f(s)))
+              .flatMap(s => Ok(transformable.toEntity(s)))
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
-        case Some(value) if value.isJson => getEntries(_.asJson)
-        case Some(value) if value.isText => getEntries(_.show)
+        case Some(value) if value.isJson => getEntries[Json]
+        case Some(value) if value.isText => getEntries[String]
         case Some(value) => BadRequest(s"Unsupported Accept header: $value")
-        case None        => getEntries(_.asJson)
+        case None        => getEntries[Json]
 
     case req @ GET -> Root :? WordsMatcher(
           words
         ) +& ThesaurusParamMatcher(thesaurusesValidated) =>
-      def checkSynonyms[A](f: Result => A)(using EntityEncoder[F, A]) =
+      def checkSynonyms[A](using
+          ee: EntityEncoder[F, A],
+          transformable: Transformable[Result, A]
+      ) =
         val validated =
           (thesaurusesValidated.withDefault, words.toTuple2).mapN {
             case (thesauruses, (first, second)) =>
               service.checkSynonyms2(first, second, thesauruses)
           }
         validated match
-          case Valid(result) => result.flatMap(result => Ok(f(result)))
-          case Invalid(e)    => BadRequest(e.map(_.sanitized).asJson)
+          case Valid(result) =>
+            result.flatMap(result => Ok(transformable.toEntity(result)))
+          case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
-        case Some(value) if value.isJson => checkSynonyms(_.asJson)
-        case Some(value) if value.isText => checkSynonyms(_.show)
+        case Some(value) if value.isJson => checkSynonyms[Json]
+        case Some(value) if value.isText => checkSynonyms[String]
         case Some(value) => BadRequest(s"Unsupported Accept header: $value")
-        case None        => checkSynonyms(_.asJson)
+        case None        => checkSynonyms[Json]
   }
 
   val routes: HttpRoutes[F] = Router(prefixPath -> httpRoutes)
