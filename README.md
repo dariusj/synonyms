@@ -47,7 +47,6 @@ Default is all thesauruses
 
 `bloop test synonyms-test`
 
-## Create a Docker image
+## Create a Docker image locally
 
-// TODO
-`scala-cli --power package . -M synonyms.SynonymsApi --docker --docker-image-repository dariusj/synonyms`
+`sbt Docker/publishLocal`
