@@ -56,8 +56,7 @@ case class Entry(
     synonyms: List[Word]
 ):
   def hasSynonym(check: Word): Result =
-    if synonyms.contains(check) then
-      AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
+    if synonyms.contains(check) then AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
 
 sealed trait Thesaurus:
@@ -73,7 +72,7 @@ object Thesaurus:
   type Cambridge = Cambridge.type
   case object Cambridge extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("Cambridge")
-    def url(word: Word) = s"https://dictionary.cambridge.org/thesaurus/$word"
+    def url(word: Word)     = s"https://dictionary.cambridge.org/thesaurus/$word"
 
   type Collins = Collins.type
   case object Collins extends Thesaurus:

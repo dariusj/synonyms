@@ -83,12 +83,10 @@ object JsoupParsable:
         .map { entryEls =>
           entryEls
             .foldLeft(Option.empty[(String, List[Entry])]) {
-              case (acc, el)
-                  if el.attr("class").split(" ").contains("lmb-10") =>
+              case (acc, el) if el.attr("class").split(" ").contains("lmb-10") =>
                 val pos = el >> text(".pos")
                 Some(pos, acc.fold(Nil) { case (_, entries) => entries })
-              case (Some(pos, entries), el)
-                  if el.attr("class").split(" ").contains("sense") =>
+              case (Some(pos, entries), el) if el.attr("class").split(" ").contains("sense") =>
                 val example  = el >?> text(".eg")
                 val synonyms = el >> texts(".synonym")
 

@@ -31,9 +31,8 @@ private val formatOpts: Opts[Format] =
 
 val checkSynonyms: Opts[CheckSynonyms.Args] =
   Opts.subcommand("check", "Check if the given words are synonyms") {
-    (CheckSynonyms.words, sourceOpts, formatOpts).mapN {
-      case ((word1, word2), thesauruses, formatOpts) =>
-        CheckSynonyms.Args(word1, word2, thesauruses, formatOpts)
+    (CheckSynonyms.words, sourceOpts, formatOpts).mapN { case ((word1, word2), thesauruses, formatOpts) =>
+      CheckSynonyms.Args(word1, word2, thesauruses, formatOpts)
     }
   }
 

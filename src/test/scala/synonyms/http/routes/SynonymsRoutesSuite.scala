@@ -18,13 +18,11 @@ import synonyms.domain.Result
 import synonyms.services.*
 import synonyms.services.Synonyms
 
-class SynonymsRoutesSuite
-    extends munit.CatsEffectSuite
-    with munit.ScalaCheckEffectSuite:
+class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEffectSuite:
 
   test("GET /synonyms/$word returns JSON response") {
     PropF.forAllF(entryGen) { entry =>
-      val req = GET(Uri.unsafeFromString(s"/synonyms/${entry.word.toString}"))
+      val req      = GET(Uri.unsafeFromString(s"/synonyms/${entry.word.toString}"))
       val synonyms = testSynonyms(entries = List(entry))
       val routes   = SynonymsRoutes(synonyms).routes
       routes.run(req).value.flatMap {

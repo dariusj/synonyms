@@ -59,9 +59,9 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
     "parseDocument for Cambridge parses page successfully",
     implicitly[JsoupParsable[IO, Cambridge]].parseDocument(
-        Word("far"),
-        BaseThesaurusSuite.parseFile(JsoupBrowser(), "/cam-far.html")
-      ),
+      Word("far"),
+      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/cam-far.html")
+    ),
     List(
       ExpectedEntry(
         ThesaurusName("Cambridge"),

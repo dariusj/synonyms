@@ -19,8 +19,7 @@ import synonyms.domain.*
 import synonyms.http.*
 import synonyms.services.*
 
-final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
-    extends Http4sDsl[F]:
+final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends Http4sDsl[F]:
   private val prefixPath = "/synonyms"
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
@@ -44,8 +43,8 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
       req.headers.get[Accept] match
         case Some(value) if value.isJson => getEntries[Json]
         case Some(value) if value.isText => getEntries[String]
-        case Some(value) => BadRequest(s"Unsupported Accept header: $value")
-        case None        => getEntries[Json]
+        case Some(value)                 => BadRequest(s"Unsupported Accept header: $value")
+        case None                        => getEntries[Json]
 
     case req @ GET -> Root :? WordsMatcher(
           words
@@ -55,9 +54,8 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
           EntityEncoder[F, A]
       ) =
         val validated =
-          (thesaurusesValidated.withDefault, words.toTuple2).mapN {
-            case (thesauruses, (first, second)) =>
-              service.checkSynonyms2(first, second, thesauruses)
+          (thesaurusesValidated.withDefault, words.toTuple2).mapN { case (thesauruses, (first, second)) =>
+            service.checkSynonyms2(first, second, thesauruses)
           }
         validated match
           case Valid(result) =>
@@ -67,8 +65,8 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
       req.headers.get[Accept] match
         case Some(value) if value.isJson => checkSynonyms[Json]
         case Some(value) if value.isText => checkSynonyms[String]
-        case Some(value) => BadRequest(s"Unsupported Accept header: $value")
-        case None        => checkSynonyms[Json]
+        case Some(value)                 => BadRequest(s"Unsupported Accept header: $value")
+        case None                        => checkSynonyms[Json]
   }
 
   val routes: HttpRoutes[F] = Router(prefixPath -> httpRoutes)

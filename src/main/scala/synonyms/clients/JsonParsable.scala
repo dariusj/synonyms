@@ -35,11 +35,10 @@ object JsonParsable:
           case Nil => a
 
       val wordLookups =
-        datamuseWords.foldLeft(Map.empty[PartOfSpeech, List[Datamuse.Word]]) {
-          case (acc, word) =>
-            val wordsByPos =
-              word.tags.orEmpty.collect(toPos andThen (_ -> word))
-            rec(acc, wordsByPos)
+        datamuseWords.foldLeft(Map.empty[PartOfSpeech, List[Datamuse.Word]]) { case (acc, word) =>
+          val wordsByPos =
+            word.tags.orEmpty.collect(toPos andThen (_ -> word))
+          rec(acc, wordsByPos)
         }
       wordLookups.map { (pos, words) =>
         Entry(

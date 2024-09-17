@@ -72,8 +72,8 @@ class SynonymsSuite extends munit.CatsEffectSuite:
           bar       <- entryGen.map(_.copy(synonyms = Nil))
           baz       <- entryGen.map(_.copy(synonyms = Nil))
           thesaurus <- thesaurusGen
-          entries = Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map {
-            (k, v) => Word(k) -> List(v)
+          entries = Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>
+            Word(k) -> List(v)
           }
         yield (
           entries,
