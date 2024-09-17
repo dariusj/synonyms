@@ -30,15 +30,15 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
           thesaurusesValidated: ValidatedNel[ParseFailure, List[Thesaurus]]
         ) =>
       def getEntries[A](using
-          ee: EntityEncoder[F, A],
-          transformable: Transformable[List[SynonymsByLength], A]
+          Transformable[List[SynonymsByLength], A],
+          EntityEncoder[F, A]
       ): F[Response[F]] =
         thesaurusesValidated.withDefault match
           case Valid(thesauruses) =>
             service
               .getEntries2(word, thesauruses)
               .map(SynonymsByLength.fromEntries)
-              .flatMap(s => Ok(transformable.toEntity(s)))
+              .flatMap(s => Ok(s.toEntity))
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
@@ -51,8 +51,8 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
           words
         ) +& ThesaurusParamMatcher(thesaurusesValidated) =>
       def checkSynonyms[A](using
-          ee: EntityEncoder[F, A],
-          transformable: Transformable[Result, A]
+          Transformable[Result, A],
+          EntityEncoder[F, A]
       ) =
         val validated =
           (thesaurusesValidated.withDefault, words.toTuple2).mapN {
@@ -61,7 +61,7 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F])
           }
         validated match
           case Valid(result) =>
-            result.flatMap(result => Ok(transformable.toEntity(result)))
+            result.flatMap(result => Ok(result.toEntity))
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match

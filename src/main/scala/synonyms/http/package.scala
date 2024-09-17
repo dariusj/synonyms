@@ -37,11 +37,11 @@ extension (acceptHeader: Accept)
   def isText: Boolean = acceptHeader.satisfiedBy(MediaType.text.plain)
 
 trait Transformable[A, B]:
-  def toEntity(a: A): B
+  extension (a: A) def toEntity: B
 
 object Transformable:
-  given [A: Encoder]: Transformable[A, Json] with
-    def toEntity(a: A): Json = a.asJson
+  given [A: Encoder, B]: Transformable[A, Json] with
+    extension (a: A) def toEntity: Json = a.asJson
 
   given [A: Show]: Transformable[A, String] with
-    def toEntity(a: A): String = a.show
+    extension (a: A) def toEntity: String = a.show
