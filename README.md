@@ -34,6 +34,7 @@ Command line invocation supports the following commands:
   `bloop run synonyms -m synonyms.SynonymsCli --args check [--args '--format=json'] --args house --args pad`
 * List synonyms for a given word\
   `bloop run synonyms -m synonyms.SynonymsCli --args list [--args '--format=json'] [--args '--source|-s datamuse'] --args bar`
+
 ## Thesauruses
 
 The app currently supports the following thesauruses:
