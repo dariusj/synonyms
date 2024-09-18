@@ -42,12 +42,12 @@ The app currently supports the following thesauruses:
 * [Datamuse](https://www.datamuse.com/api/) (`datamuse`)
 * [Merriam-Webster](https://www.merriam-webster.com/thesaurus) (`mw`)
 
-Default is all thesauruses
+Default is all thesauruses.
 
 ## Run tests
 
 `bloop test synonyms-test`
 
-## Create a Docker image locally
+## Build a Docker image
 
 `sbt Docker/publishLocal`
