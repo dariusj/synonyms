@@ -1,5 +1,7 @@
 # Synonyms
 
+![Continuous Integration](https://github.com/dariusj/synonyms/workflows/Continuous%20Integration/badge.svg)
+
 An application with multiple entrypoints to perform synonym-related tasks.
 
 This project is a personal playground in Scala to try out different libraries and techniques.
