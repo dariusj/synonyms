@@ -3,6 +3,8 @@ package synonyms.domain
 import cats.data.NonEmptyList
 import io.circe.*
 import io.circe.generic.semiauto.*
+import io.github.iltotore.iron.*
+import io.github.iltotore.iron.constraint.all.*
 
 import Result.*
 
@@ -14,21 +16,20 @@ object ThesaurusName:
   given Encoder[ThesaurusName] with
     override def apply(a: ThesaurusName): Json = Json.fromString(a)
 
-opaque type Word = String
+opaque type Word = String :| (Not[Blank] & Not[Digit])
 
-object Word:
-  def apply(value: String): Word = value
-
-  private val orderingString = summon[Ordering[String]]
-  given Ordering[Word]       = orderingString
-
-  extension (w: Word)
-    // Calling this something other than the underlying method works
-    // around https://github.com/scala/scala3/issues/10947
-    def countChars(p: Char => Boolean): Int = w.toString.count(p)
-
+object Word extends RefinedTypeOps[String, Not[Blank] & Not[Exists[Digit]], Word]:
+  given Ordering[Word] = summon[Ordering[String]].on(_.value)
   given Encoder[Word] with
-    override def apply(a: Word): Json = Json.fromString(a)
+    override def apply(a: Word): Json = Json.fromString(a.value)
+
+  // TODO: Check whether we need the call to `value`
+  extension (w: Word) def countChars(p: Char => Boolean): Int = w.value.count(p)
+
+opaque type Synonym = String
+
+object Synonym:
+  def apply(value: String): Synonym = value
 
 enum PartOfSpeech:
   case Adjective, Adverb, Noun, Preposition, Undetermined, Verb

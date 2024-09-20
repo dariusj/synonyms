@@ -18,7 +18,7 @@ object PropHelpers:
   val thesaurusNameGen: Gen[ThesaurusName] =
     nonEmptyStringGen().map(ThesaurusName.apply)
 
-  val wordGen: Gen[Word] = nonEmptyStringGen().map(Word.apply)
+  val wordGen: Gen[Word] = nonEmptyStringGen().map(Word.applyUnsafe)
 
   val partOfSpeechGen: Gen[PartOfSpeech] = Gen.oneOf(PartOfSpeech.values.toList)
 

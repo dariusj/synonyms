@@ -1,8 +1,8 @@
 package synonyms.clients
 
 import cats.Applicative
-import cats.Monad
 import cats.MonadThrow
+import cats.syntax.either.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
@@ -11,6 +11,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.dsl.ToQuery
 import net.ruippeixotog.scalascraper.model.Document
 import net.ruippeixotog.scalascraper.model.Element
+import synonyms.clients.ParseException.*
 import synonyms.domain.*
 import synonyms.domain.Thesaurus.*
 
@@ -18,7 +19,13 @@ trait JsoupParsable[F[_], T]:
   def parseDocument(word: Word, document: Document): F[List[Entry]]
 
 object JsoupParsable:
+  // TODO: Move this somewhere common (it's repeated for JsonParsable)
+  extension (s: String)
+    private def toWord(word: Word)(using thesaurus: ThesaurusName): Either[InvalidSynonym, Word] =
+      Word.option(s).toRight(InvalidSynonym(s, word, thesaurus))
+
   given [F[_]: MonadThrow]: JsoupParsable[F, MerriamWebster] with
+    given ThesaurusName = MerriamWebster.name
     extension (s: String)
       def toPos: Option[PartOfSpeech] =
         val pos: PartialFunction[String, PartOfSpeech] =
@@ -37,14 +44,18 @@ object JsoupParsable:
         val synonyms = el >> texts(
           ".sim-list-scored .synonyms_list li.thes-word-list-item"
         )
-        Entry(
-          MerriamWebster.name,
-          word,
-          pos,
-          definition.map(Definition.apply),
-          example.map(Example.apply),
-          synonyms.map(Word.apply).toList
-        )
+        synonyms.toList
+          .traverse(_.toWord(word))
+          .map(syns =>
+            Entry(
+              MerriamWebster.name,
+              word,
+              pos,
+              definition.map(Definition.apply),
+              example.map(Example.apply),
+              syns
+            )
+          )
 
       Applicative[F]
         .pure(document)
@@ -54,21 +65,19 @@ object JsoupParsable:
             val posString = entry >> text(".parts-of-speech")
             posString.toPos match
               // TODO: Add Test
-              case None =>
-                MonadThrow[F].raiseError(
-                  ParseException
-                    .PartOfSpeechNotFound(posString, word, MerriamWebster.name)
-                )
+              case None => MonadThrow[F].raiseError(PartOfSpeechNotFound(posString, word))
               case Some(pos) =>
                 Applicative[F]
                   .pure(entry)
                   .map(_ >> elementList(".vg-sseq-entry-item"))
-                  .map(_.map(buildEntry(pos)))
+                  .flatMap(_.traverse(buildEntry(pos)).liftTo[F])
           }
         }
 
-  given [F[_]: Monad]: JsoupParsable[F, Cambridge] with
+  given [F[_]: MonadThrow]: JsoupParsable[F, Cambridge] with
+    given ThesaurusName = Cambridge.name
     extension (s: String)
+      // TODO: FIXME - unsafe
       def toPos: PartOfSpeech = s match
         case "adjective"   => PartOfSpeech.Adjective
         case "adverb"      => PartOfSpeech.Adverb
@@ -76,33 +85,45 @@ object JsoupParsable:
         case "preposition" => PartOfSpeech.Preposition
         case "verb"        => PartOfSpeech.Verb
 
+    extension (el: Element)
+      def hasClass(name: String): Boolean = el.attr("class").split(" ").contains(name)
+
+    private case class Acc(currentPos: Option[PartOfSpeech], entries: List[Entry]):
+      def handlePosEl(el: Element): Acc =
+        val pos = el >> text(".pos")
+        Acc(Some(pos.toPos), entries)
+
+      def handleSynonymsEl(el: Element, word: Word): Either[ParseException, Acc] =
+        currentPos.toRight(EntryWithoutPos(word, Cambridge.name)).flatMap { pos =>
+          val example  = el >?> text(".eg")
+          val synonyms = el >> texts(".synonym")
+          synonyms.toList.traverse(_.toWord(word)).map { syns =>
+            val entry = Entry(Cambridge.name, word, pos, None, example.map(Example.apply), syns)
+            Acc(currentPos, entries :+ entry)
+          }
+        }
+      def combineWithElement(element: Element, word: Word): Either[ParseException, Acc] =
+        element match
+          case el if el.hasClass("lmb-10") => handlePosEl(el).asRight
+          case el if el.hasClass("sense")  => handleSynonymsEl(el, word)
+          case _                           => this.asRight
+
+    private object Acc:
+      def empty: Acc = Acc(None, Nil)
+
     def parseDocument(word: Word, document: Document): F[List[Entry]] =
       Applicative[F]
         .pure(document)
         .map(_ >> elementList(".entry-block:has(.pos) > div"))
         .map { entryEls =>
           entryEls
-            .foldLeft(Option.empty[(String, List[Entry])]) {
-              case (acc, el) if el.attr("class").split(" ").contains("lmb-10") =>
-                val pos = el >> text(".pos")
-                Some(pos, acc.fold(Nil) { case (_, entries) => entries })
-              case (Some(pos, entries), el) if el.attr("class").split(" ").contains("sense") =>
-                val example  = el >?> text(".eg")
-                val synonyms = el >> texts(".synonym")
-
-                val entry = Entry(
-                  Cambridge.name,
-                  word,
-                  pos.toPos,
-                  None,
-                  example.map(Example.apply),
-                  synonyms.map(Word.apply).toList
-                )
-                Some(pos, entries :+ entry)
-              case (acc, _) => acc
+            .foldLeft(Acc.empty.asRight[ParseException]) {
+              case (Right(acc), el) => acc.combineWithElement(el, word)
+              case (acc, _)         => acc
             }
-            .fold(Nil) { case (_, entries) => entries }
+            .map(_.entries)
         }
+        .flatMap(_.liftTo[F])
 
 // TODO: Move to HtmlUnitBrowser
 // given [F[_]: Monad]: JsoupParsable[F, Collins] with

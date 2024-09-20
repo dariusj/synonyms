@@ -7,6 +7,7 @@ import fs2.data.json.circe.*
 import fs2.data.json.codec.*
 import fs2.io.file.Files
 import fs2.io.file.Path
+import _root_.io.github.iltotore.iron.*
 import synonyms.clients.BaseThesaurusSuite.*
 import synonyms.domain.PartOfSpeech
 import synonyms.domain.Thesaurus.Datamuse

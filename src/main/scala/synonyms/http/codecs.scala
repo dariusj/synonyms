@@ -1,5 +1,6 @@
 package synonyms.http
 
+import cats.syntax.either.*
 import io.circe.*
 import org.http4s.*
 import org.http4s.dsl.io.*
@@ -11,15 +12,16 @@ given QueryParamDecoder[Thesaurus] =
       .fromString(s)
       .toRight(ParseFailure(s"Unsupported thesaurus $s", ""))
   )
+given QueryParamDecoder[Word] =
+  QueryParamDecoder[String].emap(s =>
+    Word.either(s).leftMap(error => ParseFailure(s"Invalid word $s: $error", ""))
+  )
 
-given QueryParamDecoder[Word] = QueryParamDecoder[String].map(Word.apply)
+// given QueryParamDecoder[Word] = QueryParamDecoder[String].map(Word.apply)
 
-object ThesaurusParamMatcher
-    extends OptionalMultiQueryParamDecoderMatcher[Thesaurus](
-      "thesaurus"
-    )
+object ThesaurusParamMatcher extends OptionalMultiQueryParamDecoderMatcher[Thesaurus]("thesaurus")
 
-object WordsMatcher extends OptionalMultiQueryParamDecoderMatcher[Word]("word")
+object WordParamsMatcher extends OptionalMultiQueryParamDecoderMatcher[Word]("word")
 
 given Encoder[Definition]    = Encoder.encodeString.contramap(_.toString)
 given Encoder[Example]       = Encoder.encodeString.contramap(_.toString)

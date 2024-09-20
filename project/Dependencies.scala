@@ -9,8 +9,9 @@ object Dependencies {
     val decline               = "2.4.1"
     val fs2                   = "3.10.2"
     val fs2data               = "1.11.0"
-    val http4sBlaze           = "0.23.16"
     val http4s                = "0.23.27"
+    val http4sBlaze           = "0.23.16"
+    val iron                  = "2.6.0"
     val munit                 = "1.0.0"
     val munitCatsEffect       = "2.0.0"
     val scalaScraper          = "3.1.1"
@@ -39,6 +40,8 @@ object Dependencies {
     val http4sCirce       = "org.http4s" %% "http4s-circe"        % V.http4s
     val http4sDsl         = "org.http4s" %% "http4s-dsl"          % V.http4s
     val http4sEmberClient = "org.http4s" %% "http4s-ember-client" % V.http4s
+
+    val iron = "io.github.iltotore" %% "iron" % V.iron
 
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 

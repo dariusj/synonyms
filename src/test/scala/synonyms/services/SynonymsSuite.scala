@@ -2,6 +2,7 @@ package synonyms.services
 
 import cats.effect.IO
 import cats.effect.kernel.Resource
+import io.github.iltotore.iron.*
 import synonyms.PropHelpers.*
 import synonyms.clients.ThesaurusClient
 import synonyms.domain.*
@@ -73,7 +74,7 @@ class SynonymsSuite extends munit.CatsEffectSuite:
           baz       <- entryGen.map(_.copy(synonyms = Nil))
           thesaurus <- thesaurusGen
           entries = Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>
-            Word(k) -> List(v)
+            Word.assume(k) -> List(v)
           }
         yield (
           entries,

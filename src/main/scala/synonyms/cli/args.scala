@@ -1,9 +1,11 @@
 package synonyms.cli
 
-import cats.data.{NonEmptyList, Validated, ValidatedNel}
+import cats.data.NonEmptyList
+import cats.data.Validated
+import cats.data.ValidatedNel
 import cats.syntax.apply.given
-import cats.syntax.validated.given
-import com.monovore.decline.{Argument, Opts}
+import com.monovore.decline.Argument
+import com.monovore.decline.Opts
 import synonyms.domain.*
 
 private val sourceOpts: Opts[NonEmptyList[Thesaurus]] =
@@ -54,9 +56,8 @@ object Format:
   def fromString(s: String): Option[Format] = pf.lift(s)
 
 given Argument[Word] with
-  override def read(string: String): ValidatedNel[String, Word] = Word(
-    string
-  ).validNel
+  override def read(string: String): ValidatedNel[String, Word] =
+    Validated.fromEither(Word.either(string)).toValidatedNel
   override def defaultMetavar: String = "word"
 
 object ListSynonyms:

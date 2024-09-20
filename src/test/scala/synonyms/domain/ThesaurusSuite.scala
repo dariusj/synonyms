@@ -1,5 +1,6 @@
 package synonyms.domain
 
+import io.github.iltotore.iron.*
 import synonyms.domain.*
 import synonyms.domain.Result.*
 
@@ -8,13 +9,17 @@ class ThesaurusSuite extends munit.FunSuite:
   entryFixture.test(
     "Entry.hasSynonym returns AreSynonyms when synonym is found"
   ) { entry =>
-    assert(clue(clue(entry).hasSynonym(Word("foo"))).isInstanceOf[AreSynonyms])
+    clue(entry).hasSynonym(Word("foo")) match
+      case _: AreSynonyms => true
+      case _: NotSynonyms => fail("Not synonyms")
   }
 
   entryFixture.test(
     "Entry.hasSynonym returns NotSynonyms when synonym is not found"
   ) { entry =>
-    assert(clue(clue(entry).hasSynonym(Word("baz"))).isInstanceOf[NotSynonyms])
+    entry.hasSynonym(Word("baz")) match
+      case _: AreSynonyms => fail("Are synonyms")
+      case _: NotSynonyms => true
   }
 
   def entryFixture = FunFixture[Entry](
@@ -25,7 +30,7 @@ class ThesaurusSuite extends munit.FunSuite:
         PartOfSpeech.Noun,
         Some(Definition("definition")),
         Some(Example("example")),
-        List("foo", "bar").map(Word.apply)
+        Word.assumeAll(List("foo", "bar"))
       ),
     _ => ()
   )

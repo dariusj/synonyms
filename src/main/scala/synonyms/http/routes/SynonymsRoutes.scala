@@ -23,9 +23,7 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends 
   private val prefixPath = "/synonyms"
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case req @ GET -> Root / WordVar(
-          word
-        ) :? ThesaurusParamMatcher(
+    case req @ GET -> Root / WordVar(word) :? ThesaurusParamMatcher(
           thesaurusesValidated: ValidatedNel[ParseFailure, List[Thesaurus]]
         ) =>
       def getEntries[A](using
@@ -46,13 +44,10 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends 
         case Some(value)                 => BadRequest(s"Unsupported Accept header: $value")
         case None                        => getEntries[Json]
 
-    case req @ GET -> Root :? WordsMatcher(
-          words
-        ) +& ThesaurusParamMatcher(thesaurusesValidated) =>
-      def checkSynonyms[A](using
-          Transformable[Result, A],
-          EntityEncoder[F, A]
-      ) =
+    case req @ GET -> Root :? WordParamsMatcher(words) +& ThesaurusParamMatcher(
+          thesaurusesValidated
+        ) =>
+      def checkSynonyms[A](using Transformable[Result, A], EntityEncoder[F, A]) =
         val validated =
           (thesaurusesValidated.withDefault, words.toTuple2).mapN {
             case (thesauruses, (first, second)) =>

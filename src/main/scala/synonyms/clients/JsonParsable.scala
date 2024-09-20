@@ -1,7 +1,10 @@
 package synonyms.clients
 
-import cats.Applicative
+import cats.ApplicativeThrow
+import cats.syntax.either.*
 import cats.syntax.option.*
+import cats.syntax.traverse.*
+import synonyms.clients.ParseException.*
 import synonyms.domain.*
 import synonyms.domain.Thesaurus.Datamuse
 
@@ -11,7 +14,12 @@ trait JsonParsable[F[_], T]:
   def parseDocument(word: Word, document: List[Datamuse.Word]): F[List[Entry]]
 
 object JsonParsable:
-  given [F[_]: Applicative]: JsonParsable[F, Datamuse] with
+  extension (s: String)
+    private def toWord(word: Word)(using thesaurus: ThesaurusName): Either[InvalidSynonym, Word] =
+      Word.option(s).toRight(InvalidSynonym(s, word, thesaurus))
+
+  given [F[_]: ApplicativeThrow]: JsonParsable[F, Datamuse] with
+    given ThesaurusName = Datamuse.name
     val toPos: PartialFunction[String, PartOfSpeech] = {
       case "adj" => PartOfSpeech.Adjective
       case "adv" => PartOfSpeech.Adverb
@@ -19,11 +27,10 @@ object JsonParsable:
       case "u"   => PartOfSpeech.Undetermined
       case "v"   => PartOfSpeech.Verb
     }
-
     private def toEntries(
         word: Word,
         datamuseWords: List[Datamuse.Word]
-    ): List[Entry] =
+    ): Either[ParseException, List[Entry]] =
       @tailrec
       def rec(
           a: Map[PartOfSpeech, List[Datamuse.Word]],
@@ -40,19 +47,14 @@ object JsonParsable:
             word.tags.orEmpty.collect(toPos andThen (_ -> word))
           rec(acc, wordsByPos)
         }
-      wordLookups.map { (pos, words) =>
-        Entry(
-          Datamuse.name,
-          word,
-          pos,
-          None,
-          None,
-          words.map(dw => Word(dw.word))
-        )
-      }.toList
+      wordLookups
+        .map { (pos, words) =>
+          words.traverse(dw => dw.word.toWord(word)).map { synonyms =>
+            Entry(Datamuse.name, word, pos, None, None, synonyms)
+          }
+        }
+        .toList
+        .sequence
 
-    def parseDocument(
-        word: Word,
-        document: List[Datamuse.Word]
-    ): F[List[Entry]] =
-      Applicative[F].pure(toEntries(word, document))
+    def parseDocument(word: Word, document: List[Datamuse.Word]): F[List[Entry]] =
+      toEntries(word, document).liftTo[F]

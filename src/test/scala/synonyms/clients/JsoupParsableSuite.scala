@@ -1,6 +1,7 @@
 package synonyms.clients
 
 import cats.effect.IO
+import io.github.iltotore.iron.*
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import synonyms.clients.BaseThesaurusSuite.*
 import synonyms.domain.Definition
@@ -14,7 +15,7 @@ import synonyms.domain.Word
 class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
     "parseDocument for MerriamWebster parses page successfully",
-    implicitly[JsoupParsable[IO, MerriamWebster]]
+    summon[JsoupParsable[IO, MerriamWebster]]
       .parseDocument(Word("far"), parseFile(JsoupBrowser(), "/mw-far.html")),
     List(
       ExpectedEntry(
@@ -58,7 +59,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
 
   testBuildEntriesIO(
     "parseDocument for Cambridge parses page successfully",
-    implicitly[JsoupParsable[IO, Cambridge]].parseDocument(
+    summon[JsoupParsable[IO, Cambridge]].parseDocument(
       Word("far"),
       BaseThesaurusSuite.parseFile(JsoupBrowser(), "/cam-far.html")
     ),
