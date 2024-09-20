@@ -1,6 +1,6 @@
 import Dependencies.*
 
-ThisBuild / scalaVersion := "3.4.2"
+ThisBuild / scalaVersion := "3.5.0"
 
 ThisBuild / scalacOptions ++= Seq(
   "-Wunused:all",
