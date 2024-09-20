@@ -1,6 +1,5 @@
 package synonyms.http
 
-import cats.syntax.validated.*
 import io.circe.*
 import org.http4s.*
 import org.http4s.dsl.io.*

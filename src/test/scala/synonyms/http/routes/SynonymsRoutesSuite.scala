@@ -6,7 +6,6 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.*
 import org.http4s.Method.*
-import org.http4s.Uri.*
 import org.http4s.circe.*
 import org.http4s.client.dsl.io.*
 import org.http4s.headers.Accept

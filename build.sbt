@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "3.5.0"
 
 ThisBuild / scalacOptions ++= Seq(
   "-Wunused:all",
-  "-Ykind-projector:underscores",
+  "-Xkind-projector:underscores",
   "-deprecation"
 )
 

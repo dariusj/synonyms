@@ -1,7 +1,5 @@
 package synonyms.domain
 
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.*
 import synonyms.domain.*
 import synonyms.domain.Result.*
 
