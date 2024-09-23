@@ -13,6 +13,7 @@ import org.http4s.headers.Accept
 import org.http4s.headers.`Content-Type`
 import org.scalacheck.effect.PropF
 import synonyms.PropHelpers.*
+import synonyms.config.Config
 import synonyms.domain.*
 import synonyms.domain.Result
 import synonyms.services.*
@@ -20,11 +21,12 @@ import synonyms.services.Synonyms
 
 class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEffectSuite:
 
+  val cfg = Config.load()
   test("GET /synonyms/$word returns JSON response") {
     PropF.forAllF(entryGen) { entry =>
       val req      = GET(Uri.unsafeFromString(s"/synonyms/${entry.word.toString}"))
       val synonyms = testSynonyms(entries = List(entry))
-      val routes   = SynonymsRoutes(synonyms).routes
+      val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
       routes.run(req).value.flatMap {
         case Some(res) =>
           assertResponse(
@@ -45,7 +47,7 @@ class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEff
         headers = Headers(Accept(MediaRange.`text/*`))
       )
       val synonyms = testSynonyms(entries = List(entry))
-      val routes   = SynonymsRoutes(synonyms).routes
+      val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
       routes.run(req).value.flatMap {
         case Some(res) =>
           assertResponse(
@@ -67,7 +69,7 @@ class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEff
         )
       )
       val synonyms = testSynonyms(result = result)
-      val routes   = SynonymsRoutes(synonyms).routes
+      val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
       routes.run(req).value.flatMap {
         case Some(res) =>
           assertResponse(
@@ -90,7 +92,7 @@ class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEff
         headers = Headers(Accept(MediaRange.`text/*`))
       )
       val synonyms = testSynonyms(result = result)
-      val routes   = SynonymsRoutes(synonyms).routes
+      val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
       routes.run(req).value.flatMap {
         case Some(res) =>
           assertResponse(

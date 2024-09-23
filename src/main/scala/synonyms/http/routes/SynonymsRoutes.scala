@@ -15,11 +15,13 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.dsl.io.*
 import org.http4s.headers.Accept
 import org.http4s.server.Router
+import synonyms.config.types.*
 import synonyms.domain.*
 import synonyms.http.*
 import synonyms.services.*
 
-final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends Http4sDsl[F]:
+case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F], thesaurusConfig: ThesaurusConfig)
+    extends Http4sDsl[F]:
   private val prefixPath = "/synonyms"
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
@@ -30,7 +32,7 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends 
           Transformable[List[SynonymsByLength], A],
           EntityEncoder[F, A]
       ): F[Response[F]] =
-        thesaurusesValidated.withDefault match
+        thesaurusesValidated.withDefault(thesaurusConfig.default.toList) match
           case Valid(thesauruses) =>
             service
               .getEntries2(word, thesauruses)
@@ -49,14 +51,13 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends 
         ) =>
       def checkSynonyms[A](using Transformable[Result, A], EntityEncoder[F, A]) =
         val validated =
-          (thesaurusesValidated.withDefault, words.toTuple2).mapN {
+          (thesaurusesValidated.withDefault(thesaurusConfig.default.toList), words.toTuple2).mapN {
             case (thesauruses, (first, second)) =>
               service.checkSynonyms2(first, second, thesauruses)
           }
         validated match
-          case Valid(result) =>
-            result.flatMap(result => Ok(result.toEntity))
-          case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
+          case Valid(result) => result.flatMap(result => Ok(result.toEntity))
+          case Invalid(e)    => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
         case Some(value) if value.isJson => checkSynonyms[Json]
