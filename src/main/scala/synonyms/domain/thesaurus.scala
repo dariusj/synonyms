@@ -56,7 +56,8 @@ case class Entry(
     synonyms: List[Word]
 ):
   def hasSynonym(check: Word): Result =
-    if synonyms.contains(check) then AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
+    if synonyms.contains(check) then
+      AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
 
 sealed trait Thesaurus:

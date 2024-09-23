@@ -43,10 +43,11 @@ object Dependencies {
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 
     // Test
-    val fs2io                 = "co.fs2"        %% "fs2-io"                  % V.fs2
-    val munit                 = "org.scalameta" %% "munit"                   % V.munit
-    val munitScalacheck       = "org.scalameta" %% "munit-scalacheck"        % V.munit
-    val munitCatsEffect       = "org.typelevel" %% "munit-cats-effect"       % V.munitCatsEffect
-    val scalacheckEffectMunit = "org.typelevel" %% "scalacheck-effect-munit" % V.scalacheckEffectMunit
+    val fs2io           = "co.fs2"        %% "fs2-io"            % V.fs2
+    val munit           = "org.scalameta" %% "munit"             % V.munit
+    val munitScalacheck = "org.scalameta" %% "munit-scalacheck"  % V.munit
+    val munitCatsEffect = "org.typelevel" %% "munit-cats-effect" % V.munitCatsEffect
+    val scalacheckEffectMunit =
+      "org.typelevel" %% "scalacheck-effect-munit" % V.scalacheckEffectMunit
   }
 }

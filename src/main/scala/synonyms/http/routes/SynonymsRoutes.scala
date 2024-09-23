@@ -54,8 +54,9 @@ final case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F]) extends 
           EntityEncoder[F, A]
       ) =
         val validated =
-          (thesaurusesValidated.withDefault, words.toTuple2).mapN { case (thesauruses, (first, second)) =>
-            service.checkSynonyms2(first, second, thesauruses)
+          (thesaurusesValidated.withDefault, words.toTuple2).mapN {
+            case (thesauruses, (first, second)) =>
+              service.checkSynonyms2(first, second, thesauruses)
           }
         validated match
           case Valid(result) =>
