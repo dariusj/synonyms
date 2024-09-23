@@ -10,19 +10,9 @@ import org.http4s.server.middleware.ErrorHandling
 import synonyms.http.routes.SynonymsRoutes
 import synonyms.modules.ThesaurusClients
 import synonyms.services.Synonyms
+import synonyms.config.Config
 
 object SynonymsApi extends IOApp.Simple:
-  val thesaurusClients: Resource[IO, ThesaurusClients[IO]] =
-    ThesaurusClients.make[IO]
-  val service: Synonyms[IO] = Synonyms.make(thesaurusClients)
-
-  val httpApp: Http[IO, IO] = Router(
-    "/" -> withErrorLogging(SynonymsRoutes[IO](service).routes)
-  ).orNotFound
-
-  val serverBuilder: BlazeServerBuilder[IO] =
-    BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0")
-
   def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
     OptionT.liftF(
       IO.println(msg) >>
@@ -39,4 +29,19 @@ object SynonymsApi extends IOApp.Simple:
       )
     )
 
-  override val run: IO[Unit] = serverBuilder.resource.useForever
+  override val run: IO[Unit] =
+    IO(Config.load()).map { cfg =>
+      ThesaurusClients.make[IO].evalMap { clients =>
+        val service: Synonyms[IO] = Synonyms.make(clients)
+
+        val httpApp: Http[IO, IO] =
+          Router(
+            "/" -> withErrorLogging(SynonymsRoutes(service, cfg.thesaurusConfig).routes)
+          ).orNotFound
+
+        val serverBuilder: BlazeServerBuilder[IO] =
+          BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0")
+
+        serverBuilder.resource.useForever
+      }
+    }

@@ -7,8 +7,9 @@ import cats.syntax.apply.given
 import com.monovore.decline.Argument
 import com.monovore.decline.Opts
 import synonyms.domain.*
+import synonyms.config.types.ThesaurusConfig
 
-private val sourceOpts: Opts[NonEmptyList[Thesaurus]] =
+private def sourceOpts(defaultThesaurus: NonEmptyList[Thesaurus]): Opts[NonEmptyList[Thesaurus]] =
   Opts
     .options[String]("source", "The thesaurus to use", "s")
     .mapValidated(_.traverse { input =>
@@ -16,7 +17,7 @@ private val sourceOpts: Opts[NonEmptyList[Thesaurus]] =
         .fromOption(Thesaurus.fromString(input), s"Invalid source $input")
         .toValidatedNel
     })
-    .withDefault(Thesaurus.all)
+    .withDefault(defaultThesaurus)
 
 private val formatOpts: Opts[Format] =
   Opts
@@ -31,17 +32,17 @@ private val formatOpts: Opts[Format] =
     }
     .withDefault(Format.Text)
 
-val checkSynonyms: Opts[CheckSynonyms.Args] =
+def checkSynonyms(thesaurusConfig: ThesaurusConfig): Opts[CheckSynonyms.Args] =
   Opts.subcommand("check", "Check if the given words are synonyms") {
-    (CheckSynonyms.words, sourceOpts, formatOpts).mapN {
+    (CheckSynonyms.words, sourceOpts(thesaurusConfig.default), formatOpts).mapN {
       case ((word1, word2), thesauruses, formatOpts) =>
-        CheckSynonyms.Args(word1, word2, thesauruses, formatOpts)
+        CheckSynonyms.Args(word1, word2, thesaurusConfig.default, formatOpts)
     }
   }
 
-val listSynonyms: Opts[ListSynonyms.Args] =
+def listSynonyms(thesaurusConfig: ThesaurusConfig): Opts[ListSynonyms.Args] =
   Opts.subcommand("list", "List synonyms for a word") {
-    (Opts.argument[Word]("word"), sourceOpts, formatOpts)
+    (Opts.argument[Word]("word"), sourceOpts(thesaurusConfig.default), formatOpts)
       .mapN(ListSynonyms.Args.apply)
   }
 

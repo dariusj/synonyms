@@ -1,7 +1,6 @@
 package synonyms.services
 
 import cats.effect.IO
-import cats.effect.kernel.Resource
 import io.github.iltotore.iron.*
 import synonyms.PropHelpers.*
 import synonyms.clients.ThesaurusClient
@@ -14,38 +13,28 @@ class SynonymsSuite extends munit.CatsEffectSuite:
   entryStore.test(
     "Synonyms.checkSynonyms matches if second word is synonym of first word"
   ) { case (entries, thesaurus, clients) =>
-    Synonyms
-      .make(Resource.pure(clients))
-      .checkSynonyms(Word("foo"), Word("bar"), thesaurus)
-      .map {
-        case _: AreSynonyms => true
-        case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
-      }
+    Synonyms.make(clients).checkSynonyms(Word("foo"), Word("bar"), thesaurus).map {
+      case _: AreSynonyms => true
+      case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
+    }
   }
 
   entryStore.test(
     "Synonyms.checkSynonyms matches if first word is synonym of second word"
   ) { case (entries, thesaurus, clients) =>
-    Synonyms
-      .make(Resource.pure(clients))
-      .checkSynonyms(Word("bar"), Word("foo"), thesaurus)
-      .map {
-        case _: AreSynonyms => true
-        case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
-      }
+    Synonyms.make(clients).checkSynonyms(Word("bar"), Word("foo"), thesaurus).map {
+      case _: AreSynonyms => true
+      case _: NotSynonyms => fail("Failed to find synonym", clues(entries))
+    }
   }
 
   entryStore.test(
     "Synonyms.checkSynonyms doesn't match if words aren't synonyms"
   ) { case (entries, thesaurus, clients) =>
-    Synonyms
-      .make(Resource.pure(clients))
-      .checkSynonyms(Word("foo"), Word("baz"), thesaurus)
-      .map {
-        case synonym: AreSynonyms =>
-          fail("Found synonym", clues(entries, synonym))
-        case _: NotSynonyms => true
-      }
+    Synonyms.make(clients).checkSynonyms(Word("foo"), Word("baz"), thesaurus).map {
+      case synonym: AreSynonyms => fail("Found synonym", clues(entries, synonym))
+      case _: NotSynonyms       => true
+    }
   }
 
   entryStore.test(
@@ -53,10 +42,9 @@ class SynonymsSuite extends munit.CatsEffectSuite:
   ) { case (entries, _, _) =>
     val client1 = testThesaurusClient(Map(Word("foo") -> entries(Word("foo"))))
     val client2 = testThesaurusClient(entries)
-    val clients =
-      testThesaurusClients(Map(Cambridge -> client1, MerriamWebster -> client2))
+    val clients = testThesaurusClients(Map(Cambridge -> client1, MerriamWebster -> client2))
     Synonyms
-      .make(Resource.pure(clients))
+      .make(clients)
       .checkSynonyms2(Word("foo"), Word("bar"), clients.clients.keys.toList)
       .map {
         case result: AreSynonyms =>

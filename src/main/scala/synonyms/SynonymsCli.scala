@@ -11,6 +11,8 @@ import synonyms.domain.Result
 import synonyms.domain.SynonymsByLength
 import synonyms.modules.ThesaurusClients
 import synonyms.services.*
+import synonyms.config.Config
+import synonyms.config.types.AppConfig
 
 object SynonymsCli
     extends CommandIOApp(
@@ -20,27 +22,31 @@ object SynonymsCli
       "v0.1"
     ):
 
-  val clientsR = ThesaurusClients.make[IO]
-  val service  = Synonyms.make(clientsR)
-  def main: Opts[IO[ExitCode]] = (checkSynonyms orElse listSynonyms)
-    .map {
-      case CheckSynonyms.Args(first, second, thesauruses, format) =>
-        service
-          .checkSynonyms2(first, second, thesauruses.toList)
-          .map { result =>
-            format match
-              case Format.Json => result.asJson.toString
-              case Format.Text => result.show
-          }
+  def main: Opts[IO[ExitCode]] =
+    val cfg = Config.load()
+    (checkSynonyms(cfg.thesaurusConfig) orElse listSynonyms(cfg.thesaurusConfig))
+      .map { args =>
+        ThesaurusClients.make[IO].use { clients =>
+          val service: Synonyms[IO] = Synonyms.make(clients)
+          val outputIO = args match
+            case CheckSynonyms.Args(first, second, thesauruses, format) =>
+              service
+                .checkSynonyms2(first, second, thesauruses.toList)
+                .map { result =>
+                  format match
+                    case Format.Json => result.asJson.toString
+                    case Format.Text => result.show
+                }
 
-      case ListSynonyms.Args(word, thesauruses, format) =>
-        service
-          .getEntries2(word, thesauruses.toList)
-          .map { entries =>
-            val synonyms = SynonymsByLength.fromEntries(entries)
-            format match
-              case Format.Json => synonyms.asJson.toString
-              case Format.Text => synonyms.map(_.show).mkString("\n")
-          }
-    }
-    .map(_.flatMap(IO.println) *> IO(ExitCode.Success))
+            case ListSynonyms.Args(word, thesauruses, format) =>
+              service
+                .getEntries2(word, thesauruses.toList)
+                .map { entries =>
+                  val synonyms = SynonymsByLength.fromEntries(entries)
+                  format match
+                    case Format.Json => synonyms.asJson.toString
+                    case Format.Text => synonyms.map(_.show).mkString("\n")
+                }
+          outputIO.flatMap(IO.println).as(ExitCode.Success)
+        }
+      }

@@ -14,8 +14,8 @@ import synonyms.domain.*
 type PfValidated[A] = ValidatedNel[ParseFailure, A]
 
 extension (v: PfValidated[List[Thesaurus]])
-  def withDefault: ValidatedNel[ParseFailure, List[Thesaurus]] = v.map {
-    case Nil  => Thesaurus.all.toList
+  def withDefault(default: List[Thesaurus]): ValidatedNel[ParseFailure, List[Thesaurus]] = v.map {
+    case Nil  => default
     case list => list
   }
 
