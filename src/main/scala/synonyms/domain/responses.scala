@@ -6,7 +6,7 @@ import synonyms.domain.Example
 import synonyms.domain.ThesaurusName
 import synonyms.domain.Word
 
-case class SynonymsByLength private (length: Int, synonyms: List[Word])
+case class SynonymsByLength private (length: Int, synonyms: List[Synonym])
 
 object SynonymsByLength:
   given Show[SynonymsByLength] with

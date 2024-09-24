@@ -28,13 +28,15 @@ object PropHelpers:
 
   val exampleGen: Gen[Example] = nonEmptyStringGen().map(Example.apply)
 
+  val synonymGen: Gen[Synonym] = nonEmptyStringGen().map(Synonym.apply)
+
   val entryGen: Gen[Entry] = for
     thesaurusName <- thesaurusNameGen
     word          <- wordGen
     partOfSpeech  <- partOfSpeechGen
     definition    <- Gen.option(definitionGen)
     example       <- Gen.option(exampleGen)
-    synonyms      <- Gen.listOf(wordGen)
+    synonyms      <- Gen.listOf(synonymGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
 
   val thesaurusGen: Gen[Thesaurus] = Gen.oneOf(Thesaurus.all.toList)

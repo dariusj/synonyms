@@ -19,17 +19,19 @@ object ThesaurusName:
 opaque type Word = String :| (Not[Blank] & Not[Digit])
 
 object Word extends RefinedTypeOps[String, Not[Blank] & Not[Exists[Digit]], Word]:
-  given Ordering[Word] = summon[Ordering[String]].on(_.value)
   given Encoder[Word] with
     override def apply(a: Word): Json = Json.fromString(a.value)
-
-  // TODO: Check whether we need the call to `value`
-  extension (w: Word) def countChars(p: Char => Boolean): Int = w.value.count(p)
 
 opaque type Synonym = String
 
 object Synonym:
   def apply(value: String): Synonym = value
+
+  given Ordering[Synonym] with
+    def compare(x: Synonym, y: Synonym): Int = x.compareTo(y)
+  given Encoder[Synonym] = Encoder.encodeString.contramap(_.toString)
+
+  extension (w: Synonym) def countChars(p: Char => Boolean): Int = w.count(p)
 
 enum PartOfSpeech:
   case Adjective, Adverb, Noun, Preposition, Undetermined, Verb
@@ -38,15 +40,13 @@ opaque type Definition = String
 
 object Definition:
   def apply(value: String): Definition = value
-  given Encoder[Definition] with
-    override def apply(a: Definition): Json = Json.fromString(a)
+  given Encoder[Definition]            = Encoder.encodeString.contramap(_.toString)
 
 opaque type Example = String
 
 object Example:
   def apply(value: String): Example = value
-  given Encoder[Example] with
-    override def apply(a: Example): Json = Json.fromString(a)
+  given Encoder[Example]            = Encoder.encodeString.contramap(_.toString)
 
 case class Entry(
     thesaurusName: ThesaurusName,
@@ -54,7 +54,7 @@ case class Entry(
     partOfSpeech: PartOfSpeech,
     definition: Option[Definition],
     example: Option[Example],
-    synonyms: List[Word]
+    synonyms: List[Synonym]
 ):
   def hasSynonym(check: Word): Result =
     if synonyms.contains(check) then

@@ -19,11 +19,6 @@ trait JsoupParsable[F[_], T]:
   def parseDocument(word: Word, document: Document): F[List[Entry]]
 
 object JsoupParsable:
-  // TODO: Move this somewhere common (it's repeated for JsonParsable)
-  extension (s: String)
-    private def toWord(word: Word)(using thesaurus: ThesaurusName): Either[InvalidSynonym, Word] =
-      Word.option(s).toRight(InvalidSynonym(s, word, thesaurus))
-
   given [F[_]: MonadThrow]: JsoupParsable[F, MerriamWebster] with
     given ThesaurusName = MerriamWebster.name
     extension (s: String)
@@ -44,18 +39,14 @@ object JsoupParsable:
         val synonyms = el >> texts(
           ".sim-list-scored .synonyms_list li.thes-word-list-item"
         )
-        synonyms.toList
-          .traverse(_.toWord(word))
-          .map(syns =>
-            Entry(
-              MerriamWebster.name,
-              word,
-              pos,
-              definition.map(Definition.apply),
-              example.map(Example.apply),
-              syns
-            )
-          )
+        Entry(
+          MerriamWebster.name,
+          word,
+          pos,
+          definition.map(Definition.apply),
+          example.map(Example.apply),
+          synonyms.map(Synonym.apply).toList
+        )
 
       Applicative[F]
         .pure(document)
@@ -70,7 +61,7 @@ object JsoupParsable:
                 Applicative[F]
                   .pure(entry)
                   .map(_ >> elementList(".vg-sseq-entry-item"))
-                  .flatMap(_.traverse(buildEntry(pos)).liftTo[F])
+                  .map(_.map(buildEntry(pos)))
           }
         }
 
@@ -94,13 +85,18 @@ object JsoupParsable:
         Acc(Some(pos.toPos), entries)
 
       def handleSynonymsEl(el: Element, word: Word): Either[ParseException, Acc] =
-        currentPos.toRight(EntryWithoutPos(word, Cambridge.name)).flatMap { pos =>
+        currentPos.toRight(EntryWithoutPos(word, Cambridge.name)).map { pos =>
           val example  = el >?> text(".eg")
           val synonyms = el >> texts(".synonym")
-          synonyms.toList.traverse(_.toWord(word)).map { syns =>
-            val entry = Entry(Cambridge.name, word, pos, None, example.map(Example.apply), syns)
-            Acc(currentPos, entries :+ entry)
-          }
+          val entry = Entry(
+            Cambridge.name,
+            word,
+            pos,
+            None,
+            example.map(Example.apply),
+            synonyms.map(Synonym.apply).toList
+          )
+          Acc(currentPos, entries :+ entry)
         }
       def combineWithElement(element: Element, word: Word): Either[ParseException, Acc] =
         element match
