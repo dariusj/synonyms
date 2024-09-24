@@ -14,11 +14,7 @@ import synonyms.modules.ThesaurusClients
 trait Synonyms[F[_]]:
   def getEntries2(word: Word, thesauruses: List[Thesaurus]): F[List[Entry]]
   def getEntries(word: Word, thesaurus: Thesaurus): F[List[Entry]]
-  def checkSynonyms2(
-      first: Word,
-      second: Word,
-      thesauruses: List[Thesaurus]
-  ): F[Result]
+  def checkSynonyms2(first: Word, second: Word, thesauruses: List[Thesaurus]): F[Result]
   def checkSynonyms(first: Word, second: Word, thesaurus: Thesaurus): F[Result]
 
 object Synonyms:
