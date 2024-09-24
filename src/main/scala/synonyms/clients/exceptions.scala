@@ -16,14 +16,6 @@ object ParseException:
     def apply(pos: String, word: Word)(using thesaurus: ThesaurusName): PartOfSpeechNotFound =
       PartOfSpeechNotFound(pos, word, thesaurus)
 
-  case class InvalidSynonym(synonym: String, word: Word, thesaurus: ThesaurusName)
-      extends ParseException(s"[$thesaurus] Invalid synonym '$synonym' for entry '$word'")
-
-  object InvalidSynonym:
-    @targetName("applyWithContext")
-    def apply(synonym: String, word: Word)(using thesaurus: ThesaurusName): InvalidSynonym =
-      InvalidSynonym(synonym, word, thesaurus)
-
   case class EntryWithoutPos(word: Word, thesaurus: ThesaurusName)
       extends ParseException(s"[$thesaurus]")
 

@@ -57,7 +57,7 @@ class SynonymsSuite extends munit.CatsEffectSuite:
     FunFixture[(Map[Word, List[Entry]], Thesaurus, ThesaurusClients[IO])](
       _ =>
         (for
-          foo       <- entryGen.map(_.copy(synonyms = List(Word("bar"))))
+          foo       <- entryGen.map(_.copy(synonyms = List(Synonym("bar"))))
           bar       <- entryGen.map(_.copy(synonyms = Nil))
           baz       <- entryGen.map(_.copy(synonyms = Nil))
           thesaurus <- thesaurusGen

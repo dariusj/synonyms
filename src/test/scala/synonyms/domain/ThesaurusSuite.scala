@@ -30,7 +30,7 @@ class ThesaurusSuite extends munit.FunSuite:
         PartOfSpeech.Noun,
         Some(Definition("definition")),
         Some(Example("example")),
-        Word.assumeAll(List("foo", "bar"))
+        List("foo", "bar").map(Synonym.apply)
       ),
     _ => ()
   )
