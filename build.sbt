@@ -2,12 +2,6 @@ import Dependencies.*
 
 ThisBuild / scalaVersion := "3.5.0"
 
-ThisBuild / scalacOptions ++= Seq(
-  "-Wunused:all",
-  "-Xkind-projector:underscores",
-  "-deprecation"
-)
-
 lazy val synonyms = (project in file("."))
   .enablePlugins(DockerPlugin, JavaAppPackaging)
   .settings(

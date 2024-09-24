@@ -26,18 +26,19 @@ object SynonymsApi extends IOApp.Simple:
     )
 
   override val run: IO[Unit] =
-    IO(Config.load()).map { cfg =>
-      ThesaurusClients.make[IO].evalMap { clients =>
-        val service: Synonyms[IO] = Synonyms.make(clients)
-
-        val httpApp: Http[IO, IO] =
-          Router(
-            "/" -> withErrorLogging(SynonymsRoutes(service, cfg.thesaurusConfig).routes)
-          ).orNotFound
-
-        val serverBuilder: BlazeServerBuilder[IO] =
-          BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0")
-
-        serverBuilder.resource.useForever
-      }
+    IO(Config.load()).flatMap { cfg =>
+      ThesaurusClients
+        .make[IO]
+        .evalMap { clients =>
+          IO(Synonyms.make(clients)).map { service =>
+            val httpApp: HttpApp[IO] = Router(
+              "/" -> withErrorLogging(SynonymsRoutes(service, cfg.thesaurusConfig).routes)
+            ).orNotFound
+            httpApp
+          }
+        }
+        .flatMap { httpApp =>
+          BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0").resource
+        }
+        .useForever
     }
