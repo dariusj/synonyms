@@ -14,11 +14,7 @@ import synonyms.config.Config
 
 object SynonymsApi extends IOApp.Simple:
   def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
-    OptionT.liftF(
-      IO.println(msg) >>
-        IO.println(t) >>
-        IO(t.printStackTrace())
-    )
+    OptionT.liftF(IO.println(msg) >> IO.println(t) >> IO(t.printStackTrace()))
 
   def withErrorLogging(errorRoute: HttpRoutes[IO]) =
     ErrorHandling.Recover.total(
