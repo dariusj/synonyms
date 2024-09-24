@@ -2,8 +2,7 @@ package synonyms
 
 import org.scalacheck.{Arbitrary, Gen}
 import synonyms.domain.*
-import synonyms.domain.Result.AreSynonyms
-import synonyms.domain.Result.NotSynonyms
+import synonyms.domain.Result.{AreSynonyms, NotSynonyms}
 
 object PropHelpers:
   def nonEmptyStringGen(

@@ -1,13 +1,10 @@
 package synonyms.cli
 
-import cats.data.NonEmptyList
-import cats.data.Validated
-import cats.data.ValidatedNel
+import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import cats.syntax.apply.given
-import com.monovore.decline.Argument
-import com.monovore.decline.Opts
-import synonyms.domain.*
+import com.monovore.decline.{Argument, Opts}
 import synonyms.config.types.ThesaurusConfig
+import synonyms.domain.*
 
 private def sourceOpts(defaultThesaurus: NonEmptyList[Thesaurus]): Opts[NonEmptyList[Thesaurus]] =
   Opts

@@ -4,13 +4,8 @@ import cats.effect.IO
 import io.github.iltotore.iron.*
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import synonyms.clients.BaseThesaurusSuite.*
-import synonyms.domain.Definition
-import synonyms.domain.Example
-import synonyms.domain.PartOfSpeech
-import synonyms.domain.Thesaurus.Cambridge
-import synonyms.domain.Thesaurus.MerriamWebster
-import synonyms.domain.ThesaurusName
-import synonyms.domain.Word
+import synonyms.domain.*
+import synonyms.domain.Thesaurus.{Cambridge, MerriamWebster}
 
 class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(

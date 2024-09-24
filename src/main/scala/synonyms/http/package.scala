@@ -4,9 +4,8 @@ import cats.Show
 import cats.data.ValidatedNel
 import cats.syntax.show.*
 import cats.syntax.validated.*
-import io.circe.Encoder
-import io.circe.Json
 import io.circe.syntax.*
+import io.circe.{Encoder, Json}
 import org.http4s.*
 import org.http4s.headers.Accept
 import synonyms.domain.*

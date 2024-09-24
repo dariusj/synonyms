@@ -5,12 +5,11 @@ import cats.effect.*
 import org.http4s.*
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.middleware.ErrorAction
-import org.http4s.server.middleware.ErrorHandling
+import org.http4s.server.middleware.{ErrorAction, ErrorHandling}
+import synonyms.config.Config
 import synonyms.http.routes.SynonymsRoutes
 import synonyms.modules.ThesaurusClients
 import synonyms.services.Synonyms
-import synonyms.config.Config
 
 object SynonymsApi extends IOApp.Simple:
   def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =

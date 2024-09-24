@@ -1,18 +1,15 @@
 package synonyms.clients
 
+import _root_.io.github.iltotore.iron.*
 import cats.effect.IO
 import fs2.*
 import fs2.data.json.*
 import fs2.data.json.circe.*
 import fs2.data.json.codec.*
-import fs2.io.file.Files
-import fs2.io.file.Path
-import _root_.io.github.iltotore.iron.*
+import fs2.io.file.{Files, Path}
 import synonyms.clients.BaseThesaurusSuite.*
-import synonyms.domain.PartOfSpeech
 import synonyms.domain.Thesaurus.Datamuse
-import synonyms.domain.ThesaurusName
-import synonyms.domain.Word
+import synonyms.domain.{PartOfSpeech, ThesaurusName, Word}
 
 class JsonParsableSuite extends BaseThesaurusSuite:
   def parseResource(name: String): IO[List[Datamuse.Word]] =

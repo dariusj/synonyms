@@ -1,6 +1,7 @@
 import Dependencies.*
 
-ThisBuild / scalaVersion := "3.5.0"
+ThisBuild / scalaVersion      := "3.5.0"
+ThisBuild / semanticdbEnabled := true
 
 lazy val synonyms = (project in file("."))
   .enablePlugins(DockerPlugin, JavaAppPackaging)
