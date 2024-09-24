@@ -7,12 +7,11 @@ import com.monovore.decline.effect.CommandIOApp
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import synonyms.cli.*
+import synonyms.config.Config
 import synonyms.domain.Result
 import synonyms.domain.SynonymsByLength
 import synonyms.modules.ThesaurusClients
 import synonyms.services.*
-import synonyms.config.Config
-import synonyms.config.types.AppConfig
 
 object SynonymsCli
     extends CommandIOApp(
