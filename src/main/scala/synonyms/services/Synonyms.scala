@@ -35,25 +35,13 @@ object Synonyms:
             _.traverse(doc => client.parseDocument(word, doc)).map(_.orEmpty)
           )
 
-      def checkSynonyms2(
-          first: Word,
-          second: Word,
-          thesauruses: List[Thesaurus]
-      ): F[Result] =
+      def checkSynonyms2(first: Word, second: Word, thesauruses: List[Thesaurus]): F[Result] =
         thesauruses
           .parTraverse(t => checkSynonyms(first, second, t))
           .map(f => f.reduce(_ combine _))
 
-      def checkSynonyms(
-          first: Word,
-          second: Word,
-          thesaurus: Thesaurus
-      ): F[Result] =
-        def areSynonyms(
-            word: Word,
-            candidate: Word,
-            entries: List[Entry]
-        ): Result =
+      def checkSynonyms(first: Word, second: Word, thesaurus: Thesaurus): F[Result] =
+        def areSynonyms(word: Word, candidate: Word, entries: List[Entry]): Result =
           entries.foldLeft[Result](NotSynonyms(word, candidate)) {
             case (_: NotSynonyms, entry) => entry.hasSynonym(candidate)
             case (found: AreSynonyms, _) => found

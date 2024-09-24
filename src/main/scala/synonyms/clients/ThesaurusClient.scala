@@ -63,10 +63,7 @@ object ThesaurusClient:
           val words: Stream[F, Doc] = for
             client <- Stream.resource(EmberClientBuilder.default[F].build)
             res    <- client.stream(request(word))
-            body <- res.body
-              .through(text.utf8.decode)
-              .through(tokens)
-              .through(deserialize[F, Doc])
+            body <- res.body.through(text.utf8.decode).through(tokens).through(deserialize[F, Doc])
           yield body
           // TODO: Error handling
           words.compile.toList.map(l => Option(l.head))

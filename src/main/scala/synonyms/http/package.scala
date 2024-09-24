@@ -24,10 +24,7 @@ extension (v: PfValidated[List[Word]])
     v.andThen {
       case first :: second :: Nil => (first, second).validNel
       case list =>
-        ParseFailure(
-          "Must pass two 'word' arguments only",
-          list.mkString("\n")
-        ).invalidNel
+        ParseFailure("Must pass two 'word' arguments only", list.mkString("\n")).invalidNel
     }
 
 extension (acceptHeader: Accept)
