@@ -17,4 +17,4 @@ jobs:
           java-version: 17
           cache: sbt
       - name: Test
-        run: sbt 'scalafmtSbtCheck; scalafmtCheckAll; test'
+        run: sbt 'scalafmtSbtCheck; scalafmtCheckAll; scalafixAll --check; test'

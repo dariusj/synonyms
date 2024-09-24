@@ -1,9 +1,9 @@
 package synonyms.clients
 
-import scala.util.control.NoStackTrace
-import synonyms.domain.Word
-import synonyms.domain.ThesaurusName
+import synonyms.domain.{ThesaurusName, Word}
+
 import scala.annotation.targetName
+import scala.util.control.NoStackTrace
 
 sealed class ParseException(message: String) extends Exception(message) with NoStackTrace
 

@@ -1,7 +1,7 @@
 package synonyms.config
 
-import synonyms.domain.Thesaurus
 import cats.data.NonEmptyList
+import synonyms.domain.Thesaurus
 
 object types:
   case class ThesaurusConfig(default: NonEmptyList[Thesaurus])

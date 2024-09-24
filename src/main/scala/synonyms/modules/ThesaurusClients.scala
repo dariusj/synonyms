@@ -1,13 +1,10 @@
 package synonyms.modules
 
-import cats.effect.Async
-import cats.effect.Concurrent
-import cats.effect.Resource
+import cats.effect.{Async, Concurrent, Resource}
 import cats.syntax.parallel.given
 import fs2.io.net.Network
-import synonyms.clients.JsoupParsable
 import synonyms.clients.JsoupParsable.given
-import synonyms.clients.ThesaurusClient
+import synonyms.clients.{JsoupParsable, ThesaurusClient}
 import synonyms.domain.*
 import synonyms.domain.Thesaurus.*
 

@@ -1,16 +1,14 @@
 package synonyms.clients
 
-import cats.Applicative
-import cats.MonadThrow
 import cats.syntax.either.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
+import cats.{Applicative, MonadThrow}
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.dsl.ToQuery
-import net.ruippeixotog.scalascraper.model.Document
-import net.ruippeixotog.scalascraper.model.Element
+import net.ruippeixotog.scalascraper.model.{Document, Element}
 import synonyms.clients.ParseException.*
 import synonyms.domain.*
 import synonyms.domain.Thesaurus.*

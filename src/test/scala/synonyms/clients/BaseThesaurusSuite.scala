@@ -3,12 +3,7 @@ package synonyms.clients
 import cats.effect.IO
 import munit.*
 import net.ruippeixotog.scalascraper.browser.Browser
-import synonyms.domain.Definition
-import synonyms.domain.Entry
-import synonyms.domain.Example
-import synonyms.domain.PartOfSpeech
-import synonyms.domain.ThesaurusName
-import synonyms.domain.Word
+import synonyms.domain.*
 
 import BaseThesaurusSuite.*
 

@@ -9,15 +9,12 @@ import org.http4s.*
 import org.http4s.Method.*
 import org.http4s.circe.*
 import org.http4s.client.dsl.io.*
-import org.http4s.headers.Accept
-import org.http4s.headers.`Content-Type`
+import org.http4s.headers.{Accept, `Content-Type`}
 import org.scalacheck.effect.PropF
 import synonyms.PropHelpers.*
 import synonyms.config.Config
-import synonyms.domain.*
-import synonyms.domain.Result
-import synonyms.services.*
-import synonyms.services.Synonyms
+import synonyms.domain.{Result, *}
+import synonyms.services.{Synonyms, *}
 
 class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEffectSuite:
 

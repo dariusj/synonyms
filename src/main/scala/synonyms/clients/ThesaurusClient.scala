@@ -1,9 +1,7 @@
 package synonyms.clients
 
 import _root_.io.circe.*
-import cats.effect.Async
-import cats.effect.Resource
-import cats.effect.Sync
+import cats.effect.{Async, Resource, Sync}
 import cats.syntax.applicativeError.*
 import cats.syntax.functor.*
 import cats.syntax.option.*
@@ -12,16 +10,13 @@ import fs2.data.json.*
 import fs2.data.json.circe.*
 import fs2.data.json.codec.*
 import fs2.io.net.Network
-import net.ruippeixotog.scalascraper.browser.Browser
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
+import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import net.ruippeixotog.scalascraper.model.Document
 import org.http4s.*
 import org.http4s.ember.client.EmberClientBuilder
 import org.jsoup.HttpStatusException
-import synonyms.domain.Entry
-import synonyms.domain.Thesaurus
 import synonyms.domain.Thesaurus.Datamuse
-import synonyms.domain.Word
+import synonyms.domain.{Entry, Thesaurus, Word}
 
 trait ThesaurusClient[F[_]]:
   type Doc
