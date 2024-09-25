@@ -10,7 +10,7 @@ import synonyms.services.Synonyms
 
 object SynonymsApi extends IOApp.Simple:
 
-  implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
+  given Logger[IO] = Slf4jLogger.getLogger[IO]
 
   override val run: IO[Unit] =
     val cfg = Config.loadForHttp()
