@@ -12,6 +12,8 @@ object Dependencies {
     val http4s                = "0.23.27"
     val http4sBlaze           = "0.23.16"
     val iron                  = "2.6.0"
+    val log4cats              = "2.7.0"
+    val logback               = "1.5.8"
     val munit                 = "1.0.0"
     val munitCatsEffect       = "2.0.0"
     val scalaScraper          = "3.1.1"
@@ -42,6 +44,9 @@ object Dependencies {
     val http4sEmberClient = "org.http4s" %% "http4s-ember-client" % V.http4s
 
     val iron = "io.github.iltotore" %% "iron" % V.iron
+
+    val log4cats = "org.typelevel" %% "log4cats-slf4j"  % V.log4cats
+    val logback  = "ch.qos.logback" % "logback-classic" % V.logback
 
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 

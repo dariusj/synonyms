@@ -1,43 +1,26 @@
 package synonyms
 
-import cats.data.OptionT
 import cats.effect.*
-import org.http4s.*
-import org.http4s.blaze.server.BlazeServerBuilder
-import org.http4s.server.Router
-import org.http4s.server.middleware.{ErrorAction, ErrorHandling}
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import synonyms.config.Config
-import synonyms.http.routes.SynonymsRoutes
-import synonyms.modules.ThesaurusClients
+import synonyms.modules.HttpApi
+import synonyms.resources.{MkHttpServer, ThesaurusClients}
 import synonyms.services.Synonyms
 
 object SynonymsApi extends IOApp.Simple:
-  def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
-    OptionT.liftF(IO.println(msg) >> IO.println(t) >> IO(t.printStackTrace()))
 
-  def withErrorLogging(errorRoute: HttpRoutes[IO]) =
-    ErrorHandling.Recover.total(
-      ErrorAction.log(
-        errorRoute,
-        messageFailureLogAction = errorHandler,
-        serviceErrorLogAction = errorHandler
-      )
-    )
+  implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
   override val run: IO[Unit] =
-    IO(Config.load()).flatMap { cfg =>
-      ThesaurusClients
-        .make[IO]
-        .evalMap { clients =>
-          IO(Synonyms.make(clients)).map { service =>
-            val httpApp: HttpApp[IO] = Router(
-              "/" -> withErrorLogging(SynonymsRoutes(service, cfg.thesaurusConfig).routes)
-            ).orNotFound
-            httpApp
-          }
-        }
-        .flatMap { httpApp =>
-          BlazeServerBuilder[IO].withHttpApp(httpApp).bindHttp(host = "0.0.0.0").resource
-        }
-        .useForever
-    }
+    val cfg = Config.loadForHttp()
+    ThesaurusClients
+      .make[IO]
+      .map { clients =>
+        val service = Synonyms.make(clients)
+        HttpApi.make(service, cfg).httpApp
+      }
+      .flatMap { httpApp =>
+        MkHttpServer[IO].newBlaze(cfg.httpServerConfig.get, httpApp)
+      }
+      .useForever

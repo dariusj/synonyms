@@ -9,7 +9,7 @@ import cats.syntax.parallel.*
 import cats.syntax.traverse.*
 import synonyms.domain.*
 import synonyms.domain.Result.*
-import synonyms.modules.ThesaurusClients
+import synonyms.resources.ThesaurusClients
 
 trait Synonyms[F[_]]:
   def getEntries2(word: Word, thesauruses: List[Thesaurus]): F[List[Entry]]
