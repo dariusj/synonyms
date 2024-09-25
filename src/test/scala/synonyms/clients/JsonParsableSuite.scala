@@ -26,7 +26,7 @@ class JsonParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
     "parseDocument for Datamuse scrapes page successfully",
     parseResource("/dm-far.json").flatMap(words =>
-      implicitly[JsonParsable[IO, Datamuse]].parseDocument(Word("far"), words)
+      summon[JsonParsable[IO, Datamuse]].parseDocument(Word("far"), words)
     ),
     List(
       ExpectedEntry(
