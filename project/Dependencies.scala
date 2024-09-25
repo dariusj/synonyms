@@ -37,7 +37,6 @@ object Dependencies {
     val fs2dataJson      = fs2data("json")
     val fs2dataJsonCirce = fs2data("json-circe")
 
-    val http4sBlazeClient = "org.http4s" %% "http4s-blaze-client" % V.http4sBlaze
     val http4sBlazeServer = "org.http4s" %% "http4s-blaze-server" % V.http4sBlaze
     val http4sCirce       = "org.http4s" %% "http4s-circe"        % V.http4s
     val http4sDsl         = "org.http4s" %% "http4s-dsl"          % V.http4s
