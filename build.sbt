@@ -31,6 +31,7 @@ lazy val synonyms = (project in file("."))
       Libraries.http4sCirce,
       Libraries.http4sDsl,
       Libraries.http4sEmberClient,
+      Libraries.http4sEmberServer,
       Libraries.iron,
       Libraries.log4cats,
       Libraries.logback,

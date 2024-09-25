@@ -21,6 +21,6 @@ object SynonymsApi extends IOApp.Simple:
         HttpApi.make(service, cfg).httpApp
       }
       .flatMap { httpApp =>
-        MkHttpServer[IO].newBlaze(cfg.httpServerConfig.get, httpApp)
+        MkHttpServer[IO].newEmber(cfg.httpServerConfig.get, httpApp)
       }
       .useForever
