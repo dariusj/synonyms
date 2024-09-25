@@ -27,7 +27,6 @@ lazy val synonyms = (project in file("."))
       Libraries.fs2core,
       Libraries.fs2dataJson,
       Libraries.fs2dataJsonCirce,
-      Libraries.http4sBlazeClient,
       Libraries.http4sBlazeServer,
       Libraries.http4sCirce,
       Libraries.http4sDsl,
