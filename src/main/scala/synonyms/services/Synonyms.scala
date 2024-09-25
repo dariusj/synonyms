@@ -43,9 +43,7 @@ object Synonyms:
             case (found: AreSynonyms, _) => found
           }
 
-        for
-          firstEntries <- getEntries(first, thesaurus)
-          firstResult = areSynonyms(first, second, firstEntries)
-          secondEntries <- getEntries(second, thesaurus)
-          secondResult = areSynonyms(second, first, secondEntries)
-        yield firstResult.combine(secondResult)
+        def getAndCheck(word1: Word, word2: Word): F[Result] =
+          getEntries(word1, thesaurus).map(entries => areSynonyms(word1, word2, entries))
+
+        (getAndCheck(first, second), getAndCheck(second, first)).parMapN(_ combine _)
