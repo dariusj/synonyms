@@ -1,0 +1,20 @@
+name: Scala Steward
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 0'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  scala-steward:
+    runs-on: ubuntu-latest
+    name: Scala Steward
+    steps:
+      - name: Scala Steward
+        uses: scala-steward-org/scala-steward-action@v2
+        with:
+          github-token: ${{ secrets.SCALA_STEWARD_SYNONYMS }}
