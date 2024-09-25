@@ -1,4 +1,4 @@
-package synonyms.modules
+package synonyms.resources
 
 import cats.effect.{Async, Concurrent, Resource}
 import cats.syntax.parallel.given

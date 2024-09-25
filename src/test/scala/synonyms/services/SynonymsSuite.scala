@@ -7,7 +7,7 @@ import synonyms.clients.ThesaurusClient
 import synonyms.domain.*
 import synonyms.domain.Result.*
 import synonyms.domain.Thesaurus.*
-import synonyms.modules.ThesaurusClients
+import synonyms.resources.ThesaurusClients
 
 class SynonymsSuite extends munit.CatsEffectSuite:
   entryStore.test(

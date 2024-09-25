@@ -9,7 +9,7 @@ import io.circe.syntax.*
 import synonyms.cli.*
 import synonyms.config.Config
 import synonyms.domain.{Result, SynonymsByLength}
-import synonyms.modules.ThesaurusClients
+import synonyms.resources.ThesaurusClients
 import synonyms.services.*
 
 object SynonymsCli
