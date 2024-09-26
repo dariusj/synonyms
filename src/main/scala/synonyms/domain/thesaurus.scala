@@ -99,6 +99,7 @@ object Thesaurus:
     val pf: PartialFunction[String, Thesaurus] = {
       case "mw"        => MerriamWebster
       case "cambridge" => Cambridge
+      case "datamuse"  => Datamuse
     }
     pf.lift(thesaurusName)
 
