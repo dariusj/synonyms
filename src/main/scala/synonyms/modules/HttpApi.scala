@@ -4,12 +4,12 @@ import cats.effect.Async
 import org.http4s.server.Router
 import org.http4s.server.middleware.*
 import org.http4s.{HttpApp, HttpRoutes}
-import synonyms.config.types.AppConfig
+import synonyms.config.types.ThesaurusConfig
 import synonyms.http.routes.SynonymsRoutes
 import synonyms.services.Synonyms
 
-sealed abstract class HttpApi[F[_]: Async] private (service: Synonyms[F], cfg: AppConfig):
-  private val synonymsRoutes = SynonymsRoutes(service, cfg.thesaurusConfig).routes
+sealed abstract class HttpApi[F[_]: Async] private (service: Synonyms[F], cfg: ThesaurusConfig):
+  private val synonymsRoutes = SynonymsRoutes(service, cfg).routes
 
   private val routes: HttpRoutes[F] = Router("/" -> synonymsRoutes)
 
@@ -28,5 +28,5 @@ sealed abstract class HttpApi[F[_]: Async] private (service: Synonyms[F], cfg: A
   val httpApp: HttpApp[F] = appMiddleware(routesMiddleware(routes).orNotFound)
 
 object HttpApi:
-  def make[F[_]: Async](synonymsService: Synonyms[F], config: AppConfig): HttpApi[F] =
+  def make[F[_]: Async](synonymsService: Synonyms[F], config: ThesaurusConfig): HttpApi[F] =
     new HttpApi[F](synonymsService, config) {}

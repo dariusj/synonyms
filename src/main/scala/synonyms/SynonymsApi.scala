@@ -18,7 +18,7 @@ object SynonymsApi extends IOApp.Simple:
       httpClient       <- MkHttpClient[IO].newEmber(cfg.httpClientConfig)
       thesaurusClients <- ThesaurusClients.make[IO](httpClient)
       synonymsService = Synonyms.make(thesaurusClients)
-      httpApp         = HttpApi.make(synonymsService, cfg).httpApp
+      httpApp         = HttpApi.make(synonymsService, cfg.thesaurusConfig).httpApp
       server <- MkHttpServer[IO].newEmber(cfg.httpServerConfig.get, httpApp)
     yield server
     serverR.useForever
