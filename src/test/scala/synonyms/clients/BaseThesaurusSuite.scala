@@ -15,6 +15,7 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
   )(using Location): Unit =
     test(name) {
       gotEntriesIO.map { gotEntries =>
+        println(gotEntries)
         assertEquals(gotEntries.size, expectedEntries.size)
         gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
       }
@@ -42,4 +43,9 @@ object BaseThesaurusSuite:
 
   def parseFile(browser: Browser, resource: String): browser.DocumentType =
     val url = getClass.getResource(resource)
-    browser.parseFile(url.getPath)
+    val foo = browser.parseFile(url.getPath)
+    import net.ruippeixotog.scalascraper.dsl.DSL.*
+    import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
+    import net.ruippeixotog.scalascraper.dsl.ToQuery
+    println("FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + (foo >> elementList(".dictionary")))
+    foo
