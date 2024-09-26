@@ -11,34 +11,39 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
   def testBuildEntriesIO(
       name: String,
       gotEntriesIO: IO[List[Entry]],
-      expectedEntries: List[ExpectedEntry]
+      expectedResult: ExpectedResult
   )(using Location): Unit =
     test(name) {
       gotEntriesIO.map { gotEntries =>
+        import expectedResult.*
         assertEquals(gotEntries.size, expectedEntries.size)
-        gotEntries.zip(expectedEntries).foreach(assertEntry.tupled)
+        gotEntries.zip(expectedEntries).foreach { case (gotEntry, expectedEntry) =>
+          import expectedEntry.*
+          import gotEntry.*
+          assertEquals(thesaurusName, expectedThesaurusName)
+          assertEquals(word, expectedWord)
+          assertEquals(partOfSpeech, expectedPos)
+          assertEquals(definition, expectedDefinition)
+          assertEquals(example, expectedExample)
+          assertEquals(synonyms.size, expectedSynonymCount)
+        }
       }
     }
 
-  def assertEntry(got: Entry, expected: ExpectedEntry)(using Location): Unit =
-    import expected.*
-    import got.*
-    assertEquals(thesaurusName, expectedThesaurusName)
-    assertEquals(word, expectedWord)
-    assertEquals(partOfSpeech, expectedPos)
-    assertEquals(definition, expectedDefinition)
-    assertEquals(example, expectedExample)
-    assertEquals(synonyms.size, expectedSynonymCount)
-
 object BaseThesaurusSuite:
-  case class ExpectedEntry(
+  case class ExpectedResult(
       expectedThesaurusName: ThesaurusName,
       expectedWord: Word,
-      expectedPos: PartOfSpeech,
-      expectedDefinition: Option[Definition],
-      expectedExample: Option[Example],
-      expectedSynonymCount: Int
+      expectedEntries: List[ExpectedResult.Entry]
   )
+
+  object ExpectedResult:
+    case class Entry(
+        expectedPos: PartOfSpeech,
+        expectedDefinition: Option[Definition],
+        expectedExample: Option[Example],
+        expectedSynonymCount: Int
+    )
 
   def parseFile(browser: Browser, resource: String): browser.DocumentType =
     val url = getClass.getResource(resource)

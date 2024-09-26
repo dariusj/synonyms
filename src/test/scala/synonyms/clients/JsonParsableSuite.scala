@@ -28,38 +28,14 @@ class JsonParsableSuite extends BaseThesaurusSuite:
     parseResource("/dm-far.json").flatMap(words =>
       summon[JsonParsable[IO, Datamuse]].parseDocument(Word("far"), words)
     ),
-    List(
-      ExpectedEntry(
-        ThesaurusName("Datamuse"),
-        Word("far"),
-        PartOfSpeech.Adjective,
-        None,
-        None,
-        12
-      ),
-      ExpectedEntry(
-        ThesaurusName("Datamuse"),
-        Word("far"),
-        PartOfSpeech.Noun,
-        None,
-        None,
-        5
-      ),
-      ExpectedEntry(
-        ThesaurusName("Datamuse"),
-        Word("far"),
-        PartOfSpeech.Verb,
-        None,
-        None,
-        1
-      ),
-      ExpectedEntry(
-        ThesaurusName("Datamuse"),
-        Word("far"),
-        PartOfSpeech.Adverb,
-        None,
-        None,
-        87
+    ExpectedResult(
+      ThesaurusName("Datamuse"),
+      Word("far"),
+      List(
+        ExpectedResult.Entry(PartOfSpeech.Adjective, None, None, 12),
+        ExpectedResult.Entry(PartOfSpeech.Noun, None, None, 5),
+        ExpectedResult.Entry(PartOfSpeech.Verb, None, None, 1),
+        ExpectedResult.Entry(PartOfSpeech.Adverb, None, None, 87)
       )
     )
   )
