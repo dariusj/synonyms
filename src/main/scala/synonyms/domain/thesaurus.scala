@@ -5,6 +5,7 @@ import io.circe.*
 import io.circe.generic.semiauto.*
 import io.github.iltotore.iron.*
 import io.github.iltotore.iron.constraint.all.*
+import org.http4s.{ParseResult, Uri}
 
 import Result.*
 
@@ -63,30 +64,31 @@ case class Entry(
 
 sealed trait Thesaurus:
   def name: ThesaurusName
-  def url(word: Word): String
+  def uri(word: Word): ParseResult[Uri]
 
 object Thesaurus:
   type MerriamWebster = MerriamWebster.type
   case object MerriamWebster extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("Merriam-Webster")
-    def url(word: Word)     = s"https://www.merriam-webster.com/thesaurus/$word"
+    def uri(word: Word)     = Uri.fromString(s"https://www.merriam-webster.com/thesaurus/$word")
 
   type Cambridge = Cambridge.type
   case object Cambridge extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("Cambridge")
-    def url(word: Word)     = s"https://dictionary.cambridge.org/thesaurus/$word"
+    def uri(word: Word)     = Uri.fromString(s"https://dictionary.cambridge.org/thesaurus/$word")
 
   type Collins = Collins.type
   case object Collins extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("Collins")
-    def url(word: Word) =
+    def uri(word: Word) = Uri.fromString(
       s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
+    )
 
   type Datamuse = Datamuse.type
   case object Datamuse extends Thesaurus:
     override def name: ThesaurusName = ThesaurusName("Datamuse")
-    def url(word: _root_.synonyms.domain.Word) =
-      s"https://api.datamuse.com/words?ml=$word"
+    def uri(word: _root_.synonyms.domain.Word) =
+      Uri.fromString(s"https://api.datamuse.com/words?ml=$word")
 
     case class Word(word: String, tags: Option[List[String]])
 

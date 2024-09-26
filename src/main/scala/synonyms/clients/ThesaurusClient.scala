@@ -3,6 +3,7 @@ package synonyms.clients
 import _root_.io.circe.*
 import cats.effect.*
 import cats.syntax.applicativeError.*
+import cats.syntax.either.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.option.*
@@ -38,15 +39,14 @@ object ThesaurusClient:
         type Doc = Document
 
         override def fetchDocument(word: Word): F[Option[Doc]] =
-          val url = thesaurus.url(word)
-          val fetch = Sync[F].delay(browser.get(url)).map(_.some).recover {
-            case e: HttpStatusException if e.getStatusCode == 404 => None
-          }
-
           for
-            _                    <- Logger[F].debug(s"Fetching $url")
+            uri <- thesaurus.uri(word).liftTo[F]
+            fetch = Sync[F].delay(browser.get(uri.renderString)).map(_.some).recover {
+              case e: HttpStatusException if e.getStatusCode == 404 => None
+            }
+            _                    <- Logger[F].debug(s"Fetching $uri")
             (duration, maybeDoc) <- clock.timed(fetch)
-            _                    <- Logger[F].debug(s"Fetching $url took ${duration.toMillis} ms")
+            _                    <- Logger[F].debug(s"Fetching $uri took ${duration.toMillis} ms")
           yield maybeDoc
 
         override def parseDocument(word: Word, document: Doc): F[List[Entry]] =
@@ -61,20 +61,21 @@ object ThesaurusClient:
       new ThesaurusClient[F]:
         override type Doc = List[Datamuse.Word]
 
-        def request(word: Word): Request[F] =
-          Request[F](Method.GET, Uri.unsafeFromString(thesaurus.url(word)))
-
         override def fetchDocument(word: Word): F[Option[Doc]] =
           val words: Stream[F, Doc] = for
             // TODO: This should be passed into makeJson, not created here
-            client <- Stream.resource(EmberClientBuilder.default[F].build)
-            _      <- Stream.eval(Logger[F].debug(s"Fetching ${thesaurus.url(word)}"))
-            start  <- Stream.eval(Clock[F].monotonic)
-            res    <- client.stream(request(word))
+            client  <- Stream.resource(EmberClientBuilder.default[F].build)
+            uri     <- Stream.fromEither(thesaurus.uri(word))
+            request <- Stream(Request[F](Method.GET, uri))
+            _       <- Stream.eval(Logger[F].debug(s"Fetching ${request.uri.renderString}"))
+            start   <- Stream.eval(Clock[F].monotonic)
+            res     <- client.stream(request)
             body <- res.body.through(text.utf8.decode).through(tokens).through(deserialize[F, Doc])
             end  <- Stream.eval(Clock[F].monotonic)
             _ <- Stream.eval(
-              Logger[F].debug(s"Fetching ${thesaurus.url(word)} took ${(end - start).toMillis} ms")
+              Logger[F].debug(
+                s"Fetching ${request.uri.renderString} took ${(end - start).toMillis} ms"
+              )
             )
           yield body
           // TODO: Error handling
