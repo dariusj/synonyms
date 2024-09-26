@@ -118,31 +118,3 @@ object JsoupParsable:
             .map(_.entries)
         }
         .flatMap(_.liftTo[F])
-
-// TODO: Move to HtmlUnitBrowser
-// given [F[_]: Monad]: JsoupParsable[F, Collins] with
-//   val thesaurus                                 = Thesaurus.Collins
-//   extension (s: String) def toPos: PartOfSpeech = ???
-//   def parseDocument(word: Word, document: Document): F[List[Entry]] =
-//     Applicative[F].pure(document).map(_ >> elementList(".entry")).map {
-//       entryEls =>
-//         entryEls.flatMap { el =>
-//           val senses = el >> elementList(".sense")
-
-//           senses.map { sense =>
-//             val pos = el >> text(".headerSensePos")
-//             val definition =
-//               (el >?> text(".def")).orElse(el >?> text(".linkDef"))
-//             val example  = el >?> text(".type-example")
-//             val synonyms = el >> texts(".type-syn .orth")
-//             Entry(
-//               thesaurus.name,
-//               word,
-//               pos.toPos,
-//               definition.map(Definition.apply),
-//               example.map(Example.apply),
-//               synonyms.map(Word.apply).toList
-//             )
-//           }
-//         }
-//     }
