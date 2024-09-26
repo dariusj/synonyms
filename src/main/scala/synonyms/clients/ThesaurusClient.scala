@@ -15,7 +15,7 @@ import fs2.io.net.Network
 import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import net.ruippeixotog.scalascraper.model.Document
 import org.http4s.*
-import org.http4s.ember.client.EmberClientBuilder
+import org.http4s.client.Client
 import org.jsoup.HttpStatusException
 import org.typelevel.log4cats.Logger
 import synonyms.domain.Thesaurus.Datamuse
@@ -53,7 +53,7 @@ object ThesaurusClient:
           jsoupParsable.parseDocument(word, document)
     )
 
-  def makeJson[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T)(using
+  def makeJson[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(using
       jsonParsable: JsonParsable[F, T],
       clock: Clock[F]
   ): Resource[F, ThesaurusClient[F]] =
@@ -63,8 +63,6 @@ object ThesaurusClient:
 
         override def fetchDocument(word: Word): F[Option[Doc]] =
           val words: Stream[F, Doc] = for
-            // TODO: This should be passed into makeJson, not created here
-            client  <- Stream.resource(EmberClientBuilder.default[F].build)
             uri     <- Stream.fromEither(thesaurus.uri(word))
             request <- Stream(Request[F](Method.GET, uri))
             _       <- Stream.eval(Logger[F].debug(s"Fetching ${request.uri.renderString}"))

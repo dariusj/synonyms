@@ -18,7 +18,7 @@ import synonyms.services.{Synonyms, *}
 
 class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEffectSuite:
 
-  val cfg = Config.load()
+  val cfg = Config.load
   test("GET /synonyms/$word returns JSON response") {
     PropF.forAllF(entryGen) { entry =>
       val req      = GET(Uri.unsafeFromString(s"/synonyms/${entry.word.toString}"))
