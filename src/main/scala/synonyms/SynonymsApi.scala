@@ -16,7 +16,7 @@ object SynonymsApi extends IOApp.Simple:
     val cfg = Config.loadForHttp
     val serverR = for
       httpClient       <- MkHttpClient[IO].newEmber(cfg.httpClientConfig)
-      thesaurusClients <- ThesaurusClients.make[IO](httpClient)
+      thesaurusClients <- ThesaurusClients.make(httpClient)
       synonymsService = Synonyms.make(thesaurusClients)
       httpApp         = HttpApi.make(synonymsService, cfg.thesaurusConfig).httpApp
       server <- MkHttpServer[IO].newEmber(cfg.httpServerConfig.get, httpApp)
