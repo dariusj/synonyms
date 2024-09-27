@@ -4,7 +4,6 @@ import cats.effect.*
 import cats.syntax.show.*
 import com.monovore.decline.Opts
 import com.monovore.decline.effect.CommandIOApp
-import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger

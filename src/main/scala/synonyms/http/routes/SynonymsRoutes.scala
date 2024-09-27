@@ -7,7 +7,6 @@ import cats.syntax.apply.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import io.circe.*
-import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.*
 import org.http4s.circe.*

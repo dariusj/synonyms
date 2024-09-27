@@ -2,9 +2,10 @@ package synonyms.http.routes
 
 import cats.effect.*
 import cats.syntax.show.*
-import io.circe.generic.auto.*
+import io.circe.*
 import io.circe.syntax.*
 import io.github.iltotore.iron.*
+import munit.*
 import org.http4s.*
 import org.http4s.Method.*
 import org.http4s.circe.*
@@ -13,11 +14,10 @@ import org.http4s.headers.{Accept, `Content-Type`}
 import org.scalacheck.effect.PropF
 import synonyms.PropHelpers.*
 import synonyms.config.Config
-import synonyms.domain.{Result, *}
-import synonyms.services.{Synonyms, *}
+import synonyms.domain.*
+import synonyms.services.*
 
-class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEffectSuite:
-
+class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
   val cfg = Config.load
   test("GET /synonyms/$word returns JSON response") {
     PropF.forAllF(entryGen) { entry =>
@@ -108,7 +108,7 @@ class SynonymsRoutesSuite extends munit.CatsEffectSuite with munit.ScalaCheckEff
       expectedStatus: Status,
       expectedContentType: MediaType,
       expectedBody: A
-  )(using EntityDecoder[IO, A]): IO[Unit] =
+  )(using EntityDecoder[IO, A], Location): IO[Unit] =
     assertEquals(res.status, Status.Ok)
     res.headers.get[`Content-Type`] match
       case None => fail("Could not find Content-Type header")

@@ -1,11 +1,13 @@
 package synonyms.domain
 
 import cats.Show
+import io.circe.Encoder
 import synonyms.domain.*
 
 case class SynonymsByLength private (length: Int, synonyms: List[Synonym])
 
 object SynonymsByLength:
+  given Encoder[SynonymsByLength] = Encoder.AsObject.derived
   given Show[SynonymsByLength] with
     def show(sbl: SynonymsByLength): String =
       s"(${sbl.length}) ${sbl.synonyms.mkString(", ")}"
@@ -30,6 +32,7 @@ sealed abstract class Result:
     case _                          => this
 
 object Result:
+  given Encoder[Result] = Encoder.AsObject.derived
   given Show[Result] with
     def show(r: Result): String = r match
       case nf: NotSynonyms =>

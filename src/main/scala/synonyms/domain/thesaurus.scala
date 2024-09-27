@@ -38,6 +38,9 @@ enum PartOfSpeech:
   case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,
     Undetermined, Verb
 
+object PartOfSpeech:
+  given Encoder[PartOfSpeech] = Encoder.encodeString.contramap(_.toString)
+
 opaque type Definition = String
 
 object Definition:
