@@ -35,7 +35,8 @@ object Synonym:
   extension (w: Synonym) def countChars(p: Char => Boolean): Int = w.count(p)
 
 enum PartOfSpeech:
-  case Adjective, Adverb, Noun, Preposition, Undetermined, Verb
+  case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,
+    Undetermined, Verb
 
 opaque type Definition = String
 
@@ -95,13 +96,21 @@ object Thesaurus:
     object Word:
       given Decoder[Word] = deriveDecoder[Word]
 
+  type WordHippo = WordHippo.type
+  case object WordHippo extends Thesaurus:
+    val name: ThesaurusName = ThesaurusName("WordHippo")
+    def uri(word: Word) = Uri.fromString(
+      s"https://www.wordhippo.com/what-is/another-word-for/$word.html"
+    )
+
   def fromString(thesaurusName: String): Option[Thesaurus] =
     val pf: PartialFunction[String, Thesaurus] = {
-      case "mw"        => MerriamWebster
       case "cambridge" => Cambridge
       case "datamuse"  => Datamuse
+      case "mw"        => MerriamWebster
+      case "wordhippo" => WordHippo
     }
     pf.lift(thesaurusName)
 
   val all: NonEmptyList[Thesaurus] =
-    NonEmptyList.of(MerriamWebster, Cambridge, Datamuse)
+    NonEmptyList.of(Cambridge, Datamuse, MerriamWebster, WordHippo)

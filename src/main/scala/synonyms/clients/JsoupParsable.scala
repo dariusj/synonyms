@@ -17,6 +17,11 @@ trait JsoupParsable[F[_], T]:
   def parseDocument(word: Word, document: Document): F[List[Entry]]
 
 object JsoupParsable:
+  extension (el: Element)
+    def hasClass(name: String): Boolean =
+      // We need to be defensive as 'attr' throws if the attribute isn't defined
+      Option.when(el.hasAttr("class"))(el.attr("class")).exists(_.split(" ").contains(name))
+
   given [F[_]: MonadThrow]: JsoupParsable[F, MerriamWebster] with
     given ThesaurusName = MerriamWebster.name
     extension (s: String)
@@ -74,9 +79,6 @@ object JsoupParsable:
         case "preposition" => PartOfSpeech.Preposition
         case "verb"        => PartOfSpeech.Verb
 
-    extension (el: Element)
-      def hasClass(name: String): Boolean = el.attr("class").split(" ").contains(name)
-
     private case class Acc(currentPos: Option[PartOfSpeech], entries: List[Entry]):
       def handlePosEl(el: Element): Acc =
         val pos = el >> text(".pos")
@@ -118,3 +120,39 @@ object JsoupParsable:
             .map(_.entries)
         }
         .flatMap(_.liftTo[F])
+
+  given [F[_]: MonadThrow]: JsoupParsable[F, WordHippo] with
+    given ThesaurusName = WordHippo.name
+    extension (s: String)
+      def toPos: PartOfSpeech = s match
+        case "Adjective"    => PartOfSpeech.Adjective
+        case "Adverb"       => PartOfSpeech.Adverb
+        case "Conjunction"  => PartOfSpeech.Conjunction
+        case "Determiner"   => PartOfSpeech.Determiner
+        case "Interjection" => PartOfSpeech.Interjection
+        case "Noun"         => PartOfSpeech.Noun
+        case "Preposition"  => PartOfSpeech.Preposition
+        case "Pronoun"      => PartOfSpeech.Pronoun
+        case "Verb"         => PartOfSpeech.Verb
+
+    def parseDocument(word: Word, document: Document): F[List[Entry]] =
+      Applicative[F]
+        .pure(document)
+        .map(_ >> elementList("td#contentpagecell td > div"))
+        .map {
+          _.foldLeft(Vector.empty[Entry]) {
+            case (entries, el) if el.hasClass("wordtype") && el.children.nonEmpty =>
+              // We drop ` ▲` from the end
+              entries :+ Entry(WordHippo.name, word, el.text.dropRight(2).toPos, None, None, Nil)
+            case (entries, el) if el.hasClass("tabdesc") =>
+              entries.init :+ entries.last.copy(definition = Option(Definition(el.text)))
+            case (entries, el) if el.hasClass("relatedwords") && el.select(".wb").nonEmpty =>
+              entries.init :+ entries.last
+                .copy(synonyms = (el >> texts(".wb")).map(Synonym.apply).toList)
+            case (entries, el) if el.hasClass("tabexample") =>
+              // We drop leading and trailing `“` quotes
+              entries.init :+ entries.last
+                .copy(example = Option(Example(el.text.drop(1).dropRight(1))))
+            case (entries, _) => entries
+          }.toList
+        }

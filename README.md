@@ -44,6 +44,7 @@ The app currently supports the following thesauruses:
 * [Cambridge](https://dictionary.cambridge.org/thesaurus/) (`cambridge`)
 * [Datamuse](https://www.datamuse.com/api/) (`datamuse`)
 * [Merriam-Webster](https://www.merriam-webster.com/thesaurus) (`mw`)
+* [WordHippo](https://www.wordhippo.com) (`wordhippo`)
 
 Default is all thesauruses.
 

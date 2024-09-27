@@ -16,7 +16,7 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
     test(name) {
       gotEntriesIO.map { gotEntries =>
         import expectedResult.*
-        assertEquals(gotEntries.size, expectedEntries.size)
+        assertEquals(clue(gotEntries).size, expectedEntries.size)
         gotEntries.zip(expectedEntries).foreach { case (gotEntry, expectedEntry) =>
           import expectedEntry.*
           import gotEntry.*

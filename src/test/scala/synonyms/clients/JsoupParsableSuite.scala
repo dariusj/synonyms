@@ -5,7 +5,7 @@ import io.github.iltotore.iron.*
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import synonyms.clients.BaseThesaurusSuite.*
 import synonyms.domain.*
-import synonyms.domain.Thesaurus.{Cambridge, MerriamWebster}
+import synonyms.domain.Thesaurus.{Cambridge, MerriamWebster, WordHippo}
 
 class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
@@ -77,6 +77,118 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
           None,
           Some(Example("I long to travel to far places.")),
           8
+        )
+      )
+    )
+  )
+
+  testBuildEntriesIO(
+    "parseDocument for WordHippo parses page successfully",
+    summon[JsoupParsable[IO, WordHippo]].parseDocument(
+      Word("far"),
+      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/wh-far.html")
+    ),
+    ExpectedResult(
+      ThesaurusName("WordHippo"),
+      Word("far"),
+      List(
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("Situated at a great distance in space or time")),
+          Some(
+            Example(
+              "In the far distance, along the humping road, an army truck crawls up the horizon towards us."
+            )
+          ),
+          58
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(
+            Definition("Being far, or the furthest distance, or the opposite end, from a point")
+          ),
+          Some(
+            Example(
+              "I went to the position of Captain Weir's company at the far point of the ridge down-stream."
+            )
+          ),
+          17
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("Remote or isolated, possibly inaccessible")),
+          Some(
+            Example(
+              "Then she had met Durand Laxart, a young widower who had recently come to Burey from some far village."
+            )
+          ),
+          124
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("Lasting or extending for a great period of time")),
+          Some(
+            Example(
+              "In his mind's eye, he followed the survivors of the persecution on their far journeys to the world's end."
+            )
+          ),
+          166
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("Furthest from a center")),
+          None,
+          102
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("At a distance from an intended target")),
+          None,
+          278
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adjective,
+          Some(Definition("Small or improbable in degree")),
+          None,
+          59
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adverb,
+          Some(Definition("By a great deal")),
+          Some(
+            Example(
+              "While an improvement on the previous plan, it still falls far short of acceptable."
+            )
+          ),
+          338
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adverb,
+          Some(Definition("To or from a great distance, time, or degree")),
+          Some(
+            Example(
+              "The mountains looming far to my right, the West Alps, told me we had crossed into France."
+            )
+          ),
+          22
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adverb,
+          Some(Definition("To, or at a distance from, a particular place, person, or thing")),
+          None,
+          52
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adverb,
+          Some(Definition("Everywhere, widely in different directions")),
+          None,
+          85
+        ),
+        ExpectedResult.Entry(
+          PartOfSpeech.Adverb,
+          Some(Definition("To a late or an advanced time")),
+          None,
+          4
         )
       )
     )
