@@ -43,3 +43,8 @@ lazy val synonyms = (project in file("."))
       Libraries.scalacheckEffectMunit % Test
     )
   )
+
+addCommandAlias(
+  "testCi",
+  List("scalafmtSbtCheck", "scalafmtCheckAll", "scalafixAll --check", "test").mkString("; ")
+)
