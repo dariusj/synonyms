@@ -5,7 +5,7 @@ import io.github.iltotore.iron.*
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import synonyms.clients.BaseThesaurusSuite.*
 import synonyms.domain.*
-import synonyms.domain.Thesaurus.{Cambridge, MerriamWebster, WordHippo}
+import synonyms.domain.Thesaurus.*
 
 class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
@@ -190,6 +190,25 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
           None,
           4
         )
+      )
+    )
+  )
+
+  testBuildEntriesIO(
+    "parseDocument for PowerThesaurus parses page successfully",
+    summon[JsoupParsable[IO, PowerThesaurus]].parseDocument(
+      Word("far"),
+      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/pt-far.html")
+    ),
+    ExpectedResult(
+      ThesaurusName("PowerThesaurus"),
+      Word("far"),
+      List(
+        ExpectedResult.Entry(PartOfSpeech.Adjective, None, None, 29),
+        ExpectedResult.Entry(PartOfSpeech.Adverb, None, None, 36),
+        ExpectedResult.Entry(PartOfSpeech.Noun, None, None, 1),
+        ExpectedResult.Entry(PartOfSpeech.Undetermined, None, None, 2),
+        ExpectedResult.Entry(PartOfSpeech.Verb, None, None, 3)
       )
     )
   )

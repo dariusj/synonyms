@@ -39,7 +39,8 @@ enum PartOfSpeech:
     Undetermined, Verb
 
 object PartOfSpeech:
-  given Encoder[PartOfSpeech] = Encoder.encodeString.contramap(_.toString)
+  given Encoder[PartOfSpeech]  = Encoder.encodeString.contramap(_.toString)
+  given Ordering[PartOfSpeech] = Ordering.by(_.toString)
 
 opaque type Definition = String
 
@@ -99,6 +100,11 @@ object Thesaurus:
     object Word:
       given Decoder[Word] = deriveDecoder[Word]
 
+  type PowerThesaurus = PowerThesaurus.type
+  case object PowerThesaurus extends Thesaurus:
+    override val name: ThesaurusName = ThesaurusName("PowerThesaurus")
+    override def uri(word: Word)     = Uri.fromString(s"https://powerthesaurus.org/$word/synonyms")
+
   type WordHippo = WordHippo.type
   case object WordHippo extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("WordHippo")
@@ -108,12 +114,13 @@ object Thesaurus:
 
   def fromString(thesaurusName: String): Option[Thesaurus] =
     val pf: PartialFunction[String, Thesaurus] = {
-      case "cambridge" => Cambridge
-      case "datamuse"  => Datamuse
-      case "mw"        => MerriamWebster
-      case "wordhippo" => WordHippo
+      case "cambridge"      => Cambridge
+      case "datamuse"       => Datamuse
+      case "mw"             => MerriamWebster
+      case "powerthesaurus" => PowerThesaurus
+      case "wordhippo"      => WordHippo
     }
     pf.lift(thesaurusName)
 
   val all: NonEmptyList[Thesaurus] =
-    NonEmptyList.of(Cambridge, Datamuse, MerriamWebster, WordHippo)
+    NonEmptyList.of(Cambridge, Datamuse, MerriamWebster, PowerThesaurus, WordHippo)

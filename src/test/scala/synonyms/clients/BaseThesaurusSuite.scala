@@ -25,7 +25,7 @@ abstract class BaseThesaurusSuite extends CatsEffectSuite:
           assertEquals(partOfSpeech, expectedPos)
           assertEquals(definition, expectedDefinition)
           assertEquals(example, expectedExample)
-          assertEquals(synonyms.size, expectedSynonymCount)
+          assertEquals(clue(synonyms).size, expectedSynonymCount)
         }
       }
     }

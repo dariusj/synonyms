@@ -4,7 +4,7 @@ import cats.syntax.either.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
-import cats.{Applicative, MonadThrow}
+import cats.{Applicative, Monad, MonadThrow}
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.dsl.ToQuery
@@ -156,3 +156,49 @@ object JsoupParsable:
             case (entries, _) => entries
           }.toList
         }
+
+  // PowerThesaurus has an infinite scroll feature to get more synonyms, but we can't trigger that
+  // with Jsoup
+  given [F[_]: Monad]: JsoupParsable[F, PowerThesaurus] with
+    given ThesaurusName = PowerThesaurus.name
+    extension (s: String)
+      def toPos: PartOfSpeech =
+        s match
+          case "adj."  => PartOfSpeech.Adjective
+          case "adv."  => PartOfSpeech.Adverb
+          case "conj." => PartOfSpeech.Conjunction
+          case "int."  => PartOfSpeech.Interjection
+          case "n."    => PartOfSpeech.Noun
+          case "prep." => PartOfSpeech.Preposition
+          case "v."    => PartOfSpeech.Verb
+
+    def parseDocument(word: Word, document: Document): F[List[Entry]] =
+      def extractPos(el: Element): Iterable[PartOfSpeech] =
+        // This catches any pos before an optional "#".
+        // Being explicit with the classes excludes a ", "
+        val secondaryArea = el >> texts("#secondary-area .r3_e5 > .ct_a8, .zk_zl")
+        val sa            = secondaryArea.takeWhile(_ != "#").map(_.toPos)
+        sa.headOption.as(sa).getOrElse(Iterable(PartOfSpeech.Undetermined))
+
+      Applicative[F]
+        .pure(document)
+        .map(_ >> elementList(".r3_b"))
+        .map(_.flatMap { el =>
+          val synonym = el >> text("#primary-area")
+          extractPos(el).map(_ -> Synonym(synonym))
+        })
+        .map(
+          _.groupBy { case (pos, _) => pos }
+            .map { case (pos, synonyms) =>
+              Entry(
+                PowerThesaurus.name,
+                word,
+                pos,
+                None,
+                None,
+                synonyms.map { case (_, synonyms) => synonyms }
+              )
+            }
+            .toList
+            .sortBy(_.partOfSpeech)
+        )
