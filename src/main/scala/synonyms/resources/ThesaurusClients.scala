@@ -18,11 +18,11 @@ object ThesaurusClients:
       client: Client[F]
   ): Resource[F, ThesaurusClients[F]] =
     (
-      ThesaurusClient.makeJsoup[F, Cambridge](Cambridge),
-      ThesaurusClient.makeJsoup[F, MerriamWebster](MerriamWebster),
-      ThesaurusClient.makeJsoup[F, PowerThesaurus](PowerThesaurus),
-      ThesaurusClient.makeJsoup[F, WordHippo](WordHippo),
-      ThesaurusClient.makeJson[F, Datamuse](Datamuse, client)
+      ThesaurusClient.makeJsoup(Cambridge),
+      ThesaurusClient.makeJsoup(MerriamWebster),
+      ThesaurusClient.makeJsoup(PowerThesaurus),
+      ThesaurusClient.makeJsoup(WordHippo),
+      ThesaurusClient.makeJson(Datamuse, client)
     ).parMapN { case (cambridge, mw, powerThesaurus, wordhippo, datamuse) =>
       new ThesaurusClients[F]:
         val clients: Map[Thesaurus, ThesaurusClient[F]] =
