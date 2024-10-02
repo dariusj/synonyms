@@ -77,6 +77,7 @@ object JsoupParsable:
         case "adverb"      => PartOfSpeech.Adverb
         case "noun"        => PartOfSpeech.Noun
         case "preposition" => PartOfSpeech.Preposition
+        case "pronoun"     => PartOfSpeech.Pronoun
         case "verb"        => PartOfSpeech.Verb
 
     private case class Acc(currentPos: Option[PartOfSpeech], entries: List[Entry]):
