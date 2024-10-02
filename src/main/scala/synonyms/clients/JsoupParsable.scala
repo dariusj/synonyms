@@ -178,8 +178,8 @@ object JsoupParsable:
         // This catches any pos before an optional "#".
         // Being explicit with the classes excludes a ", "
         val secondaryArea = el >> texts("#secondary-area .r3_e5 > .ct_a8, .zk_zl")
-        val sa            = secondaryArea.takeWhile(_ != "#").map(_.toPos)
-        sa.headOption.as(sa).getOrElse(Iterable(PartOfSpeech.Undetermined))
+        val partsOfSpeech = secondaryArea.takeWhile(_ != "#").map(_.toPos)
+        partsOfSpeech.headOption.as(partsOfSpeech).getOrElse(Iterable(PartOfSpeech.Undetermined))
 
       Applicative[F]
         .pure(document)
