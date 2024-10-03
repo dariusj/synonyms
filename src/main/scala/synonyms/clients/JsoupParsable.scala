@@ -190,14 +190,14 @@ object JsoupParsable:
         })
         .map(
           _.groupBy { case (pos, _) => pos }
-            .map { case (pos, synonyms) =>
+            .map { case (pos, posSynonyms) =>
               Entry(
                 PowerThesaurus.name,
                 word,
                 pos,
                 None,
                 None,
-                synonyms.map { case (_, synonyms) => synonyms }
+                posSynonyms.map { case (_, synonyms) => synonyms }
               )
             }
             .toList
