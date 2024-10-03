@@ -8,7 +8,7 @@ object Dependencies {
     val circe                 = "0.14.9"
     val decline               = "2.4.1"
     val fs2                   = "3.10.2"
-    val fs2data               = "1.11.0"
+    val fs2data               = "1.11.1"
     val http4s                = "0.23.28"
     val http4sBlaze           = "0.23.16"
     val iron                  = "2.6.0"
