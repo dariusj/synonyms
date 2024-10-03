@@ -32,7 +32,18 @@ object Synonym:
     def compare(x: Synonym, y: Synonym): Int = x.compareTo(y)
   given Encoder[Synonym] = Encoder.encodeString.contramap(_.toString)
 
-  extension (w: Synonym) def countChars(p: Char => Boolean): Int = w.count(p)
+  extension (synonym: Synonym)
+    def countChars(p: Char => Boolean): Int = synonym.count(p)
+
+    // We could receive the string "'" that would end up being an empty string, breaking Word
+    // constraints but in practice this shouldn't happen
+    private def normalise(s: String) =
+      s.collect {
+        case '-'                  => ' '
+        case char if char != '\'' => char
+      }
+    private[domain] def ===(word: Word): Boolean =
+      normalise(synonym).equalsIgnoreCase(normalise(word))
 
 enum PartOfSpeech:
   case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,
@@ -63,7 +74,7 @@ case class Entry(
     synonyms: List[Synonym]
 ):
   def hasSynonym(check: Word): Result =
-    if synonyms.contains(check) then
+    if synonyms.exists(_ === check) then
       AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
     else NotSynonyms(word, check)
 
