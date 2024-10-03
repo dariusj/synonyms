@@ -16,6 +16,7 @@ object Dependencies {
     val logback               = "1.5.8"
     val munit                 = "1.0.0"
     val munitCatsEffect       = "2.0.0"
+    val munitScalacheck       = "1.0.0"
     val scalaScraper          = "3.1.1"
     val scalacheckEffectMunit = "1.0.4"
   }
@@ -53,7 +54,7 @@ object Dependencies {
     // Test
     val fs2io           = "co.fs2"        %% "fs2-io"            % V.fs2
     val munit           = "org.scalameta" %% "munit"             % V.munit
-    val munitScalacheck = "org.scalameta" %% "munit-scalacheck"  % V.munit
+    val munitScalacheck = "org.scalameta" %% "munit-scalacheck"  % V.munitScalacheck
     val munitCatsEffect = "org.typelevel" %% "munit-cats-effect" % V.munitCatsEffect
     val scalacheckEffectMunit =
       "org.typelevel" %% "scalacheck-effect-munit" % V.scalacheckEffectMunit
