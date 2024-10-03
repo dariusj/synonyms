@@ -14,7 +14,7 @@ object Dependencies {
     val iron                  = "2.6.0"
     val log4cats              = "2.7.0"
     val logback               = "1.5.8"
-    val munit                 = "1.0.0"
+    val munit                 = "1.0.2"
     val munitCatsEffect       = "2.0.0"
     val munitScalacheck       = "1.0.0"
     val scalaScraper          = "3.1.1"
