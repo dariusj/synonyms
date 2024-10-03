@@ -18,7 +18,7 @@ This project is a personal playground in Scala to try out different libraries an
 The server can be started by executing the following command:
 
 ```bash
-bloop run synonyms -m synonyms.SynonymsApi
+bloop run http
 ```
 
 The following endpoints are supported:
@@ -33,9 +33,9 @@ The following endpoints are supported:
 Command line invocation supports the following commands:
 
 * Check if two words are synonyms\
-  `bloop run synonyms -m synonyms.SynonymsCli --args check [--args '--format=json'] --args house --args pad`
+  `bloop run cli --args check [--args '--format=json'] --args house --args pad`
 * List synonyms for a given word\
-  `bloop run synonyms -m synonyms.SynonymsCli --args list [--args '--format=json'] [--args '--source|-s datamuse'] --args bar`
+  `bloop run cli --args list [--args '--format=json'] [--args '--source|-s datamuse'] --args bar`
 
 ## Thesauruses
 
@@ -51,8 +51,8 @@ Default is all thesauruses.
 
 ## Run tests
 
-`bloop test synonyms-test`
+`bloop test core cli http`
 
-## Build a Docker image
+## Build a Docker image for the http server
 
-`sbt Docker/publishLocal`
+`sbt http/Docker/publishLocal`

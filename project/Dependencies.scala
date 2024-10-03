@@ -34,7 +34,6 @@ object Dependencies {
 
     val declineEffect = "com.monovore" %% "decline-effect" % V.decline
 
-    val fs2core          = "co.fs2" %% "fs2-core" % V.fs2
     val fs2dataJson      = fs2data("json")
     val fs2dataJsonCirce = fs2data("json-circe")
 
