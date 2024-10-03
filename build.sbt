@@ -38,8 +38,10 @@ lazy val http = project
   .settings(
     dockerExposedPorts ++= Seq(8080),
     dockerUpdateLatest                     := true,
+    dockerUsername                         := Some("dariusj"),
     dockerBaseImage                        := "eclipse-temurin:17-jre",
     makeBatScripts                         := Seq(),
+    packageName                            := "synonyms",
     Compile / packageDoc / publishArtifact := false,
     libraryDependencies ++= Seq(
       Libraries.http4sBlazeServer,
