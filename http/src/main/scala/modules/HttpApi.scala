@@ -20,7 +20,9 @@ sealed abstract class HttpApi[F[_]: Async] private (service: Synonyms[F], cfg: T
   private val appMiddleware: HttpApp[F] => HttpApp[F] = {
     { (http: HttpApp[F]) =>
       RequestLogger.httpApp(logHeaders = true, logBody = true)(http)
-    } andThen { (http: HttpApp[F]) => ResponseTiming(http) } andThen { (http: HttpApp[F]) =>
+    } andThen { (http: HttpApp[F]) =>
+      ResponseTiming(http)
+    } andThen { (http: HttpApp[F]) =>
       ResponseLogger.httpApp(logHeaders = true, logBody = true)(http)
     }
   }
