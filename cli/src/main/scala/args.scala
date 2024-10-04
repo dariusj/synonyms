@@ -1,7 +1,9 @@
 package synonyms.cli
 
-import cats.data.{NonEmptyList, Validated, ValidatedNel}
+import cats.data.{NonEmptyList, ValidatedNel}
 import cats.syntax.apply.given
+import cats.syntax.either.*
+import cats.syntax.option.*
 import com.monovore.decline.{Argument, Opts}
 import synonyms.core.config.types.ThesaurusConfig
 import synonyms.core.domain.*
@@ -9,24 +11,15 @@ import synonyms.core.domain.*
 private def sourceOpts(defaultThesaurus: NonEmptyList[Thesaurus]): Opts[NonEmptyList[Thesaurus]] =
   Opts
     .options[String]("source", "The thesaurus to use", "s")
-    .mapValidated(_.traverse { input =>
-      Validated
-        .fromOption(Thesaurus.fromString(input), s"Invalid source $input")
-        .toValidatedNel
-    })
+    .mapValidated(
+      _.traverse(input => Thesaurus.fromString(input).toValidNel(s"Invalid source $input"))
+    )
     .withDefault(defaultThesaurus)
 
 private val formatOpts: Opts[Format] =
   Opts
     .option[String]("format", "The result format", "f")
-    .mapValidated { format =>
-      Validated
-        .fromOption(
-          Format.fromString(format),
-          s"$format is not a valid format"
-        )
-        .toValidatedNel
-    }
+    .mapValidated(format => Format.fromString(format).toValidNel(s"Invalid format $format"))
     .withDefault(Format.Text)
 
 def checkSynonyms(thesaurusConfig: ThesaurusConfig): Opts[CheckSynonyms.Args] =
@@ -54,9 +47,8 @@ object Format:
   def fromString(s: String): Option[Format] = pf.lift(s)
 
 given Argument[Word] with
-  override def read(string: String): ValidatedNel[String, Word] =
-    Validated.fromEither(Word.either(string)).toValidatedNel
-  override def defaultMetavar: String = "word"
+  override def read(string: String): ValidatedNel[String, Word] = Word.either(string).toValidatedNel
+  override def defaultMetavar: String                           = "word"
 
 object ListSynonyms:
   case class Args(word: Word, source: NonEmptyList[Thesaurus], format: Format)
