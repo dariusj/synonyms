@@ -5,8 +5,10 @@ object Dependencies {
   object V {
     val cats                  = "2.12.0"
     val catsEffect            = "3.5.4"
+    val catsLaws              = "2.12.0"
     val circe                 = "0.14.10"
     val decline               = "2.4.1"
+    val disciplineMunit       = "2.0.0"
     val fs2                   = "3.11.0"
     val fs2data               = "1.11.1"
     val http4s                = "0.23.28"
@@ -51,6 +53,8 @@ object Dependencies {
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 
     // Test
+    val catsLaws        = "org.typelevel" %% "cats-laws"         % V.catsLaws
+    val disciplineMunit = "org.typelevel" %% "discipline-munit"  % V.disciplineMunit
     val fs2io           = "co.fs2"        %% "fs2-io"            % V.fs2
     val munit           = "org.scalameta" %% "munit"             % V.munit
     val munitScalacheck = "org.scalameta" %% "munit-scalacheck"  % V.munitScalacheck
