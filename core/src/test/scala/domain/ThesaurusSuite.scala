@@ -6,10 +6,10 @@ import synonyms.core.domain.Result.*
 
 class ThesaurusSuite extends munit.FunSuite:
 
-  equalityFixture.test("Synonym to Word equality") {
+  equalityFixture.test("Word to Synonym equality") {
     _.foreach { case (string1, string2) =>
-      assert(clue(Synonym(string1)) === clue(Word.applyUnsafe(string2)))
-      assert(clue(Synonym(string2)) === clue(Word.applyUnsafe(string1)))
+      assert(clue(Word.applyUnsafe(string2)) === clue(Synonym(string1)))
+      assert(clue(Word.applyUnsafe(string1)) === clue(Synonym(string2)))
     }
   }
 

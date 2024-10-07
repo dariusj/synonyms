@@ -22,6 +22,14 @@ opaque type Word = String :| (Not[Blank] & Not[Digit])
 object Word extends RefinedTypeOps[String, Not[Blank] & Not[Exists[Digit]], Word]:
   given Encoder[Word] with
     override def apply(a: Word): Json = Json.fromString(a.value)
+  extension (word: Word)
+    private def normalise(s: String) =
+      s.collect {
+        case '-'                  => ' '
+        case char if char != '\'' => char
+      }
+    private[domain] def ===(synonym: Synonym): Boolean =
+      normalise(word).equalsIgnoreCase(normalise(synonym))
 
 opaque type Synonym = String
 
@@ -32,18 +40,7 @@ object Synonym:
     def compare(x: Synonym, y: Synonym): Int = x.compareTo(y)
   given Encoder[Synonym] = Encoder.encodeString.contramap(_.toString)
 
-  extension (synonym: Synonym)
-    def countChars(p: Char => Boolean): Int = synonym.count(p)
-
-    // We could receive the string "'" that would end up being an empty string, breaking Word
-    // constraints but in practice this shouldn't happen
-    private def normalise(s: String) =
-      s.collect {
-        case '-'                  => ' '
-        case char if char != '\'' => char
-      }
-    private[domain] def ===(word: Word): Boolean =
-      normalise(synonym).equalsIgnoreCase(normalise(word))
+  extension (synonym: Synonym) def countChars(p: Char => Boolean): Int = synonym.count(p)
 
 enum PartOfSpeech:
   case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,
@@ -73,10 +70,10 @@ case class Entry(
     example: Option[Example],
     synonyms: List[Synonym]
 ):
-  def hasSynonym(check: Word): Result =
-    if synonyms.exists(_ === check) then
-      AreSynonyms(word, check, partOfSpeech, definition, example, thesaurusName)
-    else NotSynonyms(word, check)
+  def hasSynonym(otherWord: Word): Result =
+    if synonyms.exists(otherWord.===) then
+      AreSynonyms(word, otherWord, partOfSpeech, definition, example, thesaurusName)
+    else NotSynonyms(word, otherWord)
 
 sealed trait Thesaurus:
   def name: ThesaurusName
