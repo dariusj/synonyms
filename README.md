@@ -8,8 +8,9 @@ This project is a personal playground in Scala to try out different libraries an
 
 ## Requirements
 
-* [Bloop](https://scalacenter.github.io/bloop/) (or [sbt](https://www.scala-sbt.org/))
 * [Java 17](https://www.oracle.com/uk/java/technologies/downloads/)
+* [sbt](https://www.scala-sbt.org/)
+* [Optional] [Bloop](https://scalacenter.github.io/bloop/) (examples use bloop)
 
 ## Entrypoints
 
