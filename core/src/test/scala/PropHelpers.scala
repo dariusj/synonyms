@@ -9,7 +9,7 @@ object PropHelpers:
       maxLength: Int = 15,
       char: Gen[Char] = Gen.alphaChar
   ): Gen[String] =
-    Gen.resize(15, Gen.nonEmptyStringOf(Gen.alphaChar))
+    Gen.resize(maxLength, Gen.nonEmptyStringOf(char))
 
   def nonEmptyListGen[A](el: Gen[A], maxLength: Int = 5): Gen[List[A]] =
     Gen.resize(maxLength, Gen.nonEmptyListOf(el))
