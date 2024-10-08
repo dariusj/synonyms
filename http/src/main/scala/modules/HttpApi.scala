@@ -5,11 +5,11 @@ import org.http4s.server.Router
 import org.http4s.server.middleware.*
 import org.http4s.{HttpApp, HttpRoutes}
 import synonyms.core.config.types.ThesaurusConfig
-import synonyms.core.services.Synonyms
+import synonyms.core.programs.Synonyms
 import synonyms.http.routes.SynonymsRoutes
 
-sealed abstract class HttpApi[F[_]: Async] private (service: Synonyms[F], cfg: ThesaurusConfig):
-  private val synonymsRoutes = SynonymsRoutes(service, cfg).routes
+sealed abstract class HttpApi[F[_]: Async] private (program: Synonyms[F], cfg: ThesaurusConfig):
+  private val synonymsRoutes = SynonymsRoutes(program, cfg).routes
 
   private val routes: HttpRoutes[F] = Router("/" -> synonymsRoutes)
 

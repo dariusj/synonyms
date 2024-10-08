@@ -19,11 +19,12 @@ lazy val core = project
       Libraries.monocleCore,
       Libraries.monocleMacro,
       Libraries.scalaScraper,
-      Libraries.catsLaws        % Test,
-      Libraries.disciplineMunit % Test,
-      Libraries.munit           % Test,
-      Libraries.munitCatsEffect % Test,
-      Libraries.munitScalacheck % Test
+      Libraries.catsLaws              % Test,
+      Libraries.disciplineMunit       % Test,
+      Libraries.munit                 % Test,
+      Libraries.munitCatsEffect       % Test,
+      Libraries.munitScalacheck       % Test,
+      Libraries.scalacheckEffectMunit % Test
     )
   )
 
@@ -53,8 +54,7 @@ lazy val http = project
       Libraries.http4sDsl,
       Libraries.http4sEmberServer,
       Libraries.log4cats,
-      Libraries.logback,
-      Libraries.scalacheckEffectMunit % Test
+      Libraries.logback
     )
   )
 

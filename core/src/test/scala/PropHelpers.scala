@@ -11,8 +11,8 @@ object PropHelpers:
   ): Gen[String] =
     Gen.resize(maxLength, Gen.nonEmptyStringOf(char))
 
-  def nonEmptyListGen[A](el: Gen[A], maxLength: Int = 5): Gen[List[A]] =
-    Gen.resize(maxLength, Gen.nonEmptyListOf(el))
+  def nonEmptyListGen[A](a: Gen[A], maxLength: Int = 5): Gen[List[A]] =
+    Gen.resize(maxLength, Gen.nonEmptyListOf(a))
 
   val thesaurusNameGen: Gen[ThesaurusName] =
     nonEmptyStringGen().map(ThesaurusName.apply)
@@ -35,7 +35,7 @@ object PropHelpers:
     partOfSpeech  <- partOfSpeechGen
     definition    <- Gen.option(definitionGen)
     example       <- Gen.option(exampleGen)
-    synonyms      <- Gen.listOf(synonymGen)
+    synonyms      <- Gen.nonEmptyListOf(synonymGen)
   yield Entry(thesaurusName, word, partOfSpeech, definition, example, synonyms)
 
   val thesaurusGen: Gen[Thesaurus] = Gen.oneOf(Thesaurus.all.toList)

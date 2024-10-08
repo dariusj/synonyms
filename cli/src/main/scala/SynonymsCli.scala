@@ -9,6 +9,7 @@ import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import synonyms.cli.config.Config
 import synonyms.core.domain.{Result, SynonymsByLength}
+import synonyms.core.programs.Synonyms
 import synonyms.core.resources.{MkHttpClient, ThesaurusClients}
 import synonyms.core.services.*
 
@@ -25,26 +26,22 @@ object SynonymsCli
           .newEmber(cfg.httpClientConfig)
           .flatMap(ThesaurusClients.make)
           .use { clients =>
-            val service: Synonyms[IO] = Synonyms.make(clients)
-            val outputIO = args match
+            val service: ThesaurusService[IO] = ThesaurusService.make(clients)
+            val synonyms: Synonyms[IO]        = Synonyms(service)
+            val outputIO: IO[String] = args match
               case CheckSynonyms.Args(first, second, thesauruses, format) =>
-                service
-                  .checkSynonyms2(first, second, thesauruses.toList)
-                  .map { result =>
-                    format match
-                      case Format.Json => result.asJson.toString
-                      case Format.Text => result.show
-                  }
+                synonyms.checkSynonyms(first, second, thesauruses.toList).map { result =>
+                  format match
+                    case Format.Json => result.asJson.toString
+                    case Format.Text => result.show
+                }
 
               case ListSynonyms.Args(word, thesauruses, format) =>
-                service
-                  .getEntries2(word, thesauruses.toList)
-                  .map { entries =>
-                    val synonyms = SynonymsByLength.fromEntries(entries)
-                    format match
-                      case Format.Json => synonyms.asJson.toString
-                      case Format.Text => synonyms.map(_.show).mkString("\n")
-                  }
+                synonyms.synonymsByLength(word, thesauruses.toList).map { synonyms =>
+                  format match
+                    case Format.Json => synonyms.asJson.toString
+                    case Format.Text => synonyms.map(_.show).mkString("\n")
+                }
             outputIO.flatMap(IO.println).as(ExitCode.Success)
           }
       }

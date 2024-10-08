@@ -5,7 +5,6 @@ import cats.data.Validated.*
 import cats.data.ValidatedNel
 import cats.syntax.apply.*
 import cats.syntax.flatMap.*
-import cats.syntax.functor.*
 import io.circe.*
 import io.circe.syntax.*
 import org.http4s.*
@@ -16,10 +15,10 @@ import org.http4s.headers.Accept
 import org.http4s.server.Router
 import synonyms.core.config.types.*
 import synonyms.core.domain.*
-import synonyms.core.services.*
+import synonyms.core.programs.*
 import synonyms.http.*
 
-case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F], thesaurusConfig: ThesaurusConfig)
+case class SynonymsRoutes[F[_]: MonadThrow](synonyms: Synonyms[F], thesaurusConfig: ThesaurusConfig)
     extends Http4sDsl[F]:
   private val prefixPath = "/synonyms"
 
@@ -33,10 +32,7 @@ case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F], thesaurusConfi
       ): F[Response[F]] =
         thesaurusesValidated.withDefault(thesaurusConfig.default.toList) match
           case Valid(thesauruses) =>
-            service
-              .getEntries2(word, thesauruses)
-              .map(SynonymsByLength.fromEntries)
-              .flatMap(s => Ok(s.toEntity))
+            synonyms.synonymsByLength(word, thesauruses).flatMap(s => Ok(s.toEntity))
           case Invalid(e) => BadRequest(e.map(_.sanitized).asJson)
 
       req.headers.get[Accept] match
@@ -52,7 +48,7 @@ case class SynonymsRoutes[F[_]: MonadThrow](service: Synonyms[F], thesaurusConfi
         val validated =
           (thesaurusesValidated.withDefault(thesaurusConfig.default.toList), words.toTuple2).mapN {
             case (thesauruses, (first, second)) =>
-              service.checkSynonyms2(first, second, thesauruses)
+              synonyms.checkSynonyms(first, second, thesauruses)
           }
         validated match
           case Valid(result) => result.flatMap(result => Ok(result.toEntity))
