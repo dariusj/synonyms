@@ -157,7 +157,7 @@ object JsoupParsable:
                 val definition = Definition(el.text)
                 val last       = entries.last.focus(_.definition).replace(Option(definition))
                 entries.init :+ last
-              case (entries, el) if el.hasClass("relatedwords") && el.select(".wb").nonEmpty =>
+              case (entries, el) if el.hasClass("relatedwords") =>
                 val synonyms = (el >> texts(".wb")).map(Synonym.apply)
                 val last     = entries.last.focus(_.synonyms).replace(synonyms.toList)
                 entries.init :+ last
