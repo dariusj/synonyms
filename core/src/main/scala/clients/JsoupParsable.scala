@@ -18,11 +18,12 @@ trait JsoupParsable[F[_], T]:
 
 object JsoupParsable:
   extension (el: Element)
-    def hasClass(name: String): Boolean =
+    private def hasAttribute(attr: String, name: String): Boolean =
       // We need to be defensive as 'attr' throws if the attribute isn't defined
-      Option.when(el.hasAttr("class"))(el.attr("class")).exists(_.split(" ").contains(name))
-    def hasId(name: String): Boolean =
-      Option.when(el.hasAttr("id"))(el.attr("id")).exists(_.split(" ").contains(name))
+      Option.when(el.hasAttr(attr))(el.attr(attr)).exists(_.split(" ").contains(name))
+
+    def hasClass(name: String): Boolean = hasAttribute("class", name)
+    def hasId(name: String): Boolean    = hasAttribute("id", name)
 
   given [F[_]: MonadThrow]: JsoupParsable[F, MerriamWebster] with
     given ThesaurusName = MerriamWebster.name
