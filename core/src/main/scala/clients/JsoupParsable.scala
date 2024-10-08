@@ -5,6 +5,7 @@ import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
 import cats.{Applicative, Monad, MonadThrow}
+import monocle.syntax.all.*
 import net.ruippeixotog.scalascraper.dsl.DSL.*
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract.*
 import net.ruippeixotog.scalascraper.dsl.ToQuery
@@ -148,23 +149,22 @@ object JsoupParsable:
             .takeWhile(!_.hasId("searchagaincontainer"))
             .foldLeft(Vector.empty[Entry]) {
               case (entries, el) if el.hasClass("wordtype") =>
-                entries :+ Entry(
-                  WordHippo.name,
-                  word,
-                  // We drop an optional `▲` from the end
-                  el.text.takeWhile(Character.isAlphabetic).toPos,
-                  None,
-                  None,
-                  Nil
-                )
+                // We drop an optional `▲` from the end
+                val pos   = el.text.takeWhile(Character.isAlphabetic).toPos
+                val entry = Entry(WordHippo.name, word, pos, None, None, Nil)
+                entries :+ entry
               case (entries, el) if el.hasClass("tabdesc") =>
-                entries.init :+ entries.last.copy(definition = Option(Definition(el.text)))
+                val definition = Definition(el.text)
+                val last       = entries.last.focus(_.definition).replace(Option(definition))
+                entries.init :+ last
               case (entries, el) if el.hasClass("relatedwords") && el.select(".wb").nonEmpty =>
-                entries.init :+ entries.last
-                  .copy(synonyms = (el >> texts(".wb")).map(Synonym.apply).toList)
+                val synonyms = (el >> texts(".wb")).map(Synonym.apply)
+                val last     = entries.last.focus(_.synonyms).replace(synonyms.toList)
+                entries.init :+ last
               case (entries, el) if el.hasClass("tabexample") =>
-                entries.init :+ entries.last
-                  .copy(example = Option(Example(el.text.drop(1).dropRight(1))))
+                val example = Example(el.text.drop(1).dropRight(1))
+                val last    = entries.last.focus(_.example).replace(Option(example))
+                entries.init :+ last
               case (entries, el) => entries
             }
             .toList

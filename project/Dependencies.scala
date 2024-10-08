@@ -16,6 +16,7 @@ object Dependencies {
     val iron                  = "2.6.0"
     val log4cats              = "2.7.0"
     val logback               = "1.5.8"
+    val monocle               = "3.3.0"
     val munit                 = "1.0.2"
     val munitCatsEffect       = "2.0.0"
     val munitScalacheck       = "1.0.0"
@@ -49,6 +50,9 @@ object Dependencies {
 
     val log4cats = "org.typelevel" %% "log4cats-slf4j"  % V.log4cats
     val logback  = "ch.qos.logback" % "logback-classic" % V.logback
+
+    val monocleCore  = "dev.optics" %% "monocle-core"  % V.monocle
+    val monocleMacro = "dev.optics" %% "monocle-macro" % V.monocle
 
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 

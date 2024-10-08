@@ -16,6 +16,8 @@ lazy val core = project
       Libraries.fs2dataJson,
       Libraries.fs2dataJsonCirce,
       Libraries.iron,
+      Libraries.monocleCore,
+      Libraries.monocleMacro,
       Libraries.scalaScraper,
       Libraries.catsLaws        % Test,
       Libraries.disciplineMunit % Test,
