@@ -195,7 +195,7 @@ object JsoupParsable:
 
       Applicative[F]
         .pure(document)
-        .map(_ >> elementList(".r3_b"))
+        .map(_ >> elementList(".infinite-scroll-component > div"))
         .map(_.flatMap { el =>
           val synonym = el >> text("#primary-area")
           extractPos(el).map(_ -> Synonym(synonym))
