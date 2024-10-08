@@ -83,7 +83,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
   )
 
   testBuildEntriesIO(
-    "parseDocument for WordHippo parses page successfully",
+    "parseDocument for WordHippo parses page with multiple entries successfully",
     summon[JsoupParsable[IO, WordHippo]].parseDocument(
       Word("far"),
       BaseThesaurusSuite.parseFile(JsoupBrowser(), "/wh-far.html")
@@ -189,6 +189,26 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
           Some(Definition("To a late or an advanced time")),
           None,
           4
+        )
+      )
+    )
+  )
+
+  testBuildEntriesIO(
+    "parseDocument for WordHippo parses page with single entry successfully",
+    summon[JsoupParsable[IO, WordHippo]].parseDocument(
+      Word("coder"),
+      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/wh-coder.html")
+    ),
+    ExpectedResult(
+      ThesaurusName("WordHippo"),
+      Word("coder"),
+      List(
+        ExpectedResult.Entry(
+          PartOfSpeech.Noun,
+          Some(Definition("A coder or computer programmer")),
+          None,
+          35
         )
       )
     )
