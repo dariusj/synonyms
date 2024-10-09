@@ -12,11 +12,11 @@ object SynonymsByLength:
     def show(sbl: SynonymsByLength): String =
       s"(${sbl.length}) ${sbl.synonyms.mkString(", ")}"
 
-  def fromEntries(entries: List[Entry]): List[SynonymsByLength] =
+  def fromEntries(entries: List[Entry], cs: CharacterSet): List[SynonymsByLength] =
     entries
       .flatMap(_.synonyms)
       .distinct
-      .groupBy(_.countChars(Character.isAlphabetic))
+      .groupBy(_.countChars(cs))
       .map { case (length, synonyms) => length -> synonyms.sorted }
       .toList
       .sortBy { case (length, _) => length }

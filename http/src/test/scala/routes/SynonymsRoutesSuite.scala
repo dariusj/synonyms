@@ -22,7 +22,7 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
       configFixture().flatMap { cfg =>
         val req      = GET(Uri.unsafeFromString(s"/synonyms/${entry.word.toString}"))
         val service  = testThesaurusService(entries = List(entry))
-        val synonyms = Synonyms(service)
+        val synonyms = Synonyms(service, cfg.synonymConfig)
         val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
 
         routes.run(req).value.map {
@@ -41,7 +41,7 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
           headers = Headers(Accept(MediaRange.`text/*`))
         )
         val service  = testThesaurusService(entries = List(entry))
-        val synonyms = Synonyms(service)
+        val synonyms = Synonyms(service, cfg.synonymConfig)
         val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
 
         routes.run(req).value.map {
@@ -61,7 +61,7 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
           )
         )
         val service  = testThesaurusService()
-        val synonyms = Synonyms(service)
+        val synonyms = Synonyms(service, cfg.synonymConfig)
         val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
         routes.run(req).value.map {
           case Some(res) => assertResponse(res, Status.Ok, MediaType.application.json)
@@ -81,7 +81,7 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
           headers = Headers(Accept(MediaRange.`text/*`))
         )
         val service  = testThesaurusService()
-        val synonyms = Synonyms(service)
+        val synonyms = Synonyms(service, cfg.synonymConfig)
         val routes   = SynonymsRoutes(synonyms, cfg.thesaurusConfig).routes
         routes.run(req).value.map {
           case Some(res) => assertResponse(res, Status.Ok, MediaType.text.plain)
@@ -102,4 +102,9 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
       case Some(ct) => assertEquals(ct.mediaType, expectedContentType)
 
   def testThesaurusService(entries: List[Entry] = Nil) = new ThesaurusService[IO]:
-    def getEntries(word: Word, thesaurus: Thesaurus): IO[List[Entry]] = IO.pure(entries)
+    def getEntries(
+        word: Word,
+        thesaurus: Thesaurus,
+        maxLength: Int,
+        characterSet: CharacterSet
+    ): IO[List[Entry]] = IO.pure(entries)

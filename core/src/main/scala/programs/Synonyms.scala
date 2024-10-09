@@ -4,15 +4,21 @@ import cats.*
 import cats.effect.MonadCancelThrow
 import cats.syntax.functor.*
 import cats.syntax.parallel.*
+import synonyms.core.config.types.SynonymConfig
 import synonyms.core.domain.*
 import synonyms.core.domain.Result.*
 import synonyms.core.services.ThesaurusService
 
-final class Synonyms[F[_]: MonadCancelThrow: Parallel](service: ThesaurusService[F]):
+final class Synonyms[F[_]: MonadCancelThrow: Parallel](
+    service: ThesaurusService[F],
+    cfg: SynonymConfig
+):
   def synonymsByLength(word: Word, thesauruses: List[Thesaurus]): F[List[SynonymsByLength]] =
     thesauruses
-      .parFlatTraverse(thesaurus => service.getEntries(word, thesaurus))
-      .map(SynonymsByLength.fromEntries)
+      .parFlatTraverse(thesaurus =>
+        service.getEntries(word, thesaurus, cfg.maxLength, cfg.characterSet)
+      )
+      .map(entries => SynonymsByLength.fromEntries(entries, cfg.characterSet))
 
   def checkSynonyms(first: Word, second: Word, thesauruses: List[Thesaurus]): F[Result] =
     thesauruses
@@ -27,6 +33,8 @@ final class Synonyms[F[_]: MonadCancelThrow: Parallel](service: ThesaurusService
       }
 
     def getAndCheck(word1: Word, word2: Word): F[Result] =
-      service.getEntries(word1, thesaurus).map(entries => areSynonyms(word1, word2, entries))
+      service
+        .getEntries(word1, thesaurus, cfg.maxLength, cfg.characterSet)
+        .map(entries => areSynonyms(word1, word2, entries))
 
     (getAndCheck(first, second), getAndCheck(second, first)).parMapN(_ combine _)

@@ -31,6 +31,10 @@ object Word extends RefinedTypeOps[String, Not[Blank] & Not[Exists[Digit]], Word
     private[domain] def ===(synonym: Synonym): Boolean =
       normalise(word).equalsIgnoreCase(normalise(synonym))
 
+enum CharacterSet(val counter: Char => Boolean):
+  case AnyChar    extends CharacterSet(_ => true)
+  case Alphabetic extends CharacterSet(Character.isAlphabetic)
+
 opaque type Synonym = String
 
 object Synonym:
@@ -39,7 +43,7 @@ object Synonym:
   given Ordering[Synonym] = Ordering.String
   given Encoder[Synonym]  = Encoder.encodeString.contramap(_.toString)
 
-  extension (synonym: Synonym) def countChars(p: Char => Boolean): Int = synonym.count(p)
+  extension (synonym: Synonym) def countChars(cs: CharacterSet): Int = synonym.count(cs.counter)
 
 enum PartOfSpeech:
   case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,

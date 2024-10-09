@@ -1,12 +1,14 @@
 package synonyms.core
 
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen
 import synonyms.core.domain.*
 import synonyms.core.domain.Result.{AreSynonyms, NotSynonyms}
 
 object PropHelpers:
+  val DefaultStringSize = 15
+
   def nonEmptyStringGen(
-      maxLength: Int = 15,
+      maxLength: Int = DefaultStringSize,
       char: Gen[Char] = Gen.alphaChar
   ): Gen[String] =
     Gen.resize(maxLength, Gen.nonEmptyStringOf(char))
@@ -63,4 +65,4 @@ object PropHelpers:
 
   val resultGen: Gen[Result] = Gen.oneOf(areSynonymsGen, notSynonymsGen)
 
-  given Arbitrary[Entry] = Arbitrary(entryGen)
+  val characterSetGen: Gen[CharacterSet] = Gen.oneOf(CharacterSet.values.toList)
