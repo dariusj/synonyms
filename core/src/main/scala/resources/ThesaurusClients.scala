@@ -22,7 +22,7 @@ object ThesaurusClients:
       ThesaurusClient.makeJsoup(MerriamWebster),
       ThesaurusClient.makeJsoup(PowerThesaurus),
       ThesaurusClient.makeJsoup(WordHippo),
-      ThesaurusClient.makeJson(Datamuse, client)
+      ThesaurusClient.makeStreaming(Datamuse, client)
     ).parMapN { case (cambridge, mw, powerThesaurus, wordhippo, datamuse) =>
       new ThesaurusClients[F]:
         val clients: Map[Thesaurus, ThesaurusClient[F]] =

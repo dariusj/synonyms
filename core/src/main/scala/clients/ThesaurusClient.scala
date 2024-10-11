@@ -1,6 +1,5 @@
 package synonyms.core.clients
 
-import _root_.io.circe.*
 import cats.effect.*
 import cats.syntax.applicativeError.*
 import cats.syntax.either.*
@@ -8,9 +7,6 @@ import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.option.*
 import fs2.*
-import fs2.data.json.*
-import fs2.data.json.circe.*
-import fs2.data.json.codec.*
 import fs2.io.net.Network
 import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import net.ruippeixotog.scalascraper.model.Document
@@ -18,7 +14,6 @@ import org.http4s.*
 import org.http4s.client.Client
 import org.jsoup.HttpStatusException
 import org.typelevel.log4cats.Logger
-import synonyms.core.domain.Thesaurus.Datamuse
 import synonyms.core.domain.{Entry, Thesaurus, Word}
 
 import scala.concurrent.duration.*
@@ -46,39 +41,48 @@ object ThesaurusClient:
             }
             _                    <- Logger[F].debug(s"Fetching $uri")
             (duration, maybeDoc) <- clock.timed(fetch)
-            _                    <- Logger[F].debug(s"Fetching $uri took ${duration.toMillis} ms")
+            _                    <- Logger[F].debug(s"$uri responded in ${duration.toMillis} ms")
           yield maybeDoc
 
         override def parseDocument(word: Word, document: Doc): F[List[Entry]] =
           jsoupParsable.parseDocument(word, document)
     )
 
-  def makeJson[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(using
-      jsonParsable: JsonParsable[F, T],
+  def makeStreaming[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(
+      using
+      streamingParsable: StreamingParsable[F, T],
       clock: Clock[F]
   ): Resource[F, ThesaurusClient[F]] =
     Resource.pure(
       new ThesaurusClient[F]:
-        override type Doc = List[Datamuse.Word]
+        override type Doc = Stream[F, Byte]
+
+        def timed(request: Request[F]): Stream[F, (FiniteDuration, Response[F])] =
+          for
+            start <- Stream.eval(Clock[F].monotonic)
+            res   <- client.stream(request)
+            end   <- Stream.eval(Clock[F].monotonic)
+          yield (end - start) -> res
 
         override def fetchDocument(word: Word): F[Option[Doc]] =
-          val words: Stream[F, Doc] = for
-            uri     <- Stream.fromEither(thesaurus.uri(word))
-            request <- Stream(Request[F](Method.GET, uri))
-            _       <- Stream.eval(Logger[F].debug(s"Fetching ${request.uri.renderString}"))
-            start   <- Stream.eval(Clock[F].monotonic)
-            res     <- client.stream(request)
-            body <- res.body.through(text.utf8.decode).through(tokens).through(deserialize[F, Doc])
-            end  <- Stream.eval(Clock[F].monotonic)
-            _ <- Stream.eval(
-              Logger[F].debug(
-                s"Fetching ${request.uri.renderString} took ${(end - start).toMillis} ms"
-              )
-            )
-          yield body
+          def byteStream: Stream[F, Byte] =
+            for
+              uri                  <- Stream.fromEither(thesaurus.uri(word))
+              request              <- Stream(Request[F](Method.GET, uri))
+              _                    <- Stream.eval(Logger[F].debug(s"Fetching $uri"))
+              (duration, response) <- timed(request)
+              _    <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
+              body <- response.body
+            yield body
+          val maybeBytes = byteStream.pull.uncons1
+            .flatMap {
+              case Some((head, tail)) => Pull.pure(Some(tail.cons1(head)))
+              case None               => Pull.pure(None)
+            }
+            .flatMap(foo => Pull.output1(foo))
           // TODO: Error handling
-          words.compile.toList.map(l => Option(l.head))
+          maybeBytes.stream.compile.lastOrError
 
         override def parseDocument(word: Word, document: Doc): F[List[Entry]] =
-          jsonParsable.parseDocument(word, document)
+          streamingParsable.parseDocument(word, document).compile.toList
     )

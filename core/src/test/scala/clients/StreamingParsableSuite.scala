@@ -3,31 +3,22 @@ package synonyms.core.clients
 import _root_.io.github.iltotore.iron.*
 import cats.effect.IO
 import fs2.*
-import fs2.data.json.*
-import fs2.data.json.circe.*
-import fs2.data.json.codec.*
 import fs2.io.file.{Files, Path}
 import synonyms.core.clients.BaseThesaurusSuite.*
 import synonyms.core.domain.Thesaurus.Datamuse
 import synonyms.core.domain.{PartOfSpeech, ThesaurusName, Word}
 
-class JsonParsableSuite extends BaseThesaurusSuite:
-  def parseResource(name: String): IO[List[Datamuse.Word]] =
+class StreamingParsableSuite extends BaseThesaurusSuite:
+  def parseResource(name: String): Stream[IO, Byte] =
     val url = getClass.getResource(name)
-    Files[IO]
-      .readAll(Path(url.getPath))
-      .through(text.utf8.decode)
-      .through(tokens)
-      .through(deserialize[IO, List[Datamuse.Word]])
-      .compile
-      .toList
-      .map(_.flatten)
+    Files[IO].readAll(Path(url.getPath))
 
   testBuildEntriesIO(
     "parseDocument for Datamuse scrapes page successfully",
-    parseResource("/dm-far.json").flatMap(words =>
-      summon[JsonParsable[IO, Datamuse]].parseDocument(Word("far"), words)
-    ),
+    summon[StreamingParsable[IO, Datamuse]]
+      .parseDocument(Word("far"), parseResource("/dm-far.json"))
+      .compile
+      .toList,
     ExpectedResult(
       ThesaurusName("Datamuse"),
       Word("far"),
