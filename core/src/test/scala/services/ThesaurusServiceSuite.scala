@@ -4,7 +4,7 @@ import cats.effect.IO
 import munit.*
 import org.scalacheck.effect.PropF
 import synonyms.core.PropHelpers.*
-import synonyms.core.domain.Thesaurus
+import synonyms.core.domain.{SynonymLength, Thesaurus}
 import synonyms.core.interpreters.*
 
 class ThesaurusServiceSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
@@ -20,7 +20,7 @@ class ThesaurusServiceSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
         val clients = TestThesaurusClients(Map(thesaurus -> client))
         (word, clients, thesaurus, characterSet)
     ) { case (word, clients, thesaurus, characterSet) =>
-      val maxLength = DefaultStringSize - 5
+      val maxLength = SynonymLength(DefaultStringSize - 5)
       val service   = ThesaurusService.make(clients)
 
       for entries <- service.getEntries(word, thesaurus, maxLength, characterSet)

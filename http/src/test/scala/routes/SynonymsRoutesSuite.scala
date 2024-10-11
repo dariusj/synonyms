@@ -105,6 +105,6 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
     def getEntries(
         word: Word,
         thesaurus: Thesaurus,
-        maxLength: Int,
+        maxLength: SynonymLength,
         characterSet: CharacterSet
     ): IO[List[Entry]] = IO.pure(entries)

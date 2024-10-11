@@ -78,7 +78,7 @@ class SynonymsSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
           service,
           List(t1, t2),
           entries1 ++ entries2,
-          SynonymConfig(characterSet, DefaultStringSize)
+          SynonymConfig(characterSet, SynonymLength(DefaultStringSize))
         )
     } { case (word, service, thesauruses, entries, config) =>
       Synonyms(service, config).synonymsByLength(word, thesauruses).map { syns =>
@@ -92,19 +92,25 @@ class SynonymsSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
   def entryStore =
     FunFixture[(Map[Word, List[Entry]], Thesaurus, ThesaurusService[IO], SynonymConfig)](
       _ =>
-        val fixtureGen = for
-          thesaurus <- thesaurusGen
-          foo <- entryGen.map(
-            _.copy(synonyms = List(Synonym("bar")), thesaurusName = thesaurus.name)
+        val fixtureGen =
+          for
+            thesaurus <- thesaurusGen
+            foo <- entryGen.map(
+              _.copy(synonyms = List(Synonym("bar")), thesaurusName = thesaurus.name)
+            )
+            bar          <- entryGen.map(_.copy(synonyms = Nil, thesaurusName = thesaurus.name))
+            baz          <- entryGen.map(_.copy(synonyms = Nil, thesaurusName = thesaurus.name))
+            characterSet <- characterSetGen
+            entries = Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>
+              Word.assume(k) -> List(v)
+            }
+            clients = TestThesaurusClients(Map(thesaurus -> TestThesaurusClient(entries)))
+          yield (
+            entries,
+            thesaurus,
+            ThesaurusService.make(clients),
+            SynonymConfig(characterSet, SynonymLength(DefaultStringSize))
           )
-          bar          <- entryGen.map(_.copy(synonyms = Nil, thesaurusName = thesaurus.name))
-          baz          <- entryGen.map(_.copy(synonyms = Nil, thesaurusName = thesaurus.name))
-          characterSet <- characterSetGen
-          entries = Map("foo" -> foo, "bar" -> bar, "baz" -> baz).map { (k, v) =>
-            Word.assume(k) -> List(v)
-          }
-          clients = TestThesaurusClients(Map(thesaurus -> TestThesaurusClient(entries)))
-        yield (entries, thesaurus, ThesaurusService.make(clients), SynonymConfig(characterSet, 15))
         fixtureGen.sample.get
       ,
       _ => ()

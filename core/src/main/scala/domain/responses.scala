@@ -4,7 +4,15 @@ import cats.Show
 import io.circe.Encoder
 import synonyms.core.domain.*
 
-case class SynonymsByLength private (length: Int, synonyms: List[Synonym])
+opaque type SynonymLength = Int
+
+object SynonymLength:
+  def apply(value: Int): SynonymLength = value
+  given Ordering[SynonymLength]        = Ordering.Int
+  given Encoder[SynonymLength]         = Encoder.encodeInt.contramap(_.toInt)
+  export math.Ordering.Implicits.infixOrderingOps
+
+case class SynonymsByLength private (length: SynonymLength, synonyms: List[Synonym])
 
 object SynonymsByLength:
   given Encoder[SynonymsByLength] = Encoder.AsObject.derived

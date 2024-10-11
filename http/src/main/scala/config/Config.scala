@@ -8,7 +8,7 @@ import cats.syntax.semigroup.*
 import cats.syntax.validated.*
 import com.comcast.ip4s.{Host, Port}
 import synonyms.core.config.types.*
-import synonyms.core.domain.{CharacterSet, Thesaurus}
+import synonyms.core.domain.{CharacterSet, SynonymLength, Thesaurus}
 import synonyms.http.config.types.*
 
 import scala.concurrent.duration.given
@@ -24,7 +24,7 @@ object Config:
   def load[F[_]: ApplicativeThrow]: F[AppConfig] =
     val validatedConfig: ValidatedNec[ConfigError, AppConfig] = (
       ThesaurusConfig(Thesaurus.all).validNec,
-      SynonymConfig(CharacterSet.Alphabetic, 15).validNec,
+      SynonymConfig(CharacterSet.Alphabetic, SynonymLength(15)).validNec,
       HttpClientConfig(30.seconds).validNec,
       httpServerConfig
     ).mapN { case (thesaurusConfig, synonymConfig, httpClientConfig, httpServerConfig) =>

@@ -43,7 +43,8 @@ object Synonym:
   given Ordering[Synonym] = Ordering.String
   given Encoder[Synonym]  = Encoder.encodeString.contramap(_.toString)
 
-  extension (synonym: Synonym) def countChars(cs: CharacterSet): Int = synonym.count(cs.counter)
+  extension (synonym: Synonym)
+    def countChars(cs: CharacterSet): SynonymLength = SynonymLength(synonym.count(cs.counter))
 
 enum PartOfSpeech:
   case Adjective, Adverb, Conjunction, Determiner, Interjection, Noun, Preposition, Pronoun,
