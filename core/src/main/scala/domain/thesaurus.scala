@@ -36,9 +36,8 @@ opaque type Synonym = String
 object Synonym:
   def apply(value: String): Synonym = value
 
-  given Ordering[Synonym] with
-    def compare(x: Synonym, y: Synonym): Int = x.compareTo(y)
-  given Encoder[Synonym] = Encoder.encodeString.contramap(_.toString)
+  given Ordering[Synonym] = Ordering.String
+  given Encoder[Synonym]  = Encoder.encodeString.contramap(_.toString)
 
   extension (synonym: Synonym) def countChars(p: Char => Boolean): Int = synonym.count(p)
 
