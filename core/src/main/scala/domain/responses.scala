@@ -2,14 +2,15 @@ package synonyms.core.domain
 
 import cats.Show
 import io.circe.Encoder
+import io.github.iltotore.iron.*
+import io.github.iltotore.iron.constraint.all.*
 import synonyms.core.domain.*
 
-opaque type SynonymLength = Int
+opaque type SynonymLength = Int :| Positive0
 
-object SynonymLength:
-  def apply(value: Int): SynonymLength = value
-  given Ordering[SynonymLength]        = Ordering.Int
-  given Encoder[SynonymLength]         = Encoder.encodeInt.contramap(_.toInt)
+object SynonymLength extends RefinedTypeOps[Int, Positive, SynonymLength]:
+  given Ordering[SynonymLength] = Ordering.by(_.toInt)
+  given Encoder[SynonymLength]  = Encoder.encodeInt.contramap(_.toInt)
   export math.Ordering.Implicits.infixOrderingOps
 
 case class SynonymsByLength private (length: SynonymLength, synonyms: List[Synonym])

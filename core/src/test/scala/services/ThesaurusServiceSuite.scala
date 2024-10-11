@@ -1,6 +1,7 @@
 package synonyms.core.services
 
 import cats.effect.IO
+import io.github.iltotore.iron.*
 import munit.*
 import org.scalacheck.effect.PropF
 import synonyms.core.PropHelpers.*

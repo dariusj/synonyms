@@ -7,6 +7,7 @@ import cats.syntax.option.*
 import cats.syntax.semigroup.*
 import cats.syntax.validated.*
 import com.comcast.ip4s.{Host, Port}
+import io.github.iltotore.iron.*
 import synonyms.core.config.types.*
 import synonyms.core.domain.{CharacterSet, SynonymLength, Thesaurus}
 import synonyms.http.config.types.*

@@ -5,7 +5,7 @@ import synonyms.core.domain.*
 import synonyms.core.domain.Result.{AreSynonyms, NotSynonyms}
 
 object PropHelpers:
-  val DefaultStringSize = 15
+  inline val DefaultStringSize = 15
 
   def nonEmptyStringGen(
       maxLength: Int = DefaultStringSize,

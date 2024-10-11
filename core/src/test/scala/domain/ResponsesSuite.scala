@@ -13,7 +13,7 @@ class ResponsesSuite extends munit.ScalaCheckSuite:
       assertEquals(result.map(_._1), result.map(_._1).sorted)
       result.foreach { case SynonymsByLength(length, synonyms) =>
         synonyms.foreach(synonym =>
-          assertEquals(SynonymLength(clue(synonym.toString).length), length)
+          assertEquals(SynonymLength.applyUnsafe(clue(synonym.toString).length), length)
         )
         assertEquals(synonyms, synonyms.distinct.sorted)
       }
