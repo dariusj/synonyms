@@ -21,6 +21,7 @@ lazy val core = project
       Libraries.scalaScraper,
       Libraries.catsLaws              % Test,
       Libraries.disciplineMunit       % Test,
+      Libraries.http4sDsl             % Test,
       Libraries.munit                 % Test,
       Libraries.munitCatsEffect       % Test,
       Libraries.munitScalacheck       % Test,

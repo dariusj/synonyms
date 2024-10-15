@@ -23,3 +23,7 @@ object ParseException:
     @targetName("applyWithContext")
     def apply(word: Word)(using thesaurus: ThesaurusName): EntryWithoutPos =
       EntryWithoutPos(word, thesaurus)
+
+case class HttpStatusException(status: Int, body: String)
+    extends Exception(s"Got $status: $body")
+    with NoStackTrace

@@ -8,12 +8,13 @@ import cats.syntax.functor.*
 import cats.syntax.option.*
 import fs2.*
 import fs2.io.net.Network
-import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
+import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.model.Document
 import org.http4s.*
 import org.http4s.client.Client
 import org.jsoup.HttpStatusException
 import org.typelevel.log4cats.Logger
+import synonyms.core.clients.HttpStatusException as LocalHttpStatusException
 import synonyms.core.domain.{Entry, Thesaurus, Word}
 
 import scala.concurrent.duration.*
@@ -24,13 +25,12 @@ trait ThesaurusClient[F[_]]:
   def parseDocument(word: Word, document: Doc): F[List[Entry]]
 
 object ThesaurusClient:
-  def makeJsoup[F[_]: Sync: Logger, T <: Thesaurus](thesaurus: T)(using
+  def makeJsoup[F[_]: Sync: Logger, T <: Thesaurus](thesaurus: T, browser: Browser)(using
       jsoupParsable: JsoupParsable[F, T],
       clock: Clock[F]
   ): Resource[F, ThesaurusClient[F]] =
     Resource.pure(
       new ThesaurusClient[F]:
-        val browser: Browser = JsoupBrowser()
         type Doc = Document
 
         override def fetchDocument(word: Word): F[Option[Doc]] =
@@ -71,15 +71,21 @@ object ThesaurusClient:
               request              <- Stream(Request[F](Method.GET, uri))
               _                    <- Stream.eval(Logger[F].debug(s"Fetching $uri"))
               (duration, response) <- timed(request)
-              _    <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
-              body <- response.body
+              _ <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
+              body <- response.status match
+                case status if status.isSuccess   => response.body
+                case status if status.code == 404 => Stream.empty
+                case status =>
+                  val body = response.bodyText.fold("")(_ + _).compile.toList.map(_.mkString(" "))
+                  val exception = body.map(b => LocalHttpStatusException(status.code, b))
+                  Stream.eval(exception).flatMap(ex => Stream.raiseError[F](ex))
             yield body
           val maybeBytes = byteStream.pull.uncons1
             .flatMap {
               case Some((head, tail)) => Pull.pure(Some(tail.cons1(head)))
               case None               => Pull.pure(None)
             }
-            .flatMap(foo => Pull.output1(foo))
+            .flatMap(Pull.output1)
           // TODO: Error handling
           maybeBytes.stream.compile.lastOrError
 

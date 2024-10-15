@@ -3,6 +3,7 @@ package synonyms.core.resources
 import cats.effect.{Async, Concurrent, Resource}
 import cats.syntax.parallel.given
 import fs2.io.net.Network
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
 import synonyms.core.clients.JsoupParsable.given
@@ -18,10 +19,10 @@ object ThesaurusClients:
       client: Client[F]
   ): Resource[F, ThesaurusClients[F]] =
     (
-      ThesaurusClient.makeJsoup(Cambridge),
-      ThesaurusClient.makeJsoup(MerriamWebster),
-      ThesaurusClient.makeJsoup(PowerThesaurus),
-      ThesaurusClient.makeJsoup(WordHippo),
+      ThesaurusClient.makeJsoup(Cambridge, JsoupBrowser()),
+      ThesaurusClient.makeJsoup(MerriamWebster, JsoupBrowser()),
+      ThesaurusClient.makeJsoup(PowerThesaurus, JsoupBrowser()),
+      ThesaurusClient.makeJsoup(WordHippo, JsoupBrowser()),
       ThesaurusClient.makeStreaming(Datamuse, client)
     ).parMapN { case (cambridge, mw, powerThesaurus, wordhippo, datamuse) =>
       new ThesaurusClients[F]:
