@@ -1,9 +1,9 @@
 package synonyms.core.clients
 
-import _root_.io.github.iltotore.iron.*
 import cats.effect.IO
-import fs2.*
+import fs2.Stream
 import fs2.io.file.{Files, Path}
+import io.github.iltotore.iron.*
 import synonyms.core.clients.BaseThesaurusSuite.*
 import synonyms.core.domain.Thesaurus.Datamuse
 import synonyms.core.domain.{PartOfSpeech, ThesaurusName, Word}
