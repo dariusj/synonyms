@@ -12,7 +12,7 @@ private def sourceOpts(defaultThesaurus: NonEmptyList[Thesaurus]): Opts[NonEmpty
   Opts
     .options[String]("source", "The thesaurus to use", "s")
     .mapValidated(
-      _.traverse(input => Thesaurus.fromString(input).toValidNel(s"Invalid source $input"))
+      _.traverse(input => Thesaurus.fromString(input).toValidNel(s"Invalid source '$input'"))
     )
     .withDefault(defaultThesaurus)
 
