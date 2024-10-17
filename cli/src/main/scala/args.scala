@@ -1,6 +1,6 @@
 package synonyms.cli
 
-import cats.data.{NonEmptyList, ValidatedNel}
+import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import cats.syntax.apply.given
 import cats.syntax.either.*
 import cats.syntax.option.*
@@ -19,7 +19,12 @@ private def sourceOpts(defaultThesaurus: NonEmptyList[Thesaurus]): Opts[NonEmpty
 private val formatOpts: Opts[Format] =
   Opts
     .option[String]("format", "The result format", "f")
-    .mapValidated(format => Format.fromString(format).toValidNel(s"Invalid format $format"))
+    .mapValidated(f =>
+      Validated
+        .catchNonFatal(Format.valueOf(f.toLowerCase.capitalize))
+        .leftMap(_ => s"Invalid format '$f'")
+        .toValidatedNel
+    )
     .withDefault(Format.Text)
 
 def checkSynonyms(thesaurusConfig: ThesaurusConfig): Opts[CheckSynonyms.Args] =
@@ -38,13 +43,6 @@ def listSynonyms(thesaurusConfig: ThesaurusConfig): Opts[ListSynonyms.Args] =
 
 enum Format:
   case Json, Text
-
-object Format:
-  private val pf: PartialFunction[String, Format] = {
-    case "json" => Json
-    case "text" => Text
-  }
-  def fromString(s: String): Option[Format] = pf.lift(s)
 
 given Argument[Word] with
   override def read(string: String): ValidatedNel[String, Word] = Word.either(string).toValidatedNel
