@@ -129,7 +129,7 @@ object Thesaurus:
     val pf: PartialFunction[String, Thesaurus] = {
       case "cambridge"      => Cambridge
       case "datamuse"       => Datamuse
-      case "mw"             => MerriamWebster
+      case "merriamwebster" => MerriamWebster
       case "powerthesaurus" => PowerThesaurus
       case "wordhippo"      => WordHippo
     }
