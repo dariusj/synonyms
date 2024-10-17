@@ -52,15 +52,9 @@ object ListSynonyms:
   case class Args(word: Word, source: NonEmptyList[Thesaurus], format: Format)
 
 object CheckSynonyms:
-  case class Args(
-      first: Word,
-      second: Word,
-      source: NonEmptyList[Thesaurus],
-      format: Format
-  )
+  case class Args(first: Word, second: Word, source: NonEmptyList[Thesaurus], format: Format)
 
   val words: Opts[(Word, Word)] = Opts.arguments[Word]("words").map {
     case NonEmptyList(f, s :: Nil) => f -> s
-    case args =>
-      throw IllegalArgumentException(s"Incorrect number of arguments: $args")
+    case args => throw IllegalArgumentException(s"Incorrect number of arguments: $args")
   }
