@@ -62,7 +62,6 @@ object JsoupParsable:
           entryEls.flatTraverse { entry =>
             val posString = entry >> text(".parts-of-speech")
             posString.toPos match
-              // TODO: Add Test
               case None => MonadThrow[F].raiseError(PartOfSpeechNotFound(posString, word))
               case Some(pos) =>
                 Applicative[F]
@@ -75,7 +74,6 @@ object JsoupParsable:
   given [F[_]: MonadThrow]: JsoupParsable[F, Cambridge] with
     given ThesaurusName = Cambridge.name
     extension (s: String)
-      // TODO: FIXME - unsafe
       def toPos: PartOfSpeech = s match
         case "adjective"   => PartOfSpeech.Adjective
         case "adverb"      => PartOfSpeech.Adverb

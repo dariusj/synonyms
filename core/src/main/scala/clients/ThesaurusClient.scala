@@ -86,7 +86,6 @@ object ThesaurusClient:
               case None               => Pull.pure(None)
             }
             .flatMap(Pull.output1)
-          // TODO: Error handling
           maybeBytes.stream.compile.lastOrError
 
         override def parseDocument(word: Word, document: Doc): F[List[Entry]] =
