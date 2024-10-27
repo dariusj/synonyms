@@ -1,6 +1,6 @@
 import Dependencies.*
 
-ThisBuild / scalaVersion := "3.5.1"
+ThisBuild / scalaVersion := "3.5.2"
 
 lazy val synonyms = (project in file(".")).aggregate(core, cli, http)
 
