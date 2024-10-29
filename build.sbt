@@ -34,7 +34,7 @@ lazy val cli = project
   .settings(commonSettings)
   .settings(
     name := "synonyms-cli",
-    libraryDependencies ++= Seq(Libraries.declineEffect, Libraries.logback)
+    libraryDependencies ++= Seq(Libraries.declineEffect, Libraries.logback % Runtime)
   )
 
 lazy val http = project
@@ -55,7 +55,7 @@ lazy val http = project
       Libraries.http4sDsl,
       Libraries.http4sEmberServer,
       Libraries.log4cats,
-      Libraries.logback
+      Libraries.logback % Runtime
     )
   )
 
