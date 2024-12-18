@@ -10,7 +10,7 @@ object Dependencies {
     val decline               = "2.4.1"
     val disciplineMunit       = "2.0.0"
     val fs2                   = "3.11.0"
-    val fs2data               = "1.11.1"
+    val fs2data               = "1.11.2"
     val http4s                = "0.23.30"
     val http4sBlaze           = "0.23.17"
     val iron                  = "2.6.0"
