@@ -5,7 +5,7 @@ import io.github.iltotore.iron.*
 import munit.*
 import org.scalacheck.effect.PropF
 import synonyms.core.PropHelpers.*
-import synonyms.core.domain.{SynonymLength, Thesaurus}
+import synonyms.core.domain.SynonymLength
 import synonyms.core.interpreters.*
 
 class ThesaurusServiceSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
