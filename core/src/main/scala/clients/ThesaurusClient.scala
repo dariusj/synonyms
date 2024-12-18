@@ -49,9 +49,7 @@ object ThesaurusClient:
     )
 
   def makeStreaming[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(
-      using
-      streamingParsable: StreamingParsable[F, T],
-      clock: Clock[F]
+      using streamingParsable: StreamingParsable[F, T]
   ): Resource[F, ThesaurusClient[F]] =
     Resource.pure(
       new ThesaurusClient[F]:
