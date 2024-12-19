@@ -25,8 +25,10 @@ object Dependencies {
   }
 
   object Libraries {
-    def circe(artifact: String)   = "io.circe"  %% s"circe-$artifact"    % V.circe
-    def fs2data(artifact: String) = "org.gnieh" %% s"fs2-data-$artifact" % V.fs2data
+    def circe(artifact: String)   = "io.circe"   %% s"circe-$artifact"    % V.circe
+    def fs2data(artifact: String) = "org.gnieh"  %% s"fs2-data-$artifact" % V.fs2data
+    def http4s(artifact: String)  = "org.http4s" %% s"http4s-$artifact"   % V.http4s
+    def monocle(artifact: String) = "dev.optics" %% s"monocle-$artifact"  % V.monocle
 
     val catsCore   = "org.typelevel" %% "cats-core"   % V.cats
     val catsEffect = "org.typelevel" %% "cats-effect" % V.catsEffect
@@ -41,18 +43,19 @@ object Dependencies {
     val fs2dataJsonCirce = fs2data("json-circe")
 
     val http4sBlazeServer = "org.http4s" %% "http4s-blaze-server" % V.http4sBlaze
-    val http4sCirce       = "org.http4s" %% "http4s-circe"        % V.http4s
-    val http4sDsl         = "org.http4s" %% "http4s-dsl"          % V.http4s
-    val http4sEmberClient = "org.http4s" %% "http4s-ember-client" % V.http4s
-    val http4sEmberServer = "org.http4s" %% "http4s-ember-server" % V.http4s
+
+    val http4sCirce       = http4s("circe")
+    val http4sDsl         = http4s("dsl")
+    val http4sEmberClient = http4s("ember-client")
+    val http4sEmberServer = http4s("ember-server")
 
     val iron = "io.github.iltotore" %% "iron" % V.iron
 
     val log4cats = "org.typelevel" %% "log4cats-slf4j"  % V.log4cats
     val logback  = "ch.qos.logback" % "logback-classic" % V.logback
 
-    val monocleCore  = "dev.optics" %% "monocle-core"  % V.monocle
-    val monocleMacro = "dev.optics" %% "monocle-macro" % V.monocle
+    val monocleCore  = monocle("core")
+    val monocleMacro = monocle("macro")
 
     val scalaScraper = "net.ruippeixotog" %% "scala-scraper" % V.scalaScraper
 
