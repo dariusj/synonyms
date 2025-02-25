@@ -8,7 +8,7 @@ This project is a personal playground in Scala to try out different libraries an
 
 ## Requirements
 
-* [Java 17](https://www.oracle.com/uk/java/technologies/downloads/)
+* [Java 17](https://adoptium.net/en-GB/temurin/releases/)
 * [sbt](https://www.scala-sbt.org/)
 * [Optional] [Bloop](https://scalacenter.github.io/bloop/) (examples use bloop)
 
