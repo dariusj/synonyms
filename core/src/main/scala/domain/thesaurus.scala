@@ -17,9 +17,9 @@ object ThesaurusName:
   given Encoder[ThesaurusName] with
     override def apply(a: ThesaurusName): Json = Json.fromString(a)
 
-opaque type Word = String :| (Not[Blank] & Not[Digit])
+type Word = Word.T
 
-object Word extends RefinedTypeOps[String, Not[Blank] & Not[Exists[Digit]], Word]:
+object Word extends RefinedType[String, Not[Blank] & Not[Exists[Digit]]]:
   given Encoder[Word] with
     override def apply(a: Word): Json = Json.fromString(a.value)
   extension (word: Word)
