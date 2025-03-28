@@ -6,11 +6,10 @@ import io.github.iltotore.iron.*
 import io.github.iltotore.iron.constraint.all.*
 import synonyms.core.domain.*
 
-opaque type SynonymLength = Int :| Positive0
+type SynonymLength = SynonymLength.T
 
-object SynonymLength extends RefinedTypeOps[Int, Positive, SynonymLength]:
-  given Ordering[SynonymLength] = Ordering.by(_.toInt)
-  given Encoder[SynonymLength]  = Encoder.encodeInt.contramap(_.toInt)
+object SynonymLength extends RefinedType[Int, Positive]:
+  given Encoder[SynonymLength] = Encoder.encodeInt.contramap(_.toInt)
   export math.Ordering.Implicits.infixOrderingOps
 
 case class SynonymsByLength private (length: SynonymLength, synonyms: List[Synonym])
