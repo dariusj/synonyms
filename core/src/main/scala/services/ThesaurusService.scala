@@ -8,7 +8,6 @@ import cats.syntax.option.*
 import cats.syntax.traverse.*
 import monocle.syntax.all.*
 import synonyms.core.domain.*
-import synonyms.core.domain.SynonymLength.given
 import synonyms.core.resources.ThesaurusClients
 
 trait ThesaurusService[F[_]]:
