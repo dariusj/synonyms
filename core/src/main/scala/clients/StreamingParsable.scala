@@ -1,7 +1,5 @@
 package synonyms.core.clients
 
-import cats.Applicative
-import cats.effect.Concurrent
 import cats.syntax.option.*
 import fs2.*
 import fs2.data.json.*
@@ -15,7 +13,7 @@ trait StreamingParsable[F[_], T]:
   def parseDocument(word: Word, document: Stream[F, Byte]): Stream[F, Entry]
 
 object StreamingParsable:
-  given [F[_]: Applicative: Concurrent]: StreamingParsable[F, Datamuse] with
+  given [F[_]: RaiseThrowable]: StreamingParsable[F, Datamuse] with
     given ThesaurusName = Datamuse.name
     val toPos: PartialFunction[String, PartOfSpeech] = {
       case "adj" => PartOfSpeech.Adjective

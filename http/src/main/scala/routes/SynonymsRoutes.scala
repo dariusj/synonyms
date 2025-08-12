@@ -10,7 +10,6 @@ import io.circe.syntax.*
 import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.dsl.Http4sDsl
-import org.http4s.dsl.io.*
 import org.http4s.headers.Accept
 import org.http4s.server.Router
 import synonyms.core.config.types.*

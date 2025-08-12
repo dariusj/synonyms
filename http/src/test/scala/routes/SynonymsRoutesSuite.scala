@@ -96,7 +96,7 @@ class SynonymsRoutesSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
   def assertResponse(res: Response[IO], expectedStatus: Status, expectedContentType: MediaType)(
       using Location
   ): Unit =
-    assertEquals(res.status, Status.Ok)
+    assertEquals(res.status, expectedStatus)
     res.headers.get[`Content-Type`] match
       case None     => fail("Could not find Content-Type header")
       case Some(ct) => assertEquals(ct.mediaType, expectedContentType)

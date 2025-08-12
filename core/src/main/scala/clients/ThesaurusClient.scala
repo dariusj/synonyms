@@ -7,7 +7,6 @@ import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.option.*
 import fs2.*
-import fs2.io.net.Network
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.model.Document
 import org.http4s.*
@@ -48,8 +47,8 @@ object ThesaurusClient:
           jsoupParsable.parseDocument(word, document)
     )
 
-  def makeStreaming[F[_]: Async: Network: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(
-      using streamingParsable: StreamingParsable[F, T]
+  def makeStreaming[F[_]: Async: Logger, T <: Thesaurus](thesaurus: T, client: Client[F])(using
+      streamingParsable: StreamingParsable[F, T]
   ): Resource[F, ThesaurusClient[F]] =
     Resource.pure(
       new ThesaurusClient[F]:
