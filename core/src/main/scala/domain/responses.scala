@@ -9,7 +9,8 @@ import synonyms.core.domain.*
 type SynonymLength = SynonymLength.T
 
 object SynonymLength extends RefinedType[Int, Positive]:
-  given Encoder[SynonymLength] = Encoder.encodeInt.contramap(_.toInt)
+  given Encoder[SynonymLength]  = Encoder.encodeInt.contramap(_.value)
+  given Ordering[SynonymLength] = Ordering.Int.on(_.value)
   export math.Ordering.Implicits.infixOrderingOps
 
 case class SynonymsByLength private (length: SynonymLength, synonyms: List[Synonym])
