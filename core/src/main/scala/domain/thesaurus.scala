@@ -29,7 +29,7 @@ object Word extends RefinedType[String, Not[Blank] & Not[Exists[Digit]]]:
         case char if char != '\'' => char
       }
     private[domain] def ===(synonym: Synonym): Boolean =
-      normalise(word).equalsIgnoreCase(normalise(synonym))
+      normalise(word.value).equalsIgnoreCase(normalise(synonym))
 
 enum CharacterSet(val counter: Char => Boolean):
   case AnyChar    extends CharacterSet(_ => true)
