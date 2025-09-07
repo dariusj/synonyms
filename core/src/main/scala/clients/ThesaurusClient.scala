@@ -70,8 +70,8 @@ object ThesaurusClient:
               (duration, response) <- timed(request)
               _ <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
               body <- response.status match
-                case status if status.isSuccess   => response.body
-                case status if status.code == 404 => Stream.empty
+                case status if status.isSuccess          => response.body
+                case status if status == Status.NotFound => Stream.empty
                 case status =>
                   val body = response.bodyText.fold("")(_ + _).compile.toList.map(_.mkString(" "))
                   val exception = body.map(b => LocalHttpStatusException(status.code, b))
