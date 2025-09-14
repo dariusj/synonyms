@@ -17,7 +17,7 @@ object Dependencies {
     val log4cats              = "2.7.1"
     val logback               = "1.5.18"
     val monocle               = "3.3.0"
-    val munit                 = "1.1.1"
+    val munit                 = "1.1.2"
     val munitCatsEffect       = "2.1.0"
     val munitScalacheck       = "1.1.0"
     val scalaScraper          = "3.2.0"
