@@ -15,7 +15,7 @@ object Dependencies {
     val http4sBlaze           = "0.23.17"
     val iron                  = "3.2.0"
     val log4cats              = "2.7.1"
-    val logback               = "1.5.18"
+    val logback               = "1.5.19"
     val monocle               = "3.3.0"
     val munit                 = "1.1.1"
     val munitCatsEffect       = "2.1.0"
