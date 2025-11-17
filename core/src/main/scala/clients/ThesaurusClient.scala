@@ -68,11 +68,11 @@ object ThesaurusClient:
               request              <- Stream(Request[F](Method.GET, uri))
               _                    <- Stream.eval(Logger[F].debug(s"Fetching $uri"))
               (duration, response) <- timed(request)
-              _ <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
+              _    <- Stream.eval(Logger[F].debug(s"$uri responded in ${duration.toMillis} ms"))
               body <- response.status match
                 case status if status.isSuccess          => response.body
                 case status if status == Status.NotFound => Stream.empty
-                case status =>
+                case status                              =>
                   val body = response.bodyText.fold("")(_ + _).compile.toList.map(_.mkString(" "))
                   val exception = body.map(b => LocalHttpStatusException(status.code, b))
                   Stream.eval(exception).flatMap(ex => Stream.raiseError[F](ex))
