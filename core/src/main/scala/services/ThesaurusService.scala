@@ -27,7 +27,7 @@ object ThesaurusService:
           maxLength: SynonymLength,
           characterSet: CharacterSet
       ): F[List[Entry]] =
-        val client = clients.clients(thesaurus)
+        val client                                      = clients.clients(thesaurus)
         def modifySynonyms(entry: Entry): Option[Entry] =
           val updatedEntry = entry
             .focus(_.synonyms)

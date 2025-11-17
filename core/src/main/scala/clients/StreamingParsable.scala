@@ -14,7 +14,7 @@ trait StreamingParsable[F[_], T]:
 
 object StreamingParsable:
   given [F[_]: RaiseThrowable]: StreamingParsable[F, Datamuse] with
-    given ThesaurusName = Datamuse.name
+    given ThesaurusName                              = Datamuse.name
     val toPos: PartialFunction[String, PartOfSpeech] = {
       case "adj" => PartOfSpeech.Adjective
       case "adv" => PartOfSpeech.Adverb

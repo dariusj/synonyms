@@ -95,7 +95,7 @@ class SynonymsSuite extends CatsEffectSuite with ScalaCheckEffectSuite:
         val fixtureGen =
           for
             thesaurus <- thesaurusGen
-            foo <- entryGen.map(
+            foo       <- entryGen.map(
               _.copy(synonyms = List(Synonym("bar")), thesaurusName = thesaurus.name)
             )
             bar          <- entryGen.map(_.copy(synonyms = Nil, thesaurusName = thesaurus.name))
