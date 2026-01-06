@@ -40,7 +40,7 @@ object JsoupParsable:
 
     def parseDocument(word: Word, document: Document): F[List[Entry]] =
       def buildEntry(pos: PartOfSpeech)(el: Element) =
-        val example = el >?> text(".dt span")
+        val example    = el >?> text(".dt span")
         val definition =
           example.map(ex => (el >> text(".dt")).dropRight(ex.length + 1))
         val synonyms = el >> texts(
@@ -62,7 +62,7 @@ object JsoupParsable:
           entryEls.flatTraverse { entry =>
             val posString = entry >> text(".parts-of-speech")
             posString.toPos match
-              case None => MonadThrow[F].raiseError(PartOfSpeechNotFound(posString, word))
+              case None      => MonadThrow[F].raiseError(PartOfSpeechNotFound(posString, word))
               case Some(pos) =>
                 Applicative[F]
                   .pure(entry)
@@ -91,7 +91,7 @@ object JsoupParsable:
         currentPos.toRight(EntryWithoutPos(word, Cambridge.name)).map { pos =>
           val example  = el >?> text(".eg")
           val synonyms = el >> texts(".synonym")
-          val entry = Entry(
+          val entry    = Entry(
             Cambridge.name,
             word,
             pos,

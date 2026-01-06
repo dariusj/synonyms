@@ -6,7 +6,7 @@ import synonyms.core.domain.Thesaurus
 import synonyms.core.domain.Thesaurus.*
 
 object PropHelpers:
-  val formatGen: Gen[Format] = Gen.oneOf(Format.values.toList)
+  val formatGen: Gen[Format]                        = Gen.oneOf(Format.values.toList)
   val thesaurusWithKeyGen: Gen[(Thesaurus, String)] = thesaurusGen.map { thesaurus =>
     val key = thesaurus match
       case Cambridge      => "cambridge"

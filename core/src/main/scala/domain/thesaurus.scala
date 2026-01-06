@@ -98,13 +98,13 @@ object Thesaurus:
   type Collins = Collins.type
   case object Collins extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("Collins")
-    def uri(word: Word) = Uri.fromString(
+    def uri(word: Word)     = Uri.fromString(
       s"https://www.collinsdictionary.com/dictionary/english-thesaurus/$word"
     )
 
   type Datamuse = Datamuse.type
   case object Datamuse extends Thesaurus:
-    override def name: ThesaurusName = ThesaurusName("Datamuse")
+    override def name: ThesaurusName         = ThesaurusName("Datamuse")
     def uri(word: synonyms.core.domain.Word) =
       Uri.fromString(s"https://api.datamuse.com/words?ml=$word")
 
@@ -121,7 +121,7 @@ object Thesaurus:
   type WordHippo = WordHippo.type
   case object WordHippo extends Thesaurus:
     val name: ThesaurusName = ThesaurusName("WordHippo")
-    def uri(word: Word) = Uri.fromString(
+    def uri(word: Word)     = Uri.fromString(
       s"https://www.wordhippo.com/what-is/another-word-for/$word.html"
     )
 
