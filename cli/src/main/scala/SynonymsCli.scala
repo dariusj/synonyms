@@ -28,7 +28,7 @@ object SynonymsCli
           .use { clients =>
             val service: ThesaurusService[IO] = ThesaurusService.make(clients)
             val synonyms: Synonyms[IO]        = Synonyms(service, cfg.synonymConfig)
-            val outputIO: IO[String] = args match
+            val outputIO: IO[String]          = args match
               case CheckSynonyms.Args(first, second, thesauruses, format) =>
                 synonyms.checkSynonyms(first, second, thesauruses.toList).map { result =>
                   format match

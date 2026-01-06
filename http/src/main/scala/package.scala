@@ -22,7 +22,7 @@ extension (v: PfValidated[List[Word]])
   def toTuple2: ValidatedNel[ParseFailure, (Word, Word)] =
     v.andThen {
       case first :: second :: Nil => (first, second).validNel
-      case list =>
+      case list                   =>
         ParseFailure("Must pass two 'word' arguments only", list.mkString("\n")).invalidNel
     }
 
