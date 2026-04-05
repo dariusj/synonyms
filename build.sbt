@@ -62,8 +62,7 @@ lazy val http = project
   )
 
 val commonSettings = Seq(
-  semanticdbEnabled := true,
-  fork              := true,
+  fork := true,
   javaOptions += "-Xmx2G",
   testFrameworks += new TestFramework("munit.Framework")
 )
