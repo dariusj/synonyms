@@ -1,6 +1,6 @@
 import Dependencies.*
 
-ThisBuild / scalaVersion := "3.7.4"
+ThisBuild / scalaVersion := "3.8.3"
 
 Global / semanticdbEnabled := true
 
