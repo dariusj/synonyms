@@ -12,7 +12,7 @@ object Dependencies {
     val fs2                   = "3.11.0"
     val fs2data               = "1.14.0"
     val http4s                = "0.23.34"
-    val http4sBlaze           = "0.23.17"
+    val http4sBlaze           = "0.23.18"
     val iron                  = "3.3.1"
     val log4cats              = "2.8.0"
     val logback               = "1.5.34"
