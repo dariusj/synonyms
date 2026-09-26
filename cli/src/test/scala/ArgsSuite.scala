@@ -7,7 +7,6 @@ import org.scalacheck.Gen
 import org.scalacheck.Prop.*
 import synonyms.cli.PropHelpers.*
 import synonyms.core.PropHelpers.*
-import synonyms.core.domain.Thesaurus
 
 class ArgsSuite extends ScalaCheckSuite:
   property("sourceOpts") {
