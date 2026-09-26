@@ -45,6 +45,5 @@ object BaseThesaurusSuite:
         expectedSynonymCount: Int
     )
 
-  def parseFile(browser: Browser, resource: String): browser.DocumentType =
-    val url = getClass.getResource(resource)
-    browser.parseFile(url.getPath)
+  def parseResource(browser: Browser, resource: String): browser.DocumentType =
+    browser.parseResource(resource)
