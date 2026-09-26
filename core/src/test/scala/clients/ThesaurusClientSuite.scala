@@ -41,7 +41,7 @@ class ThesaurusClientSuite extends CatsEffectSuite:
 
   errorJsoupClientFixture(HttpStatusException("Internal Server Error", 500, "")).test(
     "Jsoup ThesaurusClient.fetchDocument rethrows when request responds with a non-404 error"
-  ) { case (client, exception) =>
+  ) { case (client, _) =>
     interceptIO[HttpStatusException](client.fetchDocument(Word("foo")))
   }
 

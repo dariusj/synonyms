@@ -81,6 +81,7 @@ object JsoupParsable:
         case "preposition" => PartOfSpeech.Preposition
         case "pronoun"     => PartOfSpeech.Pronoun
         case "verb"        => PartOfSpeech.Verb
+        case _             => PartOfSpeech.Undetermined
 
     private case class Acc(currentPos: Option[PartOfSpeech], entries: List[Entry]):
       def handlePosEl(el: Element): Acc =
@@ -137,6 +138,7 @@ object JsoupParsable:
         case "Preposition"  => PartOfSpeech.Preposition
         case "Pronoun"      => PartOfSpeech.Pronoun
         case "Verb"         => PartOfSpeech.Verb
+        case _              => PartOfSpeech.Undetermined
 
     def parseDocument(word: Word, document: Document): F[List[Entry]] =
       Applicative[F]
@@ -163,7 +165,7 @@ object JsoupParsable:
                 val example = Example(el.text.drop(1).dropRight(1))
                 val last    = entries.last.focus(_.example).replace(Option(example))
                 entries.init :+ last
-              case (entries, el) => entries
+              case (entries, _) => entries
             }
             .toList
         }
@@ -182,6 +184,7 @@ object JsoupParsable:
           case "n."    => PartOfSpeech.Noun
           case "prep." => PartOfSpeech.Preposition
           case "v."    => PartOfSpeech.Verb
+          case _       => PartOfSpeech.Undetermined
 
     def parseDocument(word: Word, document: Document): F[List[Entry]] =
       def extractPos(el: Element): Iterable[PartOfSpeech] =
