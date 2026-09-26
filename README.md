@@ -1,6 +1,6 @@
 # Synonyms
 
-![Continuous Integration](https://github.com/dariusj/synonyms/workflows/Continuous%20Integration/badge.svg)
+[![Continuous Integration](https://github.com/dariusj/synonyms/actions/workflows/ci.yml/badge.svg)](https://github.com/dariusj/synonyms/actions/workflows/ci.yml)
 
 An application with multiple entrypoints to perform synonym-related tasks.
 
