@@ -10,15 +10,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup sbt
-        uses: sbt/setup-sbt@v1
-
       - name: Setup Java
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
           cache: sbt
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Test
         run: sbt testCi
