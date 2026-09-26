@@ -2,7 +2,7 @@ package synonyms.core.clients
 
 import cats.effect.IO
 import fs2.Stream
-import fs2.io.file.{Files, Path}
+import fs2.io.readInputStream
 import io.github.iltotore.iron.*
 import synonyms.core.clients.BaseThesaurusSuite.*
 import synonyms.core.domain.Thesaurus.Datamuse
@@ -10,8 +10,8 @@ import synonyms.core.domain.{PartOfSpeech, ThesaurusName, Word}
 
 class StreamingParsableSuite extends BaseThesaurusSuite:
   def parseResource(name: String): Stream[IO, Byte] =
-    val url = getClass.getResource(name)
-    Files[IO].readAll(Path(url.getPath))
+    val inputStream = getClass.getResourceAsStream(name)
+    readInputStream(IO(inputStream), 4096)
 
   testBuildEntriesIO(
     "parseDocument for Datamuse scrapes page successfully",

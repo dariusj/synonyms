@@ -11,7 +11,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
   testBuildEntriesIO(
     "parseDocument for MerriamWebster parses page successfully",
     summon[JsoupParsable[IO, MerriamWebster]]
-      .parseDocument(Word("far"), parseFile(JsoupBrowser(), "/mw-far.html")),
+      .parseDocument(Word("far"), parseResource(JsoupBrowser(), "/mw-far.html")),
     ExpectedResult(
       ThesaurusName("Merriam-Webster"),
       Word("far"),
@@ -54,7 +54,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
     "parseDocument for Cambridge parses page successfully",
     summon[JsoupParsable[IO, Cambridge]].parseDocument(
       Word("far"),
-      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/cam-far.html")
+      BaseThesaurusSuite.parseResource(JsoupBrowser(), "/cam-far.html")
     ),
     ExpectedResult(
       ThesaurusName("Cambridge"),
@@ -86,7 +86,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
     "parseDocument for WordHippo parses page with multiple entries successfully",
     summon[JsoupParsable[IO, WordHippo]].parseDocument(
       Word("far"),
-      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/wh-far.html")
+      BaseThesaurusSuite.parseResource(JsoupBrowser(), "/wh-far.html")
     ),
     ExpectedResult(
       ThesaurusName("WordHippo"),
@@ -198,7 +198,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
     "parseDocument for WordHippo parses page with single entry successfully",
     summon[JsoupParsable[IO, WordHippo]].parseDocument(
       Word("coder"),
-      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/wh-coder.html")
+      BaseThesaurusSuite.parseResource(JsoupBrowser(), "/wh-coder.html")
     ),
     ExpectedResult(
       ThesaurusName("WordHippo"),
@@ -218,7 +218,7 @@ class JsoupParsableSuite extends BaseThesaurusSuite:
     "parseDocument for PowerThesaurus parses page successfully",
     summon[JsoupParsable[IO, PowerThesaurus]].parseDocument(
       Word("far"),
-      BaseThesaurusSuite.parseFile(JsoupBrowser(), "/pt-far.html")
+      BaseThesaurusSuite.parseResource(JsoupBrowser(), "/pt-far.html")
     ),
     ExpectedResult(
       ThesaurusName("PowerThesaurus"),
