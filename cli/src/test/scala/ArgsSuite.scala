@@ -45,7 +45,7 @@ class ArgsSuite extends ScalaCheckSuite:
           val arg = s"--format=$string"
           assertEquals(optsParser(formatOpts, arg), Right(format))
         )
-      case (format, None) => assert(clue(optsParser(formatOpts)).isRight)
+      case (_, None) => assert(clue(optsParser(formatOpts)).isRight)
     }
   }
 
