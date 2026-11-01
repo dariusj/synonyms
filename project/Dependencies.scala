@@ -11,7 +11,7 @@ object Dependencies {
     val disciplineMunit       = "2.0.0"
     val fs2                   = "3.11.0"
     val fs2data               = "1.14.1"
-    val http4s                = "0.23.37"
+    val http4s                = "0.23.38"
     val http4sBlaze           = "0.23.18"
     val iron                  = "3.3.2"
     val log4cats              = "2.8.0"
