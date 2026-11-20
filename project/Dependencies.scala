@@ -20,7 +20,7 @@ object Dependencies {
     val munit                 = "1.3.6"
     val munitCatsEffect       = "2.2.1"
     val munitScalacheck       = "1.3.1"
-    val scalaScraper          = "3.2.0"
+    val scalaScraper          = "3.3.0"
     val scalacheckEffectMunit = "2.1.0"
   }
 
